@@ -6,7 +6,7 @@ function esc(text) {
 }
 
 export function renderLandingCopy() {
-  const preview = document.getElementById('landing-copy-preview');
+  const preview = document.getElementById('copy-preview');
   if (!preview) return;
 
   const copyObject = appState.finalCopy;

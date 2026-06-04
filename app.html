@@ -459,6 +459,21 @@
     color: var(--accent-bright);
   }
 
+  .copy-preview {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-soft);
+    white-space: pre-wrap;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+  }
+
   .landing-preview-card {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.045);
@@ -524,11 +539,24 @@
     color: var(--muted2);
   }
 
-  .copy-preview-content {
+  .copy-preview, .copy-preview-content {
     font-size: 14px;
     line-height: 1.7;
     color: var(--text-soft);
     white-space: pre-wrap;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+  }
+
+  .copy-status {
+    font-family: var(--font);
+    line-height: 1.6;
   }
 
   .landing-style-grid {
@@ -2955,16 +2983,17 @@
     <!-- HEADER -->
     <div class="section-title">Landing Page Generator</div>
     <p class="section-desc">
-        Tu estrategia de ventas está lista. Es hora de darle vida.<br>
-        <span style="color: var(--accent-bright); font-weight:600;">
-            Copy importado exitosamente desde el Conversion Engine.
-        </span>
+        Tu estrategia de ventas está lista. Es hora de darle vida.
     </p>
+
+    <div id="copy-status" class="copy-status" style="display:none; margin-bottom:18px; font-size:13px; color: var(--accent3);">
+      ✅ Copy importado exitosamente desde el Conversion Engine.
+    </div>
 
     <!-- COPY PREVIEW -->
     <div class="copy-preview-card">
         <h3>Vista previa del copy</h3>
-        <div id="landing-copy-preview" class="copy-preview-content">
+        <div id="copy-preview" class="copy-preview">
             <!-- Se llena dinámicamente desde appState.finalCopy -->
         </div>
     </div>

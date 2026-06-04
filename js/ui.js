@@ -1,4 +1,4 @@
-import { appState } from './state.js';
+import { appState, setFinalCopy } from './state.js';
 import { goStep as routerGoStep, goHome as routerGoHome, setLandingTab as routerSetLandingTab, activarPanel } from './router.js';
 import { generarIA as apiGenerarIA } from './api.js';
 import { generarCopyDesdeProducto as conversionGenerarCopyDesdeProducto } from './conversionEngine.js';
@@ -603,7 +603,7 @@ function copyAdCard(btn) {
 function copyText(btn) {
   const area = btn.closest('.output-area') || btn.closest('.ce-result') || btn.closest('.copy-preview-card');
   if (!area) return;
-  const content = area.querySelector('.output-content, .ce-copy-content, .copy-preview-content, #landing-copy-preview');
+  const content = area.querySelector('.output-content, .ce-copy-content, .copy-preview-content, #copy-preview');
   if (!content) return;
   const originalLabel = btn.textContent;
   navigator.clipboard.writeText(content.innerText).then(() => {
@@ -4343,7 +4343,7 @@ El texto exacto del botón de compra + la micro-copy de confianza debajo del bot
       finalObj.offer_stack.bonuses = finalObj.offer_stack.bonuses ? [finalObj.offer_stack.bonuses] : [];
     }
 
-    appState.finalCopy = finalObj;
+    setFinalCopy(finalObj, text);
 
     // Renderizar el copy generado para la vista del Conversion Engine (mantener formato legible)
     let html = text
@@ -4391,38 +4391,48 @@ El texto exacto del botón de compra + la micro-copy de confianza debajo del bot
   }
 }
 
+function updateLandingCopy() {
+  const preview = document.getElementById('copy-preview');
+  const status = document.getElementById('copy-status');
+  if (!preview || !status) return;
+
+  if (!appState.finalCopy || (typeof appState.finalCopy === 'string' && appState.finalCopy.trim() === '')) {
+    status.style.display = 'none';
+    status.textContent = '';
+    preview.textContent = 'No hay copy disponible';
+    return;
+  }
+
+  status.style.display = 'block';
+  status.textContent = 'Copy importado exitosamente desde el Conversion Engine.';
+  if (typeof appState.finalCopy === 'string') {
+    preview.textContent = appState.finalCopy;
+  } else {
+    try {
+      preview.textContent = JSON.stringify(appState.finalCopy, null, 2);
+    } catch (e) {
+      preview.textContent = String(appState.finalCopy);
+    }
+  }
+}
+
 function activateLandingFromEngine() {
   syncCartToState();
   closeGuidedMode();
   goStep(2);
-  // Mostrar el tab de copy y notificar
   setTimeout(() => {
     setLandingTab('copy');
-    renderLandingCopy();
-    mostrarNotificacion('✅ Copy del Conversion Engine aplicado — elegí un estilo y generá tu landing');
+    updateLandingCopy();
+    if (appState.finalCopy && typeof appState.finalCopy === 'string' ? appState.finalCopy.trim().length > 0 : Boolean(appState.finalCopy)) {
+      mostrarNotificacion('✅ Copy del Conversion Engine aplicado — elegí un estilo y generá tu landing');
+    }
   }, 300);
 }
 
 // Renderizar el copy importado
 function renderLandingCopy() {
-    const preview = document.getElementById("landing-copy-preview");
-    if (!preview) return;
-
-    const copyObj = appState.finalCopy || null;
-    const rawText = appState.finalCopyRaw || '';
-    if (!copyObj && !rawText) {
-        preview.textContent = "No hay copy disponible.";
-        return;
-    }
-
-    if (!copyObj && rawText) {
-      preview.textContent = rawText;
-      return;
-    }
-
-    const c = copyObj;
-    const productText = (c.offer_stack && c.offer_stack.product) || '';
-    const bonusesText = (c.offer_stack && Array.isArray(c.offer_stack.bonuses)) ? c.offer_stack.bonuses.join("\n") : '';
+  updateLandingCopy();
+}
 
     preview.textContent = `
 ${c.headline || ''}
@@ -4615,9 +4625,9 @@ function usarEnLandingPage() {
 
     generarCopyDesdeProducto(appState.productoFinal)
         .then(copy => {
-            appState.finalCopy = copy;
+            setFinalCopy(copy);
             activarPanel("panel-landing-generator");
-            renderLandingCopy();
+            updateLandingCopy();
         })
         .catch(err => {
             console.error(err);
