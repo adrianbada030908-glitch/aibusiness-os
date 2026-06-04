@@ -3848,29 +3848,10 @@ async function guidedLoadNichos() {
 Reemplaza TITULO con el nombre real (max 4 palabras) y RESUMEN con descripción real (max 10 palabras). tag debe ser "Baja", "Media" o "Alta". Responde solo con el array.`;
 
   try {
-    const controller = new AbortController();
-    const tmout = setTimeout(() => controller.abort(), 35000);
+    let text = await callClaudeRaw(sys, prompt, output, 'Generando nichos con IA...');
+    if (!text) return;
 
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemPrompt: withDateContext(sys),
-        prompt,
-        maxTokens: 4096,
-        temperature: 0.4
-      }),
-      signal: controller.signal
-    });
-    clearTimeout(tmout);
-
-    if (!res.ok) {
-      let errBody = '';
-      try { const j = await res.json(); errBody = j.error || j.message || ''; } catch(e) { try { errBody = await res.text(); } catch(e2) {} }
-      throw new Error(`Error del servidor ${res.status}${errBody ? ': ' + errBody.substring(0,100) : ''}`);
-    }
-    const data = await res.json();
-    let text = (data.text || '').trim();
+    text = text.trim();
     console.log('[Guided] Raw:', text.substring(0, 500));
 
     // Limpiar markdown fences
@@ -3948,21 +3929,13 @@ async function guidedLoadAvatars() {
 Reemplaza con datos reales específicos para el nicho. Solo el array JSON.`;
 
   try {
-    const controller = new AbortController();
-    const tmout = setTimeout(() => controller.abort(), 35000);
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 4096, temperature: 0.5 }),
-      signal: controller.signal
-    });
-    clearTimeout(tmout);
-    if (!res.ok) throw new Error('Error ' + res.status);
-    const data = await res.json();
-    let text = (data.text || '').trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const text = await callClaudeRaw(sys, prompt, output, 'Generando perfiles para ' + (cart.selectedNiche?.titulo || 'tu nicho') + '...');
+    if (!text) return;
 
-    const f = text.indexOf('['), l = text.lastIndexOf(']');
+    const cleaned = text.trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const f = cleaned.indexOf('['), l = cleaned.lastIndexOf(']');
     let avatares = null;
-    if (f !== -1 && l > f) { try { avatares = JSON.parse(text.slice(f, l+1)); } catch(e) {} }
+    if (f !== -1 && l > f) { try { avatares = JSON.parse(cleaned.slice(f, l+1)); } catch(e) { console.warn('[Guided] Parse avatares falló:', e.message); } }
     if (!avatares?.length) throw new Error('JSON inválido');
 
     // Render cards
@@ -4018,21 +3991,13 @@ async function guidedLoadProductos() {
 Reemplaza con nombres y datos reales. Solo el array JSON.`;
 
   try {
-    const controller = new AbortController();
-    const tmout = setTimeout(() => controller.abort(), 35000);
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 4096, temperature: 0.5 }),
-      signal: controller.signal
-    });
-    clearTimeout(tmout);
-    if (!res.ok) throw new Error('Error ' + res.status);
-    const data = await res.json();
-    let text = (data.text || '').trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const text = await callClaudeRaw(sys, prompt, output, 'Diseñando productos con IA...');
+    if (!text) return;
 
-    const f = text.indexOf('['), l = text.lastIndexOf(']');
+    const cleaned = text.trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const f = cleaned.indexOf('['), l = cleaned.lastIndexOf(']');
     let productos = null;
-    if (f !== -1 && l > f) { try { productos = JSON.parse(text.slice(f, l+1)); } catch(e) {} }
+    if (f !== -1 && l > f) { try { productos = JSON.parse(cleaned.slice(f, l+1)); } catch(e) { console.warn('[Guided] Parse productos falló:', e.message); } }
     if (!productos?.length) throw new Error('JSON inválido');
 
     window._guidedProductos = productos;
@@ -4088,21 +4053,13 @@ async function guidedLoadEstrategias() {
 Solo el array JSON con datos reales.`;
 
   try {
-    const controller = new AbortController();
-    const tmout = setTimeout(() => controller.abort(), 35000);
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 3000, temperature: 0.4 }),
-      signal: controller.signal
-    });
-    clearTimeout(tmout);
-    if (!res.ok) throw new Error('Error ' + res.status);
-    const data = await res.json();
-    let text = (data.text || '').trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const text = await callClaudeRaw(sys, prompt, output, 'Generando estrategias con IA...');
+    if (!text) return;
 
-    const f = text.indexOf('['), l = text.lastIndexOf(']');
+    const cleaned = text.trim().replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/,'').trim();
+    const f = cleaned.indexOf('['), l = cleaned.lastIndexOf(']');
     let estrategias = null;
-    if (f !== -1 && l > f) { try { estrategias = JSON.parse(text.slice(f, l+1)); } catch(e) {} }
+    if (f !== -1 && l > f) { try { estrategias = JSON.parse(cleaned.slice(f, l+1)); } catch(e) { console.warn('[Guided] Parse estrategias falló:', e.message); } }
     if (!estrategias?.length) throw new Error('JSON inválido');
 
     window._guidedEstrategias = estrategias;
