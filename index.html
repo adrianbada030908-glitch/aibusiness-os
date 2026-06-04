@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business OS — Lanzá tu negocio digital con IA</title>
+<meta name="description" content="La plataforma de inteligencia artificial que encuentra oportunidades virales, crea productos digitales, genera landing pages y automatiza tu marketing. Todo en un solo flujo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #020408;
+  --bg2: #060b14;
+  --surface: rgba(255,255,255,0.025);
+  --surface2: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --accent: #38bdf8;
+  --accent2: #60a5fa;
+  --accent3: #34d399;
+  --accent-deep: #0284c7;
+  --text: #f1f5f9;
+  --text-soft: #cbd5e1;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+  --font: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Syne', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NOISE TEXTURE ──────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* ── AMBIENT GLOW ───────────────────────────────────────── */
+.ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(56,189,248,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(96,165,250,0.05) 0%, transparent 60%);
+}
+
+/* ── NAVBAR ─────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%;
+  height: 64px;
+  background: rgba(2,4,8,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(145deg, rgba(56,189,248,0.3), rgba(2,132,199,0.2));
+  border: 1px solid rgba(56,189,248,0.3);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--muted2); font-size: 14px; font-weight: 500;
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+
+.btn-nav-ghost {
+  padding: 8px 18px;
+  background: transparent; border: 1px solid var(--border2);
+  border-radius: 50px; color: var(--text-soft);
+  font-size: 13px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.btn-nav-ghost:hover { background: var(--surface2); }
+
+.btn-nav-primary {
+  padding: 8px 20px;
+  background: var(--accent); border: none;
+  border-radius: 50px; color: #020408;
+  font-size: 13px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+  display: inline-block;
+}
+.btn-nav-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(56,189,248,0.35); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  nav { padding: 0 20px; }
+}
+
+/* ── HERO ───────────────────────────────────────────────── */
+.hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 5% 80px;
+}
+
+.hero-inner {
+  max-width: 1200px; margin: 0 auto; width: 100%;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 50px; padding: 6px 14px;
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  margin-bottom: 24px; width: fit-content;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(38px, 4.5vw, 62px);
+  font-weight: 800; line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+.hero-headline .grad {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 17px; color: var(--muted2);
+  line-height: 1.75; margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+
+.btn-hero-primary {
+  padding: 15px 32px;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+  border: none; border-radius: 50px;
+  color: #020408; font-size: 15px; font-weight: 700;
+  font-family: var(--font); cursor: pointer;
+  box-shadow: 0 8px 32px rgba(56,189,248,0.3);
+  transition: all 0.25s; text-decoration: none; display: inline-block;
+}
+.btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(56,189,248,0.4); }
+
+.btn-hero-ghost {
+  padding: 15px 28px;
+  background: transparent; border: 1px solid var(--border2);
+  border-radius: 50px; color: var(--text-soft);
+  font-size: 15px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.btn-hero-ghost:hover { background: var(--surface2); border-color: rgba(56,189,248,0.3); }
+
+.hero-social-proof {
+  display: flex; align-items: center; gap: 14px;
+}
+.hero-avatars {
+  display: flex;
+}
+.hero-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--bg);
+  margin-left: -8px; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: #020408;
+}
+.hero-avatar:first-child { margin-left: 0; }
+.hero-social-text { font-size: 13px; color: var(--muted2); }
+.hero-social-text strong { color: var(--text); }
+
+/* Hero visual right */
+.hero-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.hero-app-preview {
+  width: 100%; max-width: 480px;
+  background: rgba(6,11,20,0.9);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px rgba(56,189,248,0.08);
+}
+
+.preview-topbar {
+  height: 44px; background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 16px; gap: 8px;
+}
+.preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.preview-body { padding: 20px; }
+
+.preview-sidebar-row {
+  display: flex; gap: 12px;
+}
+
+.preview-sidebar-mini {
+  width: 44px; background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 0;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px; flex-shrink: 0;
+}
+.preview-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.preview-icon.active {
+  background: rgba(56,189,248,0.15);
+  border: 1px solid rgba(56,189,248,0.3);
+}
+
+.preview-content { flex: 1; }
+
+.preview-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 50px; padding: 3px 10px;
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.preview-title {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 800; color: var(--text);
+  margin-bottom: 6px; line-height: 1.3;
+}
+
+.preview-line {
+  height: 7px; background: var(--surface2);
+  border-radius: 50px; margin-bottom: 5px;
+}
+
+.preview-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 7px; margin-top: 14px;
+}
+.preview-card-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px;
+}
+.preview-card-icon { font-size: 14px; margin-bottom: 5px; }
+.preview-card-label {
+  font-size: 9px; font-weight: 700; color: var(--text-soft);
+  margin-bottom: 3px;
+}
+.preview-card-val {
+  height: 5px; background: rgba(56,189,248,0.2);
+  border-radius: 50px; width: 60%;
+}
+
+.preview-badge-float {
+  position: absolute;
+  background: rgba(6,11,20,0.95);
+  border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 12px; padding: 10px 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.preview-badge-float.top-right {
+  top: -20px; right: -30px;
+}
+.preview-badge-float.bottom-left {
+  bottom: -20px; left: -30px;
+}
+.pbf-label { font-size: 10px; color: var(--muted2); margin-bottom: 2px; }
+.pbf-val {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 800;
+  color: var(--accent3);
+}
+
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { display: none; }
+}
+
+/* ── LOGOS BAR ──────────────────────────────────────────── */
+.logos-bar {
+  position: relative; z-index: 1;
+  padding: 40px 5%;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.logos-bar-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  gap: 48px; flex-wrap: wrap;
+}
+.logos-label {
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.logo-item {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 700;
+  color: var(--muted); opacity: 0.5;
+  letter-spacing: -0.02em;
+}
+
+/* ── SECCIONES ──────────────────────────────────────────── */
+section { position: relative; z-index: 1; }
+
+.section-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 100px 5%;
+}
+
+/* ── HOW IT WORKS ───────────────────────────────────────── */
+.how-it-works { background: var(--bg2); }
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px; color: var(--muted2);
+  line-height: 1.7; max-width: 540px;
+  margin-bottom: 60px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+}
+.step-card {
+  background: var(--bg2);
+  padding: 32px 28px;
+  position: relative;
+  transition: background 0.2s;
+}
+.step-card:hover { background: rgba(56,189,248,0.04); }
+.step-num {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 16px;
+}
+.step-icon { font-size: 28px; margin-bottom: 14px; }
+.step-name {
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 700;
+  color: var(--text); margin-bottom: 8px;
+}
+.step-desc { font-size: 14px; color: var(--muted2); line-height: 1.6; }
+
+/* ── FEATURES ───────────────────────────────────────────── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 900px) { .features-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px;
+  transition: all 0.25s;
+  cursor: default;
+}
+.feature-card:hover {
+  background: var(--surface2);
+  border-color: rgba(56,189,248,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.feature-card.featured {
+  background: rgba(56,189,248,0.06);
+  border-color: rgba(56,189,248,0.2);
+  grid-column: span 1;
+}
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 16px;
+  background: var(--surface2);
+}
+.feature-name {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  color: var(--text); margin-bottom: 8px;
+}
+.feature-desc { font-size: 14px; color: var(--muted2); line-height: 1.6; }
+.feature-tag {
+  display: inline-block; margin-top: 12px;
+  font-size: 11px; font-weight: 700;
+  color: var(--accent3); text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ── SPLIT SECTION ──────────────────────────────────────── */
+.split-section { background: var(--bg2); }
+.split-inner {
+  max-width: 1200px; margin: 0 auto; padding: 100px 5%;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+@media (max-width: 800px) { .split-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+.split-list { list-style: none; display: flex; flex-direction: column; gap: 20px; }
+.split-item {
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.split-check {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0; margin-top: 2px;
+}
+.split-text strong { display: block; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.split-text span { font-size: 13px; color: var(--muted2); }
+
+/* Stats row en split */
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin-top: 40px;
+}
+.stat-cell {
+  background: var(--bg2); padding: 24px 20px; text-align: center;
+}
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 800;
+  color: var(--text); display: block; margin-bottom: 4px;
+}
+.stat-label { font-size: 12px; color: var(--muted2); }
+
+/* ── PRICING ────────────────────────────────────────────── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-top: 60px;
+}
+@media (max-width: 1000px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+.pricing-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px;
+  display: flex; flex-direction: column;
+  transition: all 0.25s;
+}
+.pricing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.pricing-card.popular {
+  background: rgba(56,189,248,0.06);
+  border-color: rgba(56,189,248,0.3);
+  position: relative;
+}
+.popular-badge {
+  position: absolute; top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent); color: #020408;
+  font-size: 11px; font-weight: 800;
+  padding: 4px 14px; border-radius: 50px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.plan-name {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 700; color: var(--muted2);
+  margin-bottom: 14px;
+}
+.plan-price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 6px; }
+.plan-currency { font-size: 18px; color: var(--muted2); font-weight: 600; }
+.plan-amount {
+  font-family: var(--font-display);
+  font-size: 42px; font-weight: 800;
+  color: var(--text); line-height: 1;
+  letter-spacing: -0.04em;
+}
+.plan-period { font-size: 13px; color: var(--muted); }
+.plan-desc { font-size: 13px; color: var(--muted2); margin-bottom: 20px; }
+
+.plan-divider {
+  height: 1px; background: var(--border);
+  margin-bottom: 20px;
+}
+
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; flex: 1; }
+.plan-feature {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13px; color: var(--text-soft);
+}
+.plan-feature::before { content: '✓'; color: var(--accent3); font-weight: 700; flex-shrink: 0; }
+.plan-feature.dim { color: var(--muted); }
+.plan-feature.dim::before { content: '×'; color: var(--muted); }
+
+.btn-plan {
+  width: 100%; padding: 13px;
+  border-radius: 12px; font-size: 14px; font-weight: 700;
+  font-family: var(--font); cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-plan-ghost {
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text-soft);
+}
+.btn-plan-ghost:hover { background: var(--surface2); }
+.btn-plan-primary {
+  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  border: none; color: #020408;
+  box-shadow: 0 6px 20px rgba(56,189,248,0.3);
+}
+.btn-plan-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(56,189,248,0.4); }
+
+/* ── TESTIMONIALS ───────────────────────────────────────── */
+.testimonials { background: var(--bg2); }
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 800px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+.testimonial-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.testimonial-stars { color: #fbbf24; font-size: 14px; letter-spacing: 2px; }
+.testimonial-text { font-size: 14px; color: var(--text-soft); line-height: 1.7; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.testimonial-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #020408;
+  flex-shrink: 0;
+}
+.testimonial-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.testimonial-role { font-size: 12px; color: var(--muted2); }
+
+/* ── FAQ ────────────────────────────────────────────────── */
+.faq-list { max-width: 720px; margin: 60px auto 0; }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%; background: none; border: none;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 0; cursor: pointer;
+  font-family: var(--font); font-size: 16px; font-weight: 600;
+  color: var(--text); text-align: left; gap: 16px;
+}
+.faq-chevron {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--muted2); flex-shrink: 0;
+  transition: transform 0.3s, background 0.2s;
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); background: rgba(56,189,248,0.1); color: var(--accent); }
+.faq-answer {
+  font-size: 15px; color: var(--muted2); line-height: 1.75;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+.faq-item.open .faq-answer { max-height: 300px; padding-bottom: 22px; }
+
+/* ── CTA FINAL ──────────────────────────────────────────── */
+.cta-final {
+  text-align: center;
+  padding: 120px 5%;
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(56,189,248,0.04) 50%, var(--bg) 100%);
+}
+.cta-final-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 54px);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 18px;
+}
+.cta-final-sub {
+  font-size: 17px; color: var(--muted2);
+  max-width: 500px; margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.cta-final-note {
+  font-size: 13px; color: var(--muted); margin-top: 16px;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 40px 5%;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 800; color: var(--text-soft);
+  letter-spacing: -0.02em;
+}
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text-soft); }
+.footer-copy { font-size: 12px; color: var(--muted); }
+
+/* ── AUTH MODAL ─────────────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(2,4,8,0.92); backdrop-filter: blur(20px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: rgba(6,11,20,0.98);
+  border: 1px solid var(--border2);
+  border-radius: 24px; padding: 40px 36px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.7);
+}
+.modal-logo {
+  width: 44px; height: 44px; border-radius: 13px; margin: 0 auto 16px;
+  background: linear-gradient(145deg, rgba(56,189,248,0.25), rgba(2,132,199,0.15));
+  border: 1px solid rgba(56,189,248,0.3);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 800;
+  color: var(--text); text-align: center; margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.modal-subtitle { font-size: 13px; color: var(--muted2); text-align: center; margin-bottom: 28px; }
+.modal-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; background: rgba(0,0,0,0.4);
+  padding: 4px; border-radius: 12px; margin-bottom: 22px;
+}
+.tab-btn {
+  padding: 9px; border: none; border-radius: 9px;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  font-family: var(--font); transition: all 0.2s;
+}
+.tab-btn.active { background: rgba(56,189,248,0.15); color: var(--text); border: 1px solid rgba(56,189,248,0.3); }
+.tab-btn:not(.active) { background: transparent; color: var(--muted2); border: 1px solid transparent; }
+.modal-input {
+  width: 100%; padding: 13px 16px;
+  background: rgba(0,0,0,0.5); border: 1px solid var(--border2);
+  border-radius: 12px; color: var(--text);
+  font-size: 14px; font-family: var(--font); outline: none;
+  transition: border-color 0.2s; margin-bottom: 10px;
+}
+.modal-input:focus { border-color: rgba(56,189,248,0.5); }
+.modal-input::placeholder { color: var(--muted); }
+.modal-error {
+  display: none; background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; color: #f87171; margin-bottom: 10px;
+}
+.modal-success {
+  display: none; text-align: center;
+  font-size: 13px; color: var(--accent3); padding: 8px;
+}
+.btn-modal-submit {
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  cursor: pointer; font-size: 14px; font-weight: 700;
+  font-family: var(--font);
+  background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+  color: #020408; box-shadow: 0 8px 24px rgba(56,189,248,0.3);
+  transition: all 0.2s; margin-top: 4px;
+}
+.btn-modal-submit:hover { transform: translateY(-1px); }
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 50%; width: 30px; height: 30px;
+  cursor: pointer; color: var(--muted2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all 0.2s;
+}
+.modal-close:hover { background: var(--surface2); color: var(--text); }
+.modal-box { position: relative; }
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { opacity: 0; }
+.fade-up.visible { animation: fadeUp 0.6s ease both; }
+.fade-up.d1 { animation-delay: 0.1s; }
+.fade-up.d2 { animation-delay: 0.2s; }
+.fade-up.d3 { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">⚡</div>
+    AI Business OS
+  </a>
+  <ul class="nav-links">
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#funciones">Funciones</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="btn-nav-ghost" href="#" onclick="openModal('login');return false;">Iniciar sesión</a>
+    <a class="btn-nav-primary" href="#" onclick="openModal('register');return false;">Empezar gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left fade-up">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Powered by Gemini AI — 100% en español
+      </div>
+      <h1 class="hero-headline">
+        Lanzá tu negocio digital<br>con <span class="grad">inteligencia artificial</span>
+      </h1>
+      <p class="hero-sub">
+        Encuentra oportunidades virales, crea productos digitales, genera landing pages de alta conversión y automatiza tu marketing — todo desde un solo lugar.
+      </p>
+      <div class="hero-cta-row">
+        <a class="btn-hero-primary" href="#" onclick="openModal('register');return false;">🚀 Empezar gratis</a>
+        <a class="btn-hero-ghost" href="#como-funciona">Ver cómo funciona →</a>
+      </div>
+      <div class="hero-social-proof">
+        <div class="hero-avatars">
+          <div class="hero-avatar" style="background:linear-gradient(135deg,#38bdf8,#0284c7)">A</div>
+          <div class="hero-avatar" style="background:linear-gradient(135deg,#34d399,#059669)">M</div>
+          <div class="hero-avatar" style="background:linear-gradient(135deg,#fbbf24,#d97706)">C</div>
+          <div class="hero-avatar" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">R</div>
+        </div>
+        <span class="hero-social-text"><strong>+2.400 emprendedores</strong> ya están usando la plataforma</span>
+      </div>
+    </div>
+
+    <div class="hero-visual fade-up d2">
+      <div class="preview-badge-float top-right">
+        <div class="pbf-label">Tendencias detectadas</div>
+        <div class="pbf-val">+47 hoy</div>
+      </div>
+      <div class="hero-app-preview">
+        <div class="preview-topbar">
+          <div class="preview-dot" style="background:#f87171"></div>
+          <div class="preview-dot" style="background:#fbbf24"></div>
+          <div class="preview-dot" style="background:#34d399"></div>
+        </div>
+        <div class="preview-body">
+          <div class="preview-sidebar-row">
+            <div class="preview-sidebar-mini">
+              <div class="preview-icon active">🔥</div>
+              <div class="preview-icon">📦</div>
+              <div class="preview-icon">💻</div>
+              <div class="preview-icon">📱</div>
+              <div class="preview-icon">🎯</div>
+              <div class="preview-icon">📧</div>
+              <div class="preview-icon">📈</div>
+            </div>
+            <div class="preview-content">
+              <div class="preview-tag">🔥 Trend Hunter AI</div>
+              <div class="preview-title">Análisis de Nichos — Salud y Bienestar</div>
+              <div class="preview-line" style="width:85%"></div>
+              <div class="preview-line" style="width:65%"></div>
+              <div class="preview-cards">
+                <div class="preview-card-mini">
+                  <div class="preview-card-icon">💊</div>
+                  <div class="preview-card-label">Suplementos IA</div>
+                  <div class="preview-card-val" style="background:rgba(56,189,248,0.25)"></div>
+                </div>
+                <div class="preview-card-mini">
+                  <div class="preview-card-icon">🧠</div>
+                  <div class="preview-card-label">Mindset Digital</div>
+                  <div class="preview-card-val" style="background:rgba(52,211,153,0.25)"></div>
+                </div>
+                <div class="preview-card-mini">
+                  <div class="preview-card-icon">💪</div>
+                  <div class="preview-card-label">Fitness Online</div>
+                  <div class="preview-card-val" style="background:rgba(251,191,36,0.25)"></div>
+                </div>
+                <div class="preview-card-mini">
+                  <div class="preview-card-icon">🥗</div>
+                  <div class="preview-card-label">Nutrición Rápida</div>
+                  <div class="preview-card-val" style="background:rgba(167,139,250,0.25)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="preview-badge-float bottom-left">
+        <div class="pbf-label">Landing generada en</div>
+        <div class="pbf-val">18 seg</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-bar">
+  <div class="logos-bar-inner">
+    <span class="logos-label">Impulsado por</span>
+    <span class="logo-item">Google Gemini</span>
+    <span class="logo-item">Cloudflare</span>
+    <span class="logo-item">Supabase</span>
+    <span class="logo-item">Meta Ads</span>
+    <span class="logo-item">TikTok</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="como-funciona">
+  <div class="section-inner">
+    <span class="section-eyebrow fade-up">El proceso</span>
+    <h2 class="section-title fade-up d1">De la idea al negocio<br>en un solo flujo</h2>
+    <p class="section-sub fade-up d2">Sin experiencia previa. Sin equipo. La IA hace el trabajo pesado y vos tomás las decisiones.</p>
+    <div class="steps-grid fade-up d3">
+      <div class="step-card">
+        <div class="step-num">Paso 01</div>
+        <div class="step-icon">🔥</div>
+        <div class="step-name">Detectá la oportunidad</div>
+        <div class="step-desc">El Trend Hunter analiza el mercado y te muestra los 10 nichos con mayor potencial de monetización ahora mismo.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Paso 02</div>
+        <div class="step-icon">📦</div>
+        <div class="step-name">Creá el producto</div>
+        <div class="step-desc">Generá tu infoproducto completo — estructura, módulos, índice y descripción — en menos de 2 minutos.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Paso 03</div>
+        <div class="step-icon">💻</div>
+        <div class="step-name">Lanzá la landing</div>
+        <div class="step-desc">Una página de ventas de alta conversión generada por IA, lista para publicar y empezar a vender.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">Paso 04</div>
+        <div class="step-icon">📈</div>
+        <div class="step-name">Escalá con tráfico</div>
+        <div class="step-desc">Contenido para redes, copy para Meta Ads y estrategia de tráfico para llevar tu producto al siguiente nivel.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="funciones">
+  <div class="section-inner">
+    <span class="section-eyebrow fade-up">7 módulos de IA</span>
+    <h2 class="section-title fade-up d1">Todo lo que necesitás<br>para vender online</h2>
+    <p class="section-sub fade-up d2">Cada módulo fue diseñado para resolver una parte específica del proceso de crear y escalar un negocio digital.</p>
+    <div class="features-grid fade-up d3">
+      <div class="feature-card featured">
+        <div class="feature-icon">🔥</div>
+        <div class="feature-name">Trend Hunter AI</div>
+        <div class="feature-desc">Analiza nichos, detecta vectores de viralidad y mapea la competencia antes que todos. Sabés exactamente qué vender y a quién.</div>
+        <span class="feature-tag">Más usado</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <div class="feature-name">Creador de Producto</div>
+        <div class="feature-desc">Generá infoproductos completos con estructura, módulos y descripción de ventas en minutos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💻</div>
+        <div class="feature-name">Landing Page</div>
+        <div class="feature-desc">Páginas de ventas con diseño premium, secciones de conversión, testimonios y CTA optimizados.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-name">Contenido para Redes</div>
+        <div class="feature-desc">Scripts para Reels, posts para Instagram, textos para TikTok y guiones para YouTube listos para publicar.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-name">Copy para Anuncios</div>
+        <div class="feature-desc">Textos para Meta Ads que convierten en frío. Hooks, body copy y CTAs probados para distintos objetivos.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📧</div>
+        <div class="feature-name">Email Marketing</div>
+        <div class="feature-desc">Secuencias de email automatizadas para nurturing, lanzamientos y ventas en piloto automático.</div>
+      </div>
+      <div class="feature-card" style="grid-column:span 3">
+        <div class="feature-icon">📈</div>
+        <div class="feature-name">Estrategia de Tráfico</div>
+        <div class="feature-desc">Plan completo de tráfico orgánico y pago adaptado a tu producto, nicho y presupuesto. Desde cero hasta escala.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT -->
+<section class="split-section">
+  <div class="split-inner">
+    <div class="fade-up">
+      <span class="section-eyebrow">Por qué elegirnos</span>
+      <h2 class="section-title">Construido para emprendedores de LATAM</h2>
+      <p style="font-size:16px;color:var(--muted2);line-height:1.7;margin-bottom:32px">
+        No es una herramienta genérica traducida. Fue creada desde cero para el mercado latinoamericano, con copywriting en español que realmente vende.
+      </p>
+      <ul class="split-list">
+        <li class="split-item">
+          <div class="split-check">✓</div>
+          <div class="split-text">
+            <strong>100% en español de LATAM</strong>
+            <span>El copy, los prompts y los resultados están optimizados para vender en español.</span>
+          </div>
+        </li>
+        <li class="split-item">
+          <div class="split-check">✓</div>
+          <div class="split-text">
+            <strong>Sin experiencia técnica requerida</strong>
+            <span>Si podés escribir un mensaje de WhatsApp, podés usar AI Business OS.</span>
+          </div>
+        </li>
+        <li class="split-item">
+          <div class="split-check">✓</div>
+          <div class="split-text">
+            <strong>Resultados en minutos, no semanas</strong>
+            <span>Pasás de idea a producto con landing page lista en menos de 30 minutos.</span>
+          </div>
+        </li>
+        <li class="split-item">
+          <div class="split-check">✓</div>
+          <div class="split-text">
+            <strong>Flujo completo integrado</strong>
+            <span>Desde la oportunidad hasta los anuncios, todo conectado en un solo lugar.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="fade-up d2">
+      <div class="stats-row">
+        <div class="stat-cell">
+          <span class="stat-num">7</span>
+          <span class="stat-label">Módulos de IA</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-num">&lt;30m</span>
+          <span class="stat-label">De idea a producto</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-num">$0</span>
+          <span class="stat-label">Para empezar</span>
+        </div>
+      </div>
+      <div style="margin-top:20px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px">
+        <div style="font-size:13px;color:var(--muted2);margin-bottom:16px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Lo que dicen los números</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text-soft)">Landings generadas</span>
+              <span style="font-size:13px;font-weight:700;color:var(--accent)">12,400+</span>
+            </div>
+            <div style="height:4px;background:var(--surface2);border-radius:50px">
+              <div style="height:100%;width:88%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:50px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text-soft)">Productos creados</span>
+              <span style="font-size:13px;font-weight:700;color:var(--accent3)">8,700+</span>
+            </div>
+            <div style="height:4px;background:var(--surface2);border-radius:50px">
+              <div style="height:100%;width:72%;background:linear-gradient(90deg,var(--accent3),#059669);border-radius:50px"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:13px;color:var(--text-soft)">Tasa de satisfacción</span>
+              <span style="font-size:13px;font-weight:700;color:#fbbf24">96%</span>
+            </div>
+            <div style="height:4px;background:var(--surface2);border-radius:50px">
+              <div style="height:100%;width:96%;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:50px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-inner">
+    <span class="section-eyebrow fade-up">Testimonios</span>
+    <h2 class="section-title fade-up d1">Lo que dicen<br>los que ya usaron</h2>
+    <div class="testimonials-grid fade-up d2" style="margin-top:48px">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Lancé mi primer curso digital en 3 días. Antes tardaba semanas solo en la página de ventas. Con AI Business OS tuve todo listo antes del fin de semana."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:linear-gradient(135deg,#38bdf8,#0284c7)">MR</div>
+          <div>
+            <div class="testimonial-name">Marcos Rodríguez</div>
+            <div class="testimonial-role">Coach de finanzas · Argentina</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"El Trend Hunter me ayudó a encontrar un nicho que no había visto nadie. Lancé el producto y recuperé la inversión en la primera semana."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:linear-gradient(135deg,#34d399,#059669)">CL</div>
+          <div>
+            <div class="testimonial-name">Camila López</div>
+            <div class="testimonial-role">Emprendedora digital · Colombia</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Lo que más me sorprendió fue la calidad de las landing pages. Mis clientes me preguntan quién me diseñó la página y se quedan en silencio cuando digo que la hizo una IA."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:linear-gradient(135deg,#fbbf24,#d97706)">JM</div>
+          <div>
+            <div class="testimonial-name">José Mejía</div>
+            <div class="testimonial-role">Creador de contenido · México</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precios">
+  <div class="section-inner">
+    <span class="section-eyebrow fade-up">Planes</span>
+    <h2 class="section-title fade-up d1">Empezá gratis,<br>escalá cuando estés listo</h2>
+    <p class="section-sub fade-up d2">Sin tarjeta de crédito para el plan gratuito. Cancelá cuando quieras.</p>
+    <div class="pricing-grid fade-up d3">
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price-row">
+          <span class="plan-currency">$</span>
+          <span class="plan-amount">0</span>
+        </div>
+        <div class="plan-period">para siempre</div>
+        <div class="plan-desc">Para explorar y empezar.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">5 generaciones por día</li>
+          <li class="plan-feature">Acceso a todos los módulos</li>
+          <li class="plan-feature">Landing pages básicas</li>
+          <li class="plan-feature dim">Sin límite mensual</li>
+          <li class="plan-feature dim">Soporte prioritario</li>
+        </ul>
+        <button class="btn-plan btn-plan-ghost" onclick="openModal('register')">Empezar gratis</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Estándar</div>
+        <div class="plan-price-row">
+          <span class="plan-currency">$</span>
+          <span class="plan-amount">9</span>
+        </div>
+        <div class="plan-period">/ mes</div>
+        <div class="plan-desc">Para emprendedores activos.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">10 generaciones por día</li>
+          <li class="plan-feature">150 generaciones al mes</li>
+          <li class="plan-feature">Acceso a todos los módulos</li>
+          <li class="plan-feature">Landing pages premium</li>
+          <li class="plan-feature dim">Soporte prioritario</li>
+        </ul>
+        <button class="btn-plan btn-plan-ghost" onclick="openModal('register')">Empezar ahora</button>
+      </div>
+      <div class="pricing-card popular">
+        <div class="popular-badge">⚡ Más popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price-row">
+          <span class="plan-currency">$</span>
+          <span class="plan-amount">25</span>
+        </div>
+        <div class="plan-period">/ mes</div>
+        <div class="plan-desc">Para creadores en escala.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">25 generaciones por día</li>
+          <li class="plan-feature">500 generaciones al mes</li>
+          <li class="plan-feature">Acceso a todos los módulos</li>
+          <li class="plan-feature">Landing pages premium</li>
+          <li class="plan-feature">Soporte por email</li>
+        </ul>
+        <button class="btn-plan btn-plan-primary" onclick="openModal('register')">Empezar ahora</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price-row">
+          <span class="plan-currency">$</span>
+          <span class="plan-amount">35</span>
+        </div>
+        <div class="plan-period">/ mes</div>
+        <div class="plan-desc">Para agencias y equipos.</div>
+        <div class="plan-divider"></div>
+        <ul class="plan-features">
+          <li class="plan-feature">Generaciones ilimitadas</li>
+          <li class="plan-feature">Todos los módulos</li>
+          <li class="plan-feature">Landing pages ilimitadas</li>
+          <li class="plan-feature">Soporte prioritario 24/7</li>
+          <li class="plan-feature">Acceso anticipado a nuevas features</li>
+        </ul>
+        <button class="btn-plan btn-plan-ghost" onclick="openModal('register')">Empezar ahora</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--bg2)">
+  <div class="section-inner" style="text-align:center">
+    <span class="section-eyebrow fade-up">FAQ</span>
+    <h2 class="section-title fade-up d1">Preguntas frecuentes</h2>
+    <div class="faq-list fade-up d2">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Necesito experiencia técnica para usar la plataforma?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">No. Si podés escribir un mensaje de texto, podés usar AI Business OS. No necesitás saber de diseño, programación ni marketing. La IA hace el trabajo técnico y vos solo completás la información de tu producto.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿En qué idioma está la plataforma?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">100% en español latinoamericano. El copywriting, los prompts y los resultados están optimizados para el mercado de LATAM. No es una traducción — fue construida desde cero en español.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Puedo cancelar mi suscripción en cualquier momento?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">Sí, podés cancelar cuando quieras sin costo adicional. Tu acceso se mantiene hasta el final del período ya pagado.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Qué tipo de productos puedo crear?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">Cursos online, ebooks, guías, templates, consultorías, membresías y cualquier otro tipo de infoproducto digital. El Trend Hunter te ayuda a encontrar el nicho más rentable para empezar.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Las landing pages generadas son profesionales?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">Sí. Son páginas HTML completas con diseño premium, secciones de conversión optimizadas, countdown, testimonios, FAQ con acordeón y animaciones. Listas para publicar en cualquier hosting.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          ¿Funciona el plan gratuito sin tarjeta de crédito?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-answer">Sí. El plan Free no requiere tarjeta de crédito. Solo creás tu cuenta con email y contraseña y tenés acceso a 5 generaciones diarias de todos los módulos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <span class="section-eyebrow fade-up">Empezá hoy</span>
+  <h2 class="cta-final-title fade-up d1">Tu negocio digital<br>empieza con un clic</h2>
+  <p class="cta-final-sub fade-up d2">Creá tu cuenta gratis en 30 segundos. Sin tarjeta de crédito. Sin compromiso.</p>
+  <div class="fade-up d3">
+    <a class="btn-hero-primary" href="#" onclick="openModal('register');return false;">🚀 Crear cuenta gratis</a>
+    <div class="cta-final-note">✓ Gratis para siempre &nbsp;&nbsp; ✓ Sin tarjeta &nbsp;&nbsp; ✓ Cancela cuando quieras</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">⚡ AI Business OS</div>
+    <div class="footer-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#precios">Precios</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="footer-copy">© 2026 AI Business OS. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-logo">⚡</div>
+    <div class="modal-title">AI Business OS</div>
+    <div class="modal-subtitle" id="modal-subtitle">Creá tu cuenta gratis en 30 segundos</div>
+    <div class="modal-tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Crear cuenta</button>
+    </div>
+    <input class="modal-input" id="modal-email" type="email" placeholder="tu@email.com" autocomplete="email"/>
+    <input class="modal-input" id="modal-pass" type="password" placeholder="Contraseña (mín. 6 caracteres)" onkeydown="if(event.key==='Enter')submitAuth()"/>
+    <div class="modal-error" id="modal-error"></div>
+    <div class="modal-success" id="modal-success">✅ Revisá tu email para confirmar tu cuenta</div>
+    <button class="btn-modal-submit" id="modal-submit-btn" onclick="submitAuth()">Crear cuenta gratis</button>
+  </div>
+</div>
+
+<script>
+const _sb = supabase.createClient(
+  'https://gbfipugbxdxsccbnokcy.supabase.co',
+  'sb_publishable_nOFsgZnd3_SSTcUuZiyk8g_Pt9Pr3qh'
+);
+
+// ── REDIRECT SI YA ESTÁ LOGUEADO ──────────────────────────
+_sb.auth.getSession().then(function(r) {
+  if (r.data && r.data.session) {
+    window.location.href = 'app.html';
+  }
+});
+
+// ── MODAL ─────────────────────────────────────────────────
+let _authMode = 'register';
+
+function openModal(mode) {
+  _authMode = mode;
+  document.getElementById('auth-modal').classList.add('open');
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('modal-success').style.display = 'none';
+  switchTab(mode);
+  setTimeout(function() { document.getElementById('modal-email').focus(); }, 100);
+}
+
+function closeModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+}
+
+function switchTab(mode) {
+  _authMode = mode;
+  const isLogin = mode === 'login';
+  document.getElementById('tab-login').className = 'tab-btn' + (isLogin ? ' active' : '');
+  document.getElementById('tab-register').className = 'tab-btn' + (!isLogin ? ' active' : '');
+  document.getElementById('modal-submit-btn').textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta gratis';
+  document.getElementById('modal-subtitle').textContent = isLogin ? 'Bienvenido de vuelta' : 'Creá tu cuenta gratis en 30 segundos';
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('modal-success').style.display = 'none';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('modal-email').value.trim();
+  const pass = document.getElementById('modal-pass').value;
+  const errEl = document.getElementById('modal-error');
+  const btn = document.getElementById('modal-submit-btn');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.textContent = 'Completá email y contraseña'; errEl.style.display = 'block'; return; }
+  if (pass.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres'; errEl.style.display = 'block'; return; }
+  btn.textContent = 'Cargando...'; btn.disabled = true;
+  try {
+    const r = _authMode === 'login'
+      ? await _sb.auth.signInWithPassword({ email, password: pass })
+      : await _sb.auth.signUp({ email, password: pass });
+    if (r.error) throw r.error;
+    if (_authMode === 'register' && !r.data.session) {
+      document.getElementById('modal-success').style.display = 'block';
+      btn.textContent = 'Crear cuenta gratis'; btn.disabled = false; return;
+    }
+    window.location.href = 'app.html';
+  } catch(err) {
+    const m = err.message || '';
+    errEl.textContent = m.includes('Invalid login') ? 'Email o contraseña incorrectos'
+      : m.includes('already registered') ? 'Este email ya tiene cuenta. Iniciá sesión.'
+      : m.includes('not confirmed') ? 'Confirmá tu email primero.'
+      : m || 'Error. Intentá de nuevo.';
+    errEl.style.display = 'block';
+    btn.textContent = _authMode === 'login' ? 'Iniciar sesión' : 'Crear cuenta gratis';
+    btn.disabled = false;
+  }
+}
+
+// Cerrar modal al clicar fuera
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── FAQ ───────────────────────────────────────────────────
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── SCROLL ANIMATIONS ─────────────────────────────────────
+const observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>
