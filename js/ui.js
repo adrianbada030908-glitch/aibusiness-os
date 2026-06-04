@@ -8,17 +8,34 @@ import { renderLandingCopy as landingRenderLandingCopy, renderFinalLandingPage a
 const generarIA = apiGenerarIA;
 
 function attachModuleGlobals() {
-  window.goStep = routerGoStep;
-  window.goHome = routerGoHome;
-  window.setLandingTab = routerSetLandingTab;
-  window.activarPanel = activarPanel;
-  window.generarIA = apiGenerarIA;
-  window.generarCopyDesdeProducto = conversionGenerarCopyDesdeProducto;
-  window.generarProducto = productGenerarProducto;
-  window.asignarProductoFinal = asignarProductoFinal;
-  window.renderLandingCopy = landingRenderLandingCopy;
-  window.renderFinalLandingPage = landingRenderFinalLandingPage;
-  window.volverALanding = landingVolverALanding;
+  const names = [
+    'goStep','goHome','setLandingTab','activarPanel','generarIA','generarCopyDesdeProducto','generarProducto','asignarProductoFinal',
+    'renderLandingCopy','renderFinalLandingPage','volverALanding','authTab','authSubmit','toggleApiKeyVisibility','saveApiKey','onApiKeyInput','hideApiKeySetup',
+    'authLogout','toggleAvatarMenu','closeAvatarMenu','abrirSoporte','openGuidedMode','closeGuidedMode','setSubcat','trendHunterAI',
+    'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarLanding','usarProductoEnLanding','usarEnLandingPage',
+    'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
+    'guidedLoadProductos','selectAvatar','selectProducto','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
+    'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp'
+  ];
+
+  // funciones importadas
+  try { if (typeof routerGoStep === 'function') window.goStep = routerGoStep; } catch(e){}
+  try { if (typeof routerGoHome === 'function') window.goHome = routerGoHome; } catch(e){}
+  try { if (typeof routerSetLandingTab === 'function') window.setLandingTab = routerSetLandingTab; } catch(e){}
+  try { if (typeof activarPanel === 'function') window.activarPanel = activarPanel; } catch(e){}
+  try { if (typeof apiGenerarIA === 'function') window.generarIA = apiGenerarIA; } catch(e){}
+
+  // adjuntar dinámicamente si existen en este módulo
+  names.forEach(n => {
+    try {
+      if (typeof window[n] === 'undefined') {
+        const fn = eval(n);
+        if (typeof fn === 'function') window[n] = fn;
+      }
+    } catch (e) {
+      // ignora si la función no existe
+    }
+  });
 }
 
 // ─── Fecha / año dinámico (siempre el momento de uso) ─────────────────────────
@@ -52,13 +69,43 @@ function getApiKey() {
 }
 
 function showApiKeySetup() {
-  document.getElementById('setup-overlay').classList.add('visible');
+  const overlay = document.getElementById('setup-overlay');
+  if (overlay) overlay.classList.add('visible');
   const existing = getApiKey();
   if (existing) {
     const input = document.getElementById('api-key-input');
     input.value = existing;
   }
   updateApiIndicator();
+}
+
+function hideApiKeySetup() {
+  const overlay = document.getElementById('setup-overlay');
+  if (overlay) overlay.classList.remove('visible');
+}
+
+function onApiKeyInput(el) {
+  const btn = document.getElementById('btn-save-key');
+  if (!btn) return;
+  btn.disabled = !el.value || el.value.trim().length === 0;
+}
+
+function saveApiKey() {
+  const input = document.getElementById('api-key-input');
+  if (!input) return;
+  const v = input.value.trim();
+  if (!v) return;
+  localStorage.setItem('gemini_api_key', v);
+  updateApiIndicator();
+  hideApiKeySetup();
+}
+
+function toggleApiKeyVisibility() {
+  const input = document.getElementById('api-key-input');
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+  const eye = document.getElementById('eye-btn');
+  if (eye) eye.textContent = input.type === 'password' ? '👁️' : '🙈';
 }
 
 function updateApiIndicator() {
@@ -76,9 +123,12 @@ function updateApiIndicator() {
 }
 
 // Close overlay clicking outside
-document.getElementById('setup-overlay').addEventListener('click', function(e) {
-  if (e.target === this && getApiKey()) hideApiKeySetup();
-});
+const _setupOverlayEl = document.getElementById('setup-overlay');
+if (_setupOverlayEl) {
+  _setupOverlayEl.addEventListener('click', function(e) {
+    if (e.target === this && getApiKey()) hideApiKeySetup();
+  });
+}
 
 // ─── State ───────────────────────────────────────────────────────────────────
 const state = appState;
@@ -4512,7 +4562,32 @@ function initLandingGenerator() {
   renderLandingCopy();
 }
 
-initLandingGenerator();
+// Inicializador principal seguro: se ejecuta cuando el DOM está listo
+function initApp() {
+  try { applyDynamicYears(); } catch (e) {}
+  try { updateApiIndicator(); } catch (e) {}
+  try { buildChips('platform-chips', platforms, 'platform', 'TikTok'); } catch (e) {}
+  try { buildChips('content-type-chips', contentTypes, 'contentType', 'Antes/Después del resultado'); } catch (e) {}
+  try { buildChips('ad-type-chips', adTypes, 'adType', 'Imagen estática + texto'); } catch (e) {}
+  try { initLandingGenerator(); } catch (e) {}
+  try { initDashboard(); } catch (e) {}
+}
+
+function initUI() {
+  // placeholder for future UI boot tasks
+}
+
+function initRouter() {
+  try { if (typeof goHome === 'function') goHome(); } catch (e) {}
+}
+
+// Ejecutar adjuntos y arranque cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+  try { attachModuleGlobals(); } catch (e) {}
+  try { initApp(); } catch (e) {}
+  try { initUI(); } catch (e) {}
+  try { initRouter(); } catch (e) {}
+});
 
 function renderNichoCards(nichos, container, categoria) {
   const tagClass = { 'Baja': 'tag-low', 'Media': 'tag-mid', 'Alta': 'tag-high' };
