@@ -14,7 +14,7 @@ function attachModuleGlobals() {
     'authLogout','toggleAvatarMenu','closeAvatarMenu','abrirSoporte','openGuidedMode','closeGuidedMode','setSubcat','trendHunterAI',
     'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarLanding','usarProductoEnLanding','usarEnLandingPage',
     'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
-    'guidedLoadProductos','selectAvatar','selectProducto','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
+    'guidedLoadProductos','selectAvatar','selectProducto','selectNicho','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
     'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp'
   ];
 
