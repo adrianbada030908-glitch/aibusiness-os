@@ -10,7 +10,7 @@ const generarIA = apiGenerarIA;
 function attachModuleGlobals() {
   const names = [
     'goStep','goHome','setLandingTab','activarPanel','generarIA','generarCopyDesdeProducto','generarProducto','asignarProductoFinal',
-    'renderLandingCopy','renderFinalLandingPage','volverALanding','authTab','authSubmit','toggleApiKeyVisibility','saveApiKey','onApiKeyInput','hideApiKeySetup',
+    'renderLandingCopy','renderFinalLandingPage','volverALanding','descargarIndexHTML','authTab','authSubmit','toggleApiKeyVisibility','saveApiKey','onApiKeyInput','hideApiKeySetup',
     'authLogout','toggleAvatarMenu','closeAvatarMenu','abrirSoporte','openGuidedMode','closeGuidedMode','setSubcat','trendHunterAI',
     'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarLanding','usarProductoEnLanding','usarEnLandingPage',
     'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
@@ -2743,6 +2743,15 @@ function descargarHTML() {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = (state.nombreProducto || 'landing-page').replace(/\s+/g, '-').toLowerCase() + '.html';
+  a.click();
+}
+
+function descargarIndexHTML() {
+  if (!state.codigoHTML) return;
+  const blob = new Blob([state.codigoHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
   a.click();
 }
 
