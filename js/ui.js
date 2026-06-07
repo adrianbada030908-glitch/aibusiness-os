@@ -4434,24 +4434,6 @@ function renderLandingCopy() {
   updateLandingCopy();
 }
 
-    preview.textContent = `
-${c.headline || ''}
-
-${c.subheadline || ''}
-
-${c.mechanism || ''}
-
-Producto:
-${productText}
-
-Bonos:
-${bonusesText}
-
-CTA:
-${c.cta || ''}
-    `;
-}
-
 // Selección de estilo visual
 function initLandingStyleSelector() {
   document.querySelectorAll('.landing-style-card').forEach(card => {
