@@ -4210,24 +4210,22 @@ async function runConversionEngine() {
     if (el) el.textContent = ceMessages[ceMsg];
   }, 2200);
 
-  // ── Mega-prompt del Conversion Engine ────────────────────────────────────
-  const businessContext = JSON.stringify({
-    nicho:      cart.selectedNiche?.titulo,
-    resumen:    cart.selectedNiche?.resumen,
-    ingresos:   cart.selectedNiche?.ingresos,
-    avatar:     cart.selectedAvatar?.nombre,
-    edad:       cart.selectedAvatar?.edad,
-    ocupacion:  cart.selectedAvatar?.ocupacion,
-    dolor:      cart.selectedAvatar?.dolor,
-    deseo:      cart.selectedAvatar?.deseo,
-    gatillo:    cart.selectedAvatar?.gatillo,
-    producto:   cart.selectedName,
-    tipo:       cart.productType,
-    precio:     cart.selectedPrice,
-    promesa:    cart.selectedPromesa,
-    estrategia: cart.selectedStrategy,
-    canal:      cart.selectedCanal,
-  });
+  // ── Recolectar datos del carrito en texto legible para el LLM ─────────
+  const nichoTitulo   = cart.selectedNiche?.titulo   || 'No especificado';
+  const nichoResumen  = cart.selectedNiche?.resumen  || '';
+  const nichoIngresos = cart.selectedNiche?.ingresos || '';
+  const avatarNombre  = cart.selectedAvatar?.nombre   || 'No especificado';
+  const avatarEdad    = cart.selectedAvatar?.edad      || '';
+  const avatarOcupacion = cart.selectedAvatar?.ocupacion || '';
+  const avatarDolor   = cart.selectedAvatar?.dolor    || '';
+  const avatarDeseo   = cart.selectedAvatar?.deseo    || '';
+  const avatarGatillo = cart.selectedAvatar?.gatillo  || '';
+  const productoNombre = cart.selectedName            || 'Producto Digital';
+  const productoTipo   = cart.productType             || 'infoproducto';
+  const productoPrecio = cart.selectedPrice           || '$27';
+  const productoPromesa = cart.selectedPromesa        || '';
+  const estrategiaNombre = cart.selectedStrategy      || 'No especificada';
+  const estrategiaCanal  = cart.selectedCanal         || '';
 
   // ── TAREA 1: System prompt con salida JSON estricta ─────────────────────
   const sys = `Actúa como el motor de redacción experto en conversiones.
@@ -4237,6 +4235,7 @@ REGLAS ESTRICTAS DE SALIDA (CRÍTICO):
 1. ESTÁ ABSOLUTAMENTE PROHIBIDO generar saludos, despedidas, introducciones, explicaciones o cualquier texto conversacional.
 2. ESTÁ PROHIBIDO usar formato Markdown general (como ---, #, o asteriscos fuera de contexto).
 3. Tu respuesta debe ser EXCLUSIVAMENTE un objeto JSON válido, puro y minificado. Si devuelves cualquier otra cosa, el sistema fallará.
+4. TODOS los campos deben contener texto real y específico basado en los datos del negocio. NUNCA dejes un campo vacío o con placeholder genérico.
 
 ESTRUCTURA JSON OBLIGATORIA:
 Debes rellenar exactamente este esquema. No agregues ni quites llaves.
@@ -4263,9 +4262,19 @@ Debes rellenar exactamente este esquema. No agregues ni quites llaves.
   "cta_button": "String. Texto del botón de llamado a la acción."
 }`;
 
-  const prompt = `Genera el copy de landing page para el siguiente negocio. Responde ÚNICAMENTE con el objeto JSON, sin texto adicional:
+  const prompt = `[DATOS DEL NEGOCIO SELECCIONADOS POR EL USUARIO]
+- Nicho seleccionado: ${nichoTitulo}${nichoResumen ? ` — ${nichoResumen}` : ''}${nichoIngresos ? ` (Potencial: ${nichoIngresos})` : ''}
+- Avatar de cliente ideal: ${avatarNombre}${avatarEdad ? `, ${avatarEdad} años` : ''}${avatarOcupacion ? `, ${avatarOcupacion}` : ''}
+  - Dolor principal: ${avatarDolor || 'No especificado'}
+  - Deseo principal: ${avatarDeseo || 'No especificado'}
+  - Gatillo emocional: ${avatarGatillo || 'No especificado'}
+- Producto/Oferta principal: "${productoNombre}" (${productoTipo}) — Precio: ${productoPrecio}${productoPromesa ? `\n  - Promesa de transformación: ${productoPromesa}` : ''}
+- Estrategia de Tráfico: ${estrategiaNombre}${estrategiaCanal ? ` vía ${estrategiaCanal}` : ''}
 
-${businessContext}`;
+[INSTRUCCIÓN DE REDACCIÓN]
+Basándote estrictamente en los datos anteriores, redacta el copy persuasivo de conversión para la Landing Page. Debes adaptar el tono del copy al Avatar especificado y enfocar los beneficios hacia el Producto mencionado. Los pain_points deben reflejar el dolor REAL del avatar descrito arriba. El hero_title debe prometer la transformación que el avatar desea. El unique_mechanism debe explicar por qué este producto es diferente. Los bonuses deben complementar el producto principal. El price_original debe ser 3x el price_discount (${productoPrecio} como referencia para el descuento, usa solo el número entero sin símbolo de moneda). El cta_button debe usar lenguaje de acción orientado al resultado del avatar.
+
+Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado. No dejes campos vacíos; extrae y procesa los datos reales provistos.`;
 
   try {
     let limitOk = true;
@@ -4297,12 +4306,12 @@ ${businessContext}`;
 
     // Guardar en appState para el Landing Generator
     appState.finalCopyRaw = text;
-    state.copyLanding  = text;
-    state.giro         = cart.selectedPromesa || '';
-    state.nicho        = cart.selectedNiche?.titulo || '';
-    state.audiencia    = cart.selectedAvatar?.nombre || '';
-    state.nombreProducto = cart.selectedName || '';
-    state.precio       = cart.selectedPrice || '';
+    state.copyLanding    = text;
+    state.giro           = productoPromesa;
+    state.nicho          = nichoTitulo;
+    state.audiencia      = avatarNombre;
+    state.nombreProducto = productoNombre;
+    state.precio         = productoPrecio;
 
     // Normalizar la respuesta para garantizar que `appState.finalCopy` sea siempre un objeto
     let finalObj = null;

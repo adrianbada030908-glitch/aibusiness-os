@@ -2,7 +2,7 @@ import { appState, setLandingStyle } from './state.js';
 import { setLandingTab } from './router.js';
 
 function esc(text) {
-  return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(text || '').replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
 }
 
 // ── TAREA 3: renderLandingCopy — inyecta cada campo del objeto JSON ──────────
