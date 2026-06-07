@@ -2334,6 +2334,146 @@
     display: flex;
     gap: 10px;
   }
+
+  /* PANEL PRINCIPAL GLASSMORPHISM */
+  #landing-generator {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 28px 26px 26px;
+    border-radius: 24px;
+    background: radial-gradient(circle at top left, rgba(120, 119, 255, 0.18), transparent 55%)
+                ,rgba(15, 15, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(26px) saturate(160%);
+    -webkit-backdrop-filter: blur(26px) saturate(160%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* GLOW SUAVE INTERNO */
+  #landing-generator::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(120, 119, 255, 0.22), transparent 55%),
+      radial-gradient(circle at 90% 100%, rgba(0, 199, 255, 0.18), transparent 55%);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* TÍTULO DEL PANEL */
+  #landing-generator h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #f9fafb;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #landing-generator h2::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: radial-gradient(circle, #4adeff 0%, #22c1c3 40%, transparent 70%);
+  }
+
+  /* LABELS */
+  #landing-generator label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin-bottom: 6px;
+  }
+
+  /* AGRUPACIÓN DE CAMPOS */
+  #landing-generator .form-group,
+  #landing-generator > label {
+    margin-bottom: 16px;
+  }
+
+  /* INPUTS / SELECT / TEXTAREA */
+  #landing-type,
+  #landing-copy {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.16), rgba(15, 23, 42, 0.96));
+    color: #e5e7eb;
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, transform 0.12s ease;
+  }
+
+  #landing-type {
+    cursor: pointer;
+  }
+
+  #landing-copy {
+    min-height: 140px;
+    resize: vertical;
+  }
+
+  /* FOCUS / HOVER */
+  #landing-type:hover,
+  #landing-copy:hover {
+    border-color: rgba(129, 140, 248, 0.7);
+  }
+
+  #landing-type:focus,
+  #landing-copy:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7), 0 18px 40px rgba(15, 23, 42, 0.9);
+    background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.22), rgba(15, 23, 42, 0.98));
+    transform: translateY(-1px);
+  }
+
+  /* BOTÓN PRINCIPAL */
+  #generate-landing-btn {
+    margin-top: 6px;
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #0b1120;
+    background: linear-gradient(135deg, #60a5fa 0%, #a855f7 45%, #f97316 100%);
+    box-shadow:
+      0 14px 40px rgba(37, 99, 235, 0.55),
+      0 0 0 1px rgba(15, 23, 42, 0.9);
+    transition: transform 0.16s cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 0.16s ease,
+                filter 0.16s ease;
+  }
+
+  #generate-landing-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 20px 60px rgba(37, 99, 235, 0.7),
+      0 0 0 1px rgba(15, 23, 42, 0.9);
+    filter: saturate(1.1);
+  }
+
+  #generate-landing-btn:active {
+    transform: translateY(0);
+    box-shadow:
+      0 10px 30px rgba(37, 99, 235, 0.55),
+      0 0 0 1px rgba(15, 23, 42, 0.9);
+  }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
