@@ -4431,86 +4431,267 @@ function activateLandingFromEngine() {
 
 // Renderizar el copy importado
 function renderLandingCopy() {
-  updateLandingCopy();
+  const landingCopyInput = document.getElementById('landing-copy');
+  if (landingCopyInput && appState.finalCopyRaw) {
+    landingCopyInput.value = appState.finalCopyRaw;
+  }
 }
 
 // Selección de estilo visual
 function initLandingStyleSelector() {
-  document.querySelectorAll('.landing-style-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.landing-style-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      appState.landingStyle = card.dataset.style;
-    });
-  });
+  // Ya no se requiere selector de estilo por tarjetas
 }
 
 function initLandingGeneratorEvents() {
-  const assembleButton = document.getElementById('btn-ensamblar-landing');
-  if (!assembleButton) return;
+  // Event listeners are initialized in the DOMContentLoaded callback to avoid duplicates.
+}
 
-  assembleButton.addEventListener('click', () => {
-    if (!appState.landingStyle) {
-      alert('Selecciona un estilo visual antes de continuar.');
-      return;
+function generateAppleLanding(copy) {
+  const title = extractTitle(copy);
+  const subtitle = extractSubtitle(copy);
+  const feature = extractFeature(copy);
+  const benefit = extractBenefit(copy);
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>\${title}</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    .hero {
+      position: relative;
+      padding: 120px 20px 80px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      overflow: hidden;
+    }
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, #fff 0%, #a1a1a1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      max-width: 800px;
+    }
+    .hero p {
+      font-size: 24px;
+      line-height: 1.4;
+      color: #86868b;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+    .btn-container {
+      display: flex;
+      gap: 20px;
+    }
+    .vp-btn {
+      position: relative;
+      display: inline-block;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, background 0.3s ease;
+      cursor: pointer;
+    }
+    .vp-btn:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.25);
+    }
+    .vp-btn:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+    .vp-btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .vp-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .vp-glow {
+      position: relative;
+    }
+    .vp-glow::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(124, 92, 252, 0.2) 0%, rgba(0,0,0,0) 70%);
+      filter: blur(50px);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+      pointer-events: none;
+    }
+    .vp-glow.visible::before {
+      opacity: 1;
+    }
+    .features-section {
+      padding: 80px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 768px) {
+      .features-section {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 38px;
+      }
+      .hero p {
+        font-size: 18px;
+      }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: border-color 0.3s ease;
+    }
+    .glass:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .glass h3 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .glass p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #86868b;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
 
-    showLandingSkeletonLoader();
+  <section class="hero reveal vp-glow">
+    <h1>\${title}</h1>
+    <p>\${subtitle}</p>
+    <div class="btn-container">
+      <a href="#" class="vp-btn reveal">Comenzar</a>
+      <a href="#" class="vp-btn vp-btn-secondary reveal">Más información</a>
+    </div>
+  </section>
 
-    setTimeout(() => {
-      renderFinalLandingPage();
-    }, 2500);
-  });
+  <section class="features-section">
+    <div class="glass reveal vp-glow">
+      <h3>Diseñado para destacar</h3>
+      <p>\${feature}</p>
+    </div>
+    <div class="glass reveal vp-glow">
+      <h3>Simple. Elegante. Poderoso.</h3>
+      <p>\${benefit}</p>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const reveals = document.querySelectorAll('.reveal');
+      const observerOptions = {
+        threshold: 0.2
+      };
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            if (entry.target.classList.contains('vp-glow')) {
+              entry.target.classList.add('visible');
+            }
+            obs.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      reveals.forEach(el => observer.observe(el));
+    });
+  </script>
+</body>
+</html>`;
 }
 
-// Skeleton Loader Premium
-function showLandingSkeletonLoader() {
-    const panel = document.getElementById("panel-landing-generator");
-    panel.innerHTML = `
-        
-            
-
-            
-
-            
-
-            
-
-            Generando estructura de la landing...
-
-        
-
-    `;
+function extractTitle(copy) {
+  if (!copy) return 'Apple Vision Pro';
+  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[0] || 'Apple Vision Pro';
 }
 
-// Pantalla final + botón volver
-function renderFinalLandingPage() {
-    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const c = appState.finalCopy || {};
-    const bonuses = (c.offer_stack && Array.isArray(c.offer_stack.bonuses)) ? c.offer_stack.bonuses : [];
-    const productLine = (c.offer_stack && c.offer_stack.product) ? esc(c.offer_stack.product) : '';
-    const bonusesHtml = bonuses.map(b => `<li>${esc(b)}</li>`).join('');
+function extractSubtitle(copy) {
+  if (!copy) return 'La era de la computación espacial ha llegado.';
+  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[1] || 'La era de la computación espacial ha llegado.';
+}
 
-    document.getElementById("panel-landing-generator").innerHTML = `
-      <div class="final-landing">
-        <div class="final-landing-header">
-          <h2>${esc(c.headline)}</h2>
-          <p class="muted">${esc(c.subheadline)}</p>
-        </div>
-        <div class="final-landing-body">
-          <p><strong>Mecanismo único:</strong> ${esc(c.mechanism)}</p>
-          <p><strong>Producto:</strong> ${productLine}</p>
-          ${bonusesHtml ? `<div><strong>Bonos:</strong><ul>${bonusesHtml}</ul></div>` : ''}
-        </div>
-        <div class="final-landing-cta">
-          <button class="btn btn-primary" onclick="volverALanding()">← Volver</button>
-        </div>
-      </div>`;
+function extractFeature(copy) {
+  if (!copy) return 'Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.';
+  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[2] || 'Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.';
+}
+
+function extractBenefit(copy) {
+  if (!copy) return 'Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.';
+  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[3] || 'Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.';
 }
 
 function volverALanding() {
-    activarPanel("panel-landing-generator");
-    renderLandingCopy();
+  const generatorPanel = document.getElementById('landing-generator');
+  const resultPanel = document.getElementById('landing-result');
+  const previewIframe = document.getElementById('landing-preview');
+  if (generatorPanel && resultPanel && previewIframe) {
+    generatorPanel.classList.remove('hidden');
+    resultPanel.classList.add('hidden');
+    previewIframe.srcdoc = '';
+  }
 }
 
 // Inicializar eventos después de que el DOM esté listo
@@ -4545,6 +4726,59 @@ document.addEventListener('DOMContentLoaded', () => {
   try { initApp(); } catch (e) {}
   try { initUI(); } catch (e) {}
   try { initRouter(); } catch (e) {}
+
+  const generateBtn = document.getElementById('generate-landing-btn');
+  const copyBtn = document.getElementById('copy-html-btn');
+  const downloadBtn = document.getElementById('download-html-btn');
+  const backBtn = document.getElementById('back-to-generator-btn');
+  const generatorPanel = document.getElementById('landing-generator');
+  const resultPanel = document.getElementById('landing-result');
+  const previewIframe = document.getElementById('landing-preview');
+  if (generateBtn) {
+    generateBtn.addEventListener('click', () => {
+      const type = document.getElementById('landing-type').value;
+      const copy = document.getElementById('landing-copy').value;
+      if (type === 'apple') {
+        const htmlContent = generateAppleLanding(copy);
+        previewIframe.srcdoc = htmlContent;
+        generatorPanel.classList.add('hidden');
+        resultPanel.classList.remove('hidden');
+      }
+    });
+  }
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      generatorPanel.classList.remove('hidden');
+      resultPanel.classList.add('hidden');
+      previewIframe.srcdoc = '';
+    });
+  }
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const htmlContent = previewIframe.srcdoc;
+      navigator.clipboard.writeText(htmlContent).then(() => {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '¡Copiado!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      });
+    });
+  }
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const htmlContent = previewIframe.srcdoc;
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'landing.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
 });
 
 function renderNichoCards(nichos, container, categoria) {

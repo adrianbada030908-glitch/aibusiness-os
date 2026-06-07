@@ -2319,6 +2319,36 @@
     font-size: 13px; color: var(--danger); margin-bottom: 16px;
   }
 
+  .hidden {
+    display: none;
+  }
+
+  .generator-panel,
+  .result-panel {
+    padding: 20px;
+  }
+
+  .iframe-container {
+    width: 100%;
+    height: 80vh;
+  }
+
+  .iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary { background: #0071e3; color: #fff; }
+  .btn-secondary { background: #444; color: #fff; }
+  .btn-success { background: #16a34a; color: #fff; }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2979,72 +3009,31 @@
   </div>
 
   <div id="panel-landing-generator" class="panel">
-
-    <!-- HEADER -->
-    <div class="section-title">Landing Page Generator</div>
-    <p class="section-desc">
-        Tu estrategia de ventas está lista. Es hora de darle vida.
-    </p>
-
-    <div id="copy-status" class="copy-status" style="display:none; margin-bottom:18px; font-size:13px; color: var(--accent3);">
-      ✅ Copy importado exitosamente desde el Conversion Engine.
+    <div id="landing-generator" class="generator-panel">
+      <h2>Landing Generator</h2>
+      <div class="form-group">
+        <label for="landing-type">Estilo de Landing:</label>
+        <select id="landing-type">
+          <option value="apple">Apple Vision Pro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="landing-copy">Copy de la Landing:</label>
+        <textarea id="landing-copy" placeholder="Ingresa el copy aquí..."></textarea>
+      </div>
+      <button id="generate-landing-btn" class="btn btn-primary">Generar Landing</button>
     </div>
 
-    <!-- COPY PREVIEW -->
-    <div class="copy-preview-card">
-        <h3>Vista previa del copy</h3>
-        <div id="copy-preview" class="copy-preview">
-            <!-- Se llena dinámicamente desde appState.finalCopy -->
-        </div>
-    </div>
-
-    <!-- LANDING PREVIEW MODULE -->
-    <div class="landing-preview-card">
-      <div class="landing-preview-header">
-        <div>
-          <div class="landing-preview-title">Módulo Visualizador</div>
-          <div class="landing-preview-helper">El contenido se renderiza dentro de un iframe aislado para que los estilos del dashboard no se filtren a la landing.</div>
-        </div>
-        <div class="landing-preview-status">Estado: Listo</div>
+    <div id="landing-result" class="result-panel hidden">
+      <div class="result-header">
+        <button id="back-to-generator-btn" class="btn btn-secondary">Regresar</button>
+        <button id="copy-html-btn" class="btn btn-primary">Copiar HTML</button>
+        <button id="download-html-btn" class="btn btn-success">Descargar HTML</button>
       </div>
-      <div id="landing-preview" class="landing-preview-iframe">
-        <iframe srcdoc="<body style='margin:0;background:#ffffff;font-family:Inter,system-ui,sans-serif;color:#334155;display:flex;align-items:center;justify-content:center;height:100%;'><div style='text-align:center;padding:20px;font-size:14px;line-height:1.6;'>Aquí se mostrará la vista previa de tu landing. Generá la página y usa los botones para copiar o descargar el HTML.</div></body>"></iframe>
-      </div>
-      <div class="landing-preview-actions">
-        <button class="btn btn-copy" onclick="copiarCodigo()">📋 Copiar HTML</button>
-        <button class="btn btn-copy" onclick="descargarIndexHTML()">⬇️ Descargar index.html</button>
+      <div class="iframe-container">
+        <iframe id="landing-preview"></iframe>
       </div>
     </div>
-
-    <hr class="divider">
-
-    <!-- SELECTOR DE ESTILO -->
-    <div class="section-title" style="margin-top: 20px;">Elige el estilo visual</div>
-
-    <div class="landing-style-grid">
-
-        <div class="landing-style-card" data-style="minimalista">
-            <h4>Minimalista</h4>
-            <p>Limpio, directo.</p>
-        </div>
-
-        <div class="landing-style-card" data-style="agresivo">
-            <h4>Agresivo</h4>
-            <p>Alta conversión.</p>
-        </div>
-
-        <div class="landing-style-card" data-style="corporativo">
-            <h4>Corporativo</h4>
-            <p>Transmite confianza.</p>
-        </div>
-
-    </div>
-
-    <!-- BOTÓN PRINCIPAL -->
-    <button id="btn-ensamblar-landing" class="btn btn-primary" style="margin-top: 32px;">
-        Ensamblar Landing Page
-    </button>
-
   </div>
 
   <!-- STEP 3: Contenido orgánico -->
