@@ -2319,36 +2319,21 @@
     font-size: 13px; color: var(--danger); margin-bottom: 16px;
   }
 
-  .hidden {
-    display: none;
-  }
+  .hidden { display: none; }
 
-  .generator-panel,
-  .result-panel {
-    padding: 20px;
-  }
+  .module { padding: 20px; }
 
-  .iframe-container {
+  #landing-preview {
     width: 100%;
     height: 80vh;
-  }
-
-  .iframe-container iframe {
-    width: 100%;
-    height: 100%;
     border: none;
   }
 
-  .btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
+  .actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
   }
-
-  .btn-primary { background: #0071e3; color: #fff; }
-  .btn-secondary { background: #444; color: #fff; }
-  .btn-success { background: #16a34a; color: #fff; }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -3009,29 +2994,29 @@
   </div>
 
   <div id="panel-landing-generator" class="panel">
-    <div id="landing-generator" class="generator-panel">
-      <h2>Landing Generator</h2>
-      <div class="form-group">
-        <label for="landing-type">Estilo de Landing:</label>
-        <select id="landing-type">
-          <option value="apple">Apple Vision Pro</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="landing-copy">Copy de la Landing:</label>
-        <textarea id="landing-copy" placeholder="Ingresa el copy aquí..."></textarea>
-      </div>
-      <button id="generate-landing-btn" class="btn btn-primary">Generar Landing</button>
+    <div id="landing-generator" class="module">
+      <h2>Generador de Landing</h2>
+
+      <label for="landing-type">Estilo de Landing:</label>
+      <select id="landing-type">
+        <option value="apple">Apple Vision Pro</option>
+      </select>
+
+      <label for="landing-copy">Copy base:</label>
+      <textarea id="landing-copy" placeholder="Pega aquí el copy generado…"></textarea>
+
+      <button id="generate-landing-btn">Generar Landing</button>
     </div>
 
-    <div id="landing-result" class="result-panel hidden">
-      <div class="result-header">
-        <button id="back-to-generator-btn" class="btn btn-secondary">Regresar</button>
-        <button id="copy-html-btn" class="btn btn-primary">Copiar HTML</button>
-        <button id="download-html-btn" class="btn btn-success">Descargar HTML</button>
-      </div>
-      <div class="iframe-container">
-        <iframe id="landing-preview"></iframe>
+    <div id="landing-result" class="module hidden">
+      <h2>Resultado</h2>
+
+      <iframe id="landing-preview"></iframe>
+
+      <div class="actions">
+        <button id="copy-html-btn">Copiar HTML</button>
+        <button id="download-html-btn">Descargar HTML</button>
+        <button id="back-to-generator-btn">Regresar</button>
       </div>
     </div>
   </div>

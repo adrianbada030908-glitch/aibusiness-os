@@ -4438,12 +4438,64 @@ function renderLandingCopy() {
 }
 
 // Selección de estilo visual
-function initLandingStyleSelector() {
-  // Ya no se requiere selector de estilo por tarjetas
-}
+function initLandingStyleSelector() {}
 
 function initLandingGeneratorEvents() {
-  // Event listeners are initialized in the DOMContentLoaded callback to avoid duplicates.
+  const generateBtn = document.getElementById("generate-landing-btn");
+  const copyBtn = document.getElementById("copy-html-btn");
+  const downloadBtn = document.getElementById("download-html-btn");
+  const backBtn = document.getElementById("back-to-generator-btn");
+  const generatorPanel = document.getElementById("landing-generator");
+  const resultPanel = document.getElementById("landing-result");
+  const previewIframe = document.getElementById("landing-preview");
+
+  if (!generateBtn) return; // por si no está en esa vista
+
+  generateBtn.addEventListener("click", () => {
+    const type = document.getElementById("landing-type").value;
+    const copy = document.getElementById("landing-copy").value.trim();
+    if (!copy) {
+      alert("Pega un copy primero.");
+      return;
+    }
+    if (type === "apple") {
+      const htmlContent = generateAppleLanding(copy);
+      previewIframe.srcdoc = htmlContent;
+      generatorPanel.classList.add("hidden");
+      resultPanel.classList.remove("hidden");
+    }
+  });
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      resultPanel.classList.add("hidden");
+      generatorPanel.classList.remove("hidden");
+      previewIframe.srcdoc = "";
+    });
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      const htmlContent = previewIframe.srcdoc;
+      if (!htmlContent) return;
+      navigator.clipboard.writeText(htmlContent);
+      alert("HTML copiado");
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const htmlContent = previewIframe.srcdoc;
+      if (!htmlContent) return;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "landing.html";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
 }
 
 function generateAppleLanding(copy) {
@@ -4459,17 +4511,13 @@ function generateAppleLanding(copy) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>\${title}</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
       background: #000;
       color: #fff;
-      overflow-x: hidden;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     .hero {
       position: relative;
@@ -4503,6 +4551,8 @@ function generateAppleLanding(copy) {
     .btn-container {
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .vp-btn {
       position: relative;
@@ -4554,9 +4604,7 @@ function generateAppleLanding(copy) {
       transition: opacity 1.5s ease;
       pointer-events: none;
     }
-    .vp-glow.visible::before {
-      opacity: 1;
-    }
+    .vp-glow.visible::before { opacity: 1; }
     .features-section {
       padding: 80px 20px;
       max-width: 1000px;
@@ -4566,15 +4614,9 @@ function generateAppleLanding(copy) {
       gap: 40px;
     }
     @media (max-width: 768px) {
-      .features-section {
-        grid-template-columns: 1fr;
-      }
-      .hero h1 {
-        font-size: 38px;
-      }
-      .hero p {
-        font-size: 18px;
-      }
+      .features-section { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 38px; }
+      .hero p { font-size: 18px; }
     }
     .glass {
       background: rgba(255, 255, 255, 0.03);
@@ -4586,9 +4628,7 @@ function generateAppleLanding(copy) {
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       transition: border-color 0.3s ease;
     }
-    .glass:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-    }
+    .glass:hover { border-color: rgba(255, 255, 255, 0.2); }
     .glass h3 {
       font-size: 24px;
       font-weight: 700;
@@ -4612,7 +4652,6 @@ function generateAppleLanding(copy) {
   </style>
 </head>
 <body>
-
   <section class="hero reveal vp-glow">
     <h1>\${title}</h1>
     <p>\${subtitle}</p>
@@ -4621,7 +4660,6 @@ function generateAppleLanding(copy) {
       <a href="#" class="vp-btn vp-btn-secondary reveal">Más información</a>
     </div>
   </section>
-
   <section class="features-section">
     <div class="glass reveal vp-glow">
       <h3>Diseñado para destacar</h3>
@@ -4632,26 +4670,17 @@ function generateAppleLanding(copy) {
       <p>\${benefit}</p>
     </div>
   </section>
-
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const reveals = document.querySelectorAll('.reveal');
-      const observerOptions = {
-        threshold: 0.2
-      };
-
       const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            if (entry.target.classList.contains('vp-glow')) {
-              entry.target.classList.add('visible');
-            }
             obs.unobserve(entry.target);
           }
         });
-      }, observerOptions);
-
+      }, { threshold: 0.2 });
       reveals.forEach(el => observer.observe(el));
     });
   </script>
@@ -4660,38 +4689,27 @@ function generateAppleLanding(copy) {
 }
 
 function extractTitle(copy) {
-  if (!copy) return 'Apple Vision Pro';
-  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[0] || 'Apple Vision Pro';
+  if (!copy) return "Apple Vision Pro";
+  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[0] || "Apple Vision Pro";
 }
 
 function extractSubtitle(copy) {
-  if (!copy) return 'La era de la computación espacial ha llegado.';
-  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[1] || 'La era de la computación espacial ha llegado.';
+  if (!copy) return "La era de la computación espacial ha llegado.";
+  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[1] || "La era de la computación espacial ha llegado.";
 }
 
 function extractFeature(copy) {
-  if (!copy) return 'Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.';
-  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[2] || 'Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.';
+  if (!copy) return "Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.";
+  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[2] || "Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.";
 }
 
 function extractBenefit(copy) {
-  if (!copy) return 'Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.';
-  const sentences = copy.split(/[.\\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[3] || 'Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.';
-}
-
-function volverALanding() {
-  const generatorPanel = document.getElementById('landing-generator');
-  const resultPanel = document.getElementById('landing-result');
-  const previewIframe = document.getElementById('landing-preview');
-  if (generatorPanel && resultPanel && previewIframe) {
-    generatorPanel.classList.remove('hidden');
-    resultPanel.classList.add('hidden');
-    previewIframe.srcdoc = '';
-  }
+  if (!copy) return "Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.";
+  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
+  return sentences[3] || "Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.";
 }
 
 // Inicializar eventos después de que el DOM esté listo
@@ -4727,58 +4745,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try { initUI(); } catch (e) {}
   try { initRouter(); } catch (e) {}
 
-  const generateBtn = document.getElementById('generate-landing-btn');
-  const copyBtn = document.getElementById('copy-html-btn');
-  const downloadBtn = document.getElementById('download-html-btn');
-  const backBtn = document.getElementById('back-to-generator-btn');
-  const generatorPanel = document.getElementById('landing-generator');
-  const resultPanel = document.getElementById('landing-result');
-  const previewIframe = document.getElementById('landing-preview');
-  if (generateBtn) {
-    generateBtn.addEventListener('click', () => {
-      const type = document.getElementById('landing-type').value;
-      const copy = document.getElementById('landing-copy').value;
-      if (type === 'apple') {
-        const htmlContent = generateAppleLanding(copy);
-        previewIframe.srcdoc = htmlContent;
-        generatorPanel.classList.add('hidden');
-        resultPanel.classList.remove('hidden');
-      }
-    });
-  }
-  if (backBtn) {
-    backBtn.addEventListener('click', () => {
-      generatorPanel.classList.remove('hidden');
-      resultPanel.classList.add('hidden');
-      previewIframe.srcdoc = '';
-    });
-  }
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      const htmlContent = previewIframe.srcdoc;
-      navigator.clipboard.writeText(htmlContent).then(() => {
-        const originalText = copyBtn.textContent;
-        copyBtn.textContent = '¡Copiado!';
-        setTimeout(() => {
-          copyBtn.textContent = originalText;
-        }, 2000);
-      });
-    });
-  }
-  if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => {
-      const htmlContent = previewIframe.srcdoc;
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'landing.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-  }
+
 });
 
 function renderNichoCards(nichos, container, categoria) {
