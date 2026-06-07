@@ -4211,21 +4211,17 @@ async function runConversionEngine() {
   }, 2200);
 
   // ── Recolectar datos del carrito en texto legible para el LLM ─────────
-  const nichoTitulo   = cart.selectedNiche?.titulo   || 'No especificado';
-  const nichoResumen  = cart.selectedNiche?.resumen  || '';
-  const nichoIngresos = cart.selectedNiche?.ingresos || '';
-  const avatarNombre  = cart.selectedAvatar?.nombre   || 'No especificado';
-  const avatarEdad    = cart.selectedAvatar?.edad      || '';
-  const avatarOcupacion = cart.selectedAvatar?.ocupacion || '';
-  const avatarDolor   = cart.selectedAvatar?.dolor    || '';
-  const avatarDeseo   = cart.selectedAvatar?.deseo    || '';
-  const avatarGatillo = cart.selectedAvatar?.gatillo  || '';
-  const productoNombre = cart.selectedName            || 'Producto Digital';
-  const productoTipo   = cart.productType             || 'infoproducto';
-  const productoPrecio = cart.selectedPrice           || '$27';
-  const productoPromesa = cart.selectedPromesa        || '';
-  const estrategiaNombre = cart.selectedStrategy      || 'No especificada';
-  const estrategiaCanal  = cart.selectedCanal         || '';
+  const selectedNicho = cart.selectedNiche
+    ? `${cart.selectedNiche.titulo || 'No especificado'}${cart.selectedNiche.resumen ? ` — ${cart.selectedNiche.resumen}` : ''}`
+    : 'No especificado';
+
+  const selectedAvatar = cart.selectedAvatar
+    ? `${cart.selectedAvatar.nombre || 'No especificado'}${cart.selectedAvatar.edad ? `, ${cart.selectedAvatar.edad} años` : ''}${cart.selectedAvatar.ocupacion ? `, ${cart.selectedAvatar.ocupacion}` : ''} (Dolor: ${cart.selectedAvatar.dolor || 'No especificado'}, Deseo: ${cart.selectedAvatar.deseo || 'No especificado'}, Gatillo: ${cart.selectedAvatar.gatillo || 'No especificado'})`
+    : 'No especificado';
+
+  const selectedProducto = `${cart.selectedName || 'Producto Digital'} (${cart.productType || 'infoproducto'}) — Precio: ${cart.selectedPrice || '$27'}${cart.selectedPromesa ? `\n  - Promesa: ${cart.selectedPromesa}` : ''}`;
+
+  const selectedTrafico = `${cart.selectedStrategy || 'No especificada'}${cart.selectedCanal ? ` vía ${cart.selectedCanal}` : ''}`;
 
   // ── TAREA 1: System prompt con salida JSON estricta ─────────────────────
   const sys = `Actúa como el motor de redacción experto en conversiones.
@@ -4263,18 +4259,15 @@ Debes rellenar exactamente este esquema. No agregues ni quites llaves.
 }`;
 
   const prompt = `[DATOS DEL NEGOCIO SELECCIONADOS POR EL USUARIO]
-- Nicho seleccionado: ${nichoTitulo}${nichoResumen ? ` — ${nichoResumen}` : ''}${nichoIngresos ? ` (Potencial: ${nichoIngresos})` : ''}
-- Avatar de cliente ideal: ${avatarNombre}${avatarEdad ? `, ${avatarEdad} años` : ''}${avatarOcupacion ? `, ${avatarOcupacion}` : ''}
-  - Dolor principal: ${avatarDolor || 'No especificado'}
-  - Deseo principal: ${avatarDeseo || 'No especificado'}
-  - Gatillo emocional: ${avatarGatillo || 'No especificado'}
-- Producto/Oferta principal: "${productoNombre}" (${productoTipo}) — Precio: ${productoPrecio}${productoPromesa ? `\n  - Promesa de transformación: ${productoPromesa}` : ''}
-- Estrategia de Tráfico: ${estrategiaNombre}${estrategiaCanal ? ` vía ${estrategiaCanal}` : ''}
+- Nicho seleccionado: ${selectedNicho}
+- Avatar de cliente ideal: ${selectedAvatar}
+- Producto/Oferta principal: ${selectedProducto}
+- Estrategia de Tráfico: ${selectedTrafico}
 
 [INSTRUCCIÓN DE REDACCIÓN]
-Basándote estrictamente en los datos anteriores, redacta el copy persuasivo de conversión para la Landing Page. Debes adaptar el tono del copy al Avatar especificado y enfocar los beneficios hacia el Producto mencionado. Los pain_points deben reflejar el dolor REAL del avatar descrito arriba. El hero_title debe prometer la transformación que el avatar desea. El unique_mechanism debe explicar por qué este producto es diferente. Los bonuses deben complementar el producto principal. El price_original debe ser 3x el price_discount (${productoPrecio} como referencia para el descuento, usa solo el número entero sin símbolo de moneda). El cta_button debe usar lenguaje de acción orientado al resultado del avatar.
+Basándote estrictamente en los datos anteriores, redacta el copy persuasivo de conversión para la Landing Page. Debes adaptar el tono del copy al Avatar especificado y enfocar los beneficios hacia el Producto mencionado.
 
-Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado. No dejes campos vacíos; extrae y procesa los datos reales provistos.`;
+Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que definimos anteriormente (hero_title, pain_points, unique_mechanism, offer, guarantee, cta_button). No dejes campos vacíos; extrae y procesa los datos reales provistos.`;
 
   try {
     let limitOk = true;
@@ -4307,11 +4300,11 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado. No d
     // Guardar en appState para el Landing Generator
     appState.finalCopyRaw = text;
     state.copyLanding    = text;
-    state.giro           = productoPromesa;
-    state.nicho          = nichoTitulo;
-    state.audiencia      = avatarNombre;
-    state.nombreProducto = productoNombre;
-    state.precio         = productoPrecio;
+    state.giro           = cart.selectedPromesa || '';
+    state.nicho          = cart.selectedNiche?.titulo || '';
+    state.audiencia      = cart.selectedAvatar?.nombre || '';
+    state.nombreProducto = cart.selectedName || '';
+    state.precio         = cart.selectedPrice || '';
 
     // Normalizar la respuesta para garantizar que `appState.finalCopy` sea siempre un objeto
     let finalObj = null;
