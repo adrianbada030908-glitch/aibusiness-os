@@ -1,4 +1,4 @@
-import { appState, setFinalCopy } from './state.js';
+import { appState, setFinalCopy, setLandingStyle } from './state.js';
 import { goStep as routerGoStep, goHome as routerGoHome, setLandingTab as routerSetLandingTab, activarPanel } from './router.js';
 import { generarIA as apiGenerarIA } from './api.js';
 import { generarCopyDesdeProducto as conversionGenerarCopyDesdeProducto } from './conversionEngine.js';
@@ -261,8 +261,10 @@ function goHome() {
 
 function setLandingTab(tab) {
   document.querySelectorAll('.sub-tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='copy') || (i===1 && tab==='html')));
-  document.getElementById('landing-copy-section').style.display = tab==='copy' ? 'block' : 'none';
-  document.getElementById('landing-html-section').style.display = tab==='html' ? 'block' : 'none';
+  const copySection = document.getElementById('landing-copy-section');
+  const htmlSection = document.getElementById('landing-html-section');
+  if (copySection) copySection.style.display = tab==='copy' ? 'block' : 'none';
+  if (htmlSection) htmlSection.style.display = tab==='html' ? 'block' : 'none';
 }
 
 // ─── API call ─────────────────────────────────────────────────────────────────
@@ -1305,21 +1307,42 @@ function usarProductoEnLanding() {
   const precio = state.precio || '';
   const transf = state.transformacion || '';
 
-  // Pre-completar campos del tab Copy de Landing
-  const campoNombre = document.getElementById('nombre-producto');
-  const campoGiro   = document.getElementById('giro');
+  // Pre-completar campos de la split-screen
+  const campoNombre = document.getElementById('inp-main-product');
+  const campoGiro   = document.getElementById('inp-hero-title');
 
-  if (campoNombre && !campoNombre.value && nombre) {
+  if (campoNombre && nombre) {
     campoNombre.value = nombre;
+    if (!appState.finalCopy) appState.finalCopy = {};
+    if (!appState.finalCopy.offer) appState.finalCopy.offer = {};
+    appState.finalCopy.offer.main_product = nombre;
   }
-  // Si hay transformación y el giro está vacío, usarla como punto de partida
-  if (campoGiro && !campoGiro.value && transf) {
+  if (campoGiro && transf) {
     campoGiro.value = transf;
+    if (!appState.finalCopy) appState.finalCopy = {};
+    appState.finalCopy.hero_title = transf;
+  }
+  if (precio) {
+    const priceDisc = document.getElementById('inp-price-discount');
+    if (priceDisc) {
+      const numPrice = parseFloat(precio.replace(/[^0-9.]/g, '')) || 27;
+      priceDisc.value = numPrice;
+      if (!appState.finalCopy.offer) appState.finalCopy.offer = {};
+      appState.finalCopy.offer.price_discount = numPrice;
+      
+      const priceOrig = document.getElementById('inp-price-original');
+      if (priceOrig) {
+        priceOrig.value = numPrice * 3;
+        appState.finalCopy.offer.price_original = numPrice * 3;
+      }
+    }
   }
 
-  // Navegar al paso de Landing, tab Copy
+  // Navegar al paso de Landing
   goStep(2);
-  setLandingTab('copy');
+  
+  // Re-render
+  updateLandingPreview();
 
   // Mostrar hint de confirmación
   const hint = document.getElementById('hint-usar-landing');
@@ -1337,23 +1360,10 @@ function usarProductoEnLanding() {
 
 // ── Transferencia Copy → Generador HTML ─────────────────────────────────────
 function enviarCopyAlGenerador() {
-  if (!state.copyLanding) return;
-
-  // El copy ya está en state.copyLanding — generarLanding() lo usa directamente
-  // Solo cambiamos al sub-tab HTML y mostramos confirmación
-  setLandingTab('html');
-
-  const hint = document.getElementById('hint-copy-html');
-  if (hint) { hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 5000); }
-
-  // Flash en el botón de generar para guiar al usuario
-  const btnGenerar = document.getElementById('btn-generar-landing');
-  if (btnGenerar) {
-    btnGenerar.style.transition = 'box-shadow 0.3s, transform 0.3s';
-    btnGenerar.style.boxShadow = '0 0 0 3px rgba(108,99,255,0.55), 0 0 24px rgba(108,99,255,0.3)';
-    btnGenerar.style.transform = 'scale(1.02)';
-    setTimeout(() => { btnGenerar.style.boxShadow = ''; btnGenerar.style.transform = ''; }, 2000);
-  }
+  // Ir al paso 2 y actualizar preview
+  goStep(2);
+  populateLandingControlPanel();
+  updateLandingPreview();
 }
 
 // ── Landing mode toggle ──────────────────────────────────────────────────────
@@ -4461,44 +4471,63 @@ function parseLandingCopy(rawText) {
 
 // ── TAREA 3: Inyección por campo en el panel de preview ──────────────────────
 function updateLandingCopy() {
-  const preview = document.getElementById('copy-preview');
-  const status  = document.getElementById('copy-status');
-  if (!preview || !status) return;
+  populateLandingControlPanel();
+  updateLandingPreview();
+}
 
-  const d = appState.finalCopy;
-  if (!d || (typeof d === 'string' && !d.trim())) {
-    status.style.display = 'none';
-    preview.textContent = 'No hay copy disponible';
-    return;
+function populateLandingControlPanel() {
+  const d = appState.finalCopy || {};
+  
+  const heroTitle = document.getElementById('inp-hero-title');
+  if (heroTitle) heroTitle.value = d.hero_title || '';
+  
+  const uniqueMech = document.getElementById('inp-unique-mechanism');
+  if (uniqueMech) uniqueMech.value = d.unique_mechanism || '';
+  
+  const pain1 = document.getElementById('inp-pain-1');
+  const pain2 = document.getElementById('inp-pain-2');
+  const pain3 = document.getElementById('inp-pain-3');
+  const pains = d.pain_points || [];
+  if (pain1) pain1.value = pains[0] || '';
+  if (pain2) pain2.value = pains[1] || '';
+  if (pain3) pain3.value = pains[2] || '';
+  
+  const mainProduct = document.getElementById('inp-main-product');
+  if (mainProduct) mainProduct.value = d.offer?.main_product || '';
+  
+  const bonus1 = document.getElementById('inp-bonus-1');
+  const bonus2 = document.getElementById('inp-bonus-2');
+  const bonus3 = document.getElementById('inp-bonus-3');
+  const bonuses = d.offer?.bonuses || [];
+  if (bonus1) bonus1.value = bonuses[0] || '';
+  if (bonus2) bonus2.value = bonuses[1] || '';
+  if (bonus3) bonus3.value = bonuses[2] || '';
+  
+  const priceOrig = document.getElementById('inp-price-original');
+  if (priceOrig) priceOrig.value = d.offer?.price_original || '';
+  
+  const priceDisc = document.getElementById('inp-price-discount');
+  if (priceDisc) priceDisc.value = d.offer?.price_discount || '';
+  
+  const guarantee = document.getElementById('inp-guarantee');
+  if (guarantee) guarantee.value = d.guarantee || '';
+  
+  const ctaButton = document.getElementById('inp-cta-button');
+  if (ctaButton) ctaButton.value = d.cta_button || '';
+}
+
+function updateLandingPreview() {
+  const previewIframe = document.getElementById('landing-preview');
+  if (!previewIframe) return;
+  
+  const type = document.getElementById('landing-type')?.value || 'apple';
+  
+  let htmlContent = '';
+  if (type === 'apple') {
+    htmlContent = generateAppleLanding(appState.finalCopy);
   }
-
-  status.style.display = 'block';
-  status.textContent = 'Copy JSON importado exitosamente desde el Conversion Engine.';
-
-  // Si por algún motivo llegó como string en vez de objeto, intenta parsear
-  const obj = typeof d === 'object' ? d : parseLandingCopy(d);
-
-  const painHtml = Array.isArray(obj.pain_points)
-    ? `<ul>${obj.pain_points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`
-    : '';
-  const bonusHtml = Array.isArray(obj.offer?.bonuses)
-    ? `<ul>${obj.offer.bonuses.map((b, i) => `<li><strong>Bono ${i+1}:</strong> ${esc(b)}</li>`).join('')}</ul>`
-    : '';
-  const priceOrig = obj.offer?.price_original ? `$${obj.offer.price_original}` : '';
-  const priceDsc  = obj.offer?.price_discount  ? `$${obj.offer.price_discount}`  : '';
-
-  preview.innerHTML = `
-    <div class="landing-copy-preview-inner">
-      <h3>${esc(obj.hero_title)}</h3>
-      ${painHtml ? `<p><strong>Dolores del cliente:</strong></p>${painHtml}` : ''}
-      <p><strong>Mecanismo único:</strong> ${esc(obj.unique_mechanism)}</p>
-      <p><strong>Producto:</strong> ${esc(obj.offer?.main_product)}</p>
-      ${bonusHtml ? `<p><strong>Bonos:</strong></p>${bonusHtml}` : ''}
-      ${priceOrig ? `<p><s style="opacity:.5">${priceOrig}</s> → <strong>${priceDsc}</strong></p>` : ''}
-      <p><strong>Garantía:</strong> ${esc(obj.guarantee)}</p>
-      <p><strong>CTA:</strong> ${esc(obj.cta_button)}</p>
-    </div>
-  `;
+  
+  previewIframe.srcdoc = htmlContent;
 }
 
 function activateLandingFromEngine() {
@@ -4506,87 +4535,168 @@ function activateLandingFromEngine() {
   closeGuidedMode();
   goStep(2);
   setTimeout(() => {
-    setLandingTab('copy');
-    updateLandingCopy();
-    if (appState.finalCopy && typeof appState.finalCopy === 'string' ? appState.finalCopy.trim().length > 0 : Boolean(appState.finalCopy)) {
-      mostrarNotificacion('✅ Copy del Conversion Engine aplicado — elegí un estilo y generá tu landing');
-    }
+    populateLandingControlPanel();
+    updateLandingPreview();
+    showToast('🚀 ¡Lienzo de landing page cargado y listo!');
   }, 300);
 }
 
 // Renderizar el copy importado
 function renderLandingCopy() {
-  const landingCopyInput = document.getElementById('landing-copy');
-  if (landingCopyInput && appState.finalCopyRaw) {
-    landingCopyInput.value = appState.finalCopyRaw;
-  }
+  populateLandingControlPanel();
+  updateLandingPreview();
 }
 
 // Selección de estilo visual
 function initLandingStyleSelector() {}
 
+function initRealTimeReactivity() {
+  const inputs = [
+    { id: 'inp-hero-title', key: 'hero_title' },
+    { id: 'inp-unique-mechanism', key: 'unique_mechanism' },
+    { id: 'inp-pain-1', key: 'pain_1', isPain: true, index: 0 },
+    { id: 'inp-pain-2', key: 'pain_2', isPain: true, index: 1 },
+    { id: 'inp-pain-3', key: 'pain_3', isPain: true, index: 2 },
+    { id: 'inp-main-product', key: 'main_product', isOffer: true },
+    { id: 'inp-bonus-1', key: 'bonus_1', isBonus: true, index: 0 },
+    { id: 'inp-bonus-2', key: 'bonus_2', isBonus: true, index: 1 },
+    { id: 'inp-bonus-3', key: 'bonus_3', isBonus: true, index: 2 },
+    { id: 'inp-price-original', key: 'price_original', isOffer: true, isNumber: true },
+    { id: 'inp-price-discount', key: 'price_discount', isOffer: true, isNumber: true },
+    { id: 'inp-guarantee', key: 'guarantee' },
+    { id: 'inp-cta-button', key: 'cta_button' }
+  ];
+
+  inputs.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (!el) return;
+
+    el.addEventListener('input', () => {
+      if (!appState.finalCopy || typeof appState.finalCopy !== 'object') {
+        appState.finalCopy = {
+          hero_title: '',
+          pain_points: [],
+          unique_mechanism: '',
+          offer: { main_product: '', bonuses: [], price_original: 0, price_discount: 0 },
+          guarantee: '',
+          cta_button: ''
+        };
+      }
+      
+      const val = item.isNumber ? (parseFloat(el.value) || 0) : el.value;
+
+      if (item.isPain) {
+        if (!Array.isArray(appState.finalCopy.pain_points)) appState.finalCopy.pain_points = [];
+        appState.finalCopy.pain_points[item.index] = val;
+      } else if (item.isBonus) {
+        if (!appState.finalCopy.offer) appState.finalCopy.offer = {};
+        if (!Array.isArray(appState.finalCopy.offer.bonuses)) appState.finalCopy.offer.bonuses = [];
+        appState.finalCopy.offer.bonuses[item.index] = val;
+      } else if (item.isOffer) {
+        if (!appState.finalCopy.offer) appState.finalCopy.offer = {};
+        appState.finalCopy.offer[item.key] = val;
+      } else {
+        appState.finalCopy[item.key] = val;
+      }
+
+      updateLandingPreview();
+    });
+  });
+}
+
 function initLandingGeneratorEvents() {
-  const generateBtn = document.getElementById("generate-landing-btn");
+  const publishBtn = document.getElementById("publish-landing-btn");
   const copyBtn = document.getElementById("copy-html-btn");
   const downloadBtn = document.getElementById("download-html-btn");
-  const backBtn = document.getElementById("back-to-generator-btn");
-  const generatorPanel = document.getElementById("landing-generator");
-  const resultPanel = document.getElementById("landing-result");
-  const previewIframe = document.getElementById("landing-preview");
+  const landingType = document.getElementById("landing-type");
 
-  if (!generateBtn) return; // por si no está en esa vista
+  initRealTimeReactivity();
 
-  generateBtn.addEventListener("click", () => {
-    const type = document.getElementById("landing-type").value;
-    const copyText = document.getElementById("landing-copy").value.trim();
+  if (landingType) {
+    landingType.addEventListener("change", () => {
+      setLandingStyle(landingType.value);
+      updateLandingPreview();
+    });
+  }
 
-    // Priorizar el objeto JSON ya estructurado en appState; si no, parsear el textarea
-    const copyObj = (appState.finalCopy && typeof appState.finalCopy === 'object')
-      ? appState.finalCopy
-      : parseLandingCopy(copyText);
-
-    if (!copyText && !appState.finalCopy) {
-      alert("Pega un copy primero o genera uno desde el Conversion Engine.");
-      return;
-    }
-    if (type === "apple") {
-      const htmlContent = generateAppleLanding(copyObj);
-      previewIframe.srcdoc = htmlContent;
-      generatorPanel.classList.add("hidden");
-      resultPanel.classList.remove("hidden");
-    }
-  });
-
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      resultPanel.classList.add("hidden");
-      generatorPanel.classList.remove("hidden");
-      previewIframe.srcdoc = "";
+  if (publishBtn) {
+    publishBtn.addEventListener("click", () => {
+      const previewIframe = document.getElementById("landing-preview");
+      const htmlContent = previewIframe ? previewIframe.srcdoc : "";
+      if (!htmlContent) {
+        showToast("⚠️ Generá o editá tu landing antes de publicar.");
+        return;
+      }
+      
+      navigator.clipboard.writeText(htmlContent).then(() => {
+        showToast("🚀 ¡Sitio web publicado! Código HTML copiado al portapapeles.");
+      }).catch(() => {
+        showToast("🚀 ¡Sitio web publicado con éxito!");
+      });
+      
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "index.html";
+      a.click();
+      URL.revokeObjectURL(url);
     });
   }
 
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
-      const htmlContent = previewIframe.srcdoc;
+      const previewIframe = document.getElementById("landing-preview");
+      const htmlContent = previewIframe ? previewIframe.srcdoc : "";
       if (!htmlContent) return;
-      navigator.clipboard.writeText(htmlContent);
-      alert("HTML copiado");
+      navigator.clipboard.writeText(htmlContent).then(() => {
+        showToast("📋 ¡Código HTML copiado!");
+      });
     });
   }
 
   if (downloadBtn) {
     downloadBtn.addEventListener('click', () => {
-      const htmlContent = previewIframe.srcdoc;
+      const previewIframe = document.getElementById("landing-preview");
+      const htmlContent = previewIframe ? previewIframe.srcdoc : "";
       if (!htmlContent) return;
       const blob = new Blob([htmlContent], { type: "text/html" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "landing.html";
+      a.download = "index.html";
       a.click();
       URL.revokeObjectURL(url);
+      showToast("💾 Archivo index.html descargado");
     });
   }
+
+  if (!appState.finalCopy || !appState.finalCopy.hero_title) {
+    appState.finalCopy = {
+      hero_title: 'Transformá tu negocio digital hoy',
+      pain_points: [
+        '¿Estás cansado de no ver resultados consistentes?',
+        '¿Sentís que perdés el tiempo con fórmulas viejas?',
+        '¿Te cuesta escalar tus ventas orgánicas?'
+      ],
+      unique_mechanism: 'Nuestra metodología paso a paso te guía de cero a tus primeros clientes utilizando inteligencia artificial adaptativa.',
+      offer: {
+        main_product: 'AI Business OS Pro',
+        bonuses: [
+          'Bono 1: Acceso a la comunidad VIP',
+          'Bono 2: Plantillas de emails de alta conversión',
+          'Bono 3: Masterclass de Tráfico pago'
+        ],
+        price_original: 97,
+        price_discount: 27
+      },
+      guarantee: 'Garantía incondicional de 7 días. Si no ves valor, te devolvemos el 100% de tu dinero.',
+      cta_button: '¡Comenzar ahora!'
+    };
+  }
+
+  populateLandingControlPanel();
+  updateLandingPreview();
 }
 
 // ── TAREA 3: Generador de landing inyecta cada campo del objeto JSON ─────────
