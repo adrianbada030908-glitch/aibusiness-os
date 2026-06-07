@@ -4227,37 +4227,43 @@ async function runConversionEngine() {
     canal:      cart.selectedCanal,
   });
 
-  const sys = `Eres el Conversion Engine de AI Business OS. Actúas como un Copywriter de Respuesta Directa de élite que toma la data de investigación de mercado y la transforma en una arquitectura de copy de alta conversión. Respondes en español, con copy real y específico — nunca genérico. Cada sección debe usar el nombre real del producto, el dolor real del avatar y el nicho específico.`;
+  // ── TAREA 1: System prompt con salida JSON estricta ─────────────────────
+  const sys = `Actúa como el motor de redacción experto en conversiones.
+Tu única tarea es generar el copy persuasivo para una landing page basándote en la información y contexto proporcionados por el usuario.
 
-  const prompt = `Toma este JSON del businessCart del usuario y genera la ESTRUCTURA DE COPY EXACTA para su Landing Page de ventas:
+REGLAS ESTRICTAS DE SALIDA (CRÍTICO):
+1. ESTÁ ABSOLUTAMENTE PROHIBIDO generar saludos, despedidas, introducciones, explicaciones o cualquier texto conversacional.
+2. ESTÁ PROHIBIDO usar formato Markdown general (como ---, #, o asteriscos fuera de contexto).
+3. Tu respuesta debe ser EXCLUSIVAMENTE un objeto JSON válido, puro y minificado. Si devuelves cualquier otra cosa, el sistema fallará.
 
-${businessContext}
+ESTRUCTURA JSON OBLIGATORIA:
+Debes rellenar exactamente este esquema. No agregues ni quites llaves.
 
-Genera EXACTAMENTE estas 6 secciones con el copy real y específico:
+{
+  "hero_title": "String. Un único título principal persuasivo de máximo 10 palabras.",
+  "pain_points": [
+    "String. Dolor 1 del cliente.",
+    "String. Dolor 2 del cliente.",
+    "String. Dolor 3 del cliente."
+  ],
+  "unique_mechanism": "String. Explicación directa y única de la solución en un solo párrafo.",
+  "offer": {
+    "main_product": "String. Nombre del producto principal.",
+    "bonuses": [
+      "String. Título del Bono 1",
+      "String. Título del Bono 2",
+      "String. Título del Bono 3"
+    ],
+    "price_original": 0,
+    "price_discount": 0
+  },
+  "guarantee": "String. Texto directo de la garantía.",
+  "cta_button": "String. Texto del botón de llamado a la acción."
+}`;
 
-## ⚡ PROMESA PRINCIPAL (H1)
-El headline exacto de la landing. Máx 12 palabras. Debe incluir el resultado específico, el tiempo y sin el sacrificio principal. Formato: "[Resultado concreto] en [tiempo] sin [objeción principal]".
-Da 3 variantes ordenadas de mejor a peor.
+  const prompt = `Genera el copy de landing page para el siguiente negocio. Responde ÚNICAMENTE con el objeto JSON, sin texto adicional:
 
-## 😤 AGITACIÓN DEL DOLOR
-3 párrafos cortos (2-3 líneas cada uno) que describen exactamente cómo se siente el avatar con su problema. Usa el lenguaje que usaría el avatar, no el de un copywriter. Empieza con "¿Te pasa que...?"
-
-## 💡 MECANISMO ÚNICO
-El "por qué esto funciona diferente". 1 párrafo de 3-4 líneas explicando el mecanismo único del producto que lo hace diferente de todo lo que el avatar ya intentó. Nombra el mecanismo (ej: "El Método 3-2-1", "El Sistema de Inversión Inversa").
-
-## 📦 STACK DE LA OFERTA
-Lista exacta de lo que incluye la oferta:
-- Producto principal + descripción 1 línea
-- Bono 1: nombre + descripción + valor ($XX)
-- Bono 2: nombre + descripción + valor ($XX)
-- Bono 3: nombre + descripción + valor ($XX)
-- Valor total tachado: $XXX → Precio real: ${cart.selectedPrice || '$27'}
-
-## ✅ GARANTÍA
-Texto exacto de la garantía de 7 días. 2-3 líneas. Que elimine el riesgo percibido sin sonar a desesperación.
-
-## 🧠 CTA FINAL
-El texto exacto del botón de compra + la micro-copy de confianza debajo del botón (1 línea).`;
+${businessContext}`;
 
   try {
     let limitOk = true;
@@ -4346,24 +4352,40 @@ El texto exacto del botón de compra + la micro-copy de confianza debajo del bot
 
     setFinalCopy(finalObj, text);
 
-    // Renderizar el copy generado para la vista del Conversion Engine (mantener formato legible)
-    let html = text
-      .replace(/^## (.+)$/gm, '<h3 class="ce-section-title">$1</h3>')
-      .replace(/^### (.+)$/gm, '<h4 class="ce-subsection">$1</h4>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/^(?!<[hul])/gm, '');
+    // ── Renderizar preview del copy en el panel del Conversion Engine ────
+    const d = finalObj;
+    const painHtml = Array.isArray(d.pain_points)
+      ? `<ul class="ce-pain-list">${d.pain_points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`
+      : '';
+    const bonusHtml = Array.isArray(d.offer?.bonuses)
+      ? d.offer.bonuses.map((b, i) => `<li><strong>Bono ${i+1}:</strong> ${esc(b)}</li>`).join('')
+      : '';
+    const priceOrig = d.offer?.price_original ? `$${d.offer.price_original}` : '';
+    const priceDsc  = d.offer?.price_discount  ? `$${d.offer.price_discount}`  : (state.precio || '');
 
     output.innerHTML = `
       <div class="ce-result">
         <div class="ce-result-header">
           <div class="ce-result-badge">✅ Conversion Engine completado</div>
           <div class="ce-result-title">Tu arquitectura de ventas está lista</div>
-          <div class="ce-result-sub">El copy fue generado basándose en tu nicho, avatar y producto específicos. Ahora podés generar la landing directamente.</div>
+          <div class="ce-result-sub">Copy generado con salida JSON estructurada. Cada campo inyectado directamente en la landing.</div>
         </div>
-        <div class="ce-copy-content">${html}</div>
+        <div class="ce-copy-content">
+          <h3 class="ce-section-title">⚡ Hero Title</h3>
+          <p>${esc(d.hero_title)}</p>
+          <h3 class="ce-section-title">😤 Pain Points</h3>
+          ${painHtml}
+          <h3 class="ce-section-title">💡 Mecanismo Único</h3>
+          <p>${esc(d.unique_mechanism)}</p>
+          <h3 class="ce-section-title">📦 Oferta</h3>
+          <p><strong>${esc(d.offer?.main_product)}</strong></p>
+          ${bonusHtml ? `<ul class="ce-bonus-list">${bonusHtml}</ul>` : ''}
+          ${priceOrig ? `<p><s style="opacity:.5">${priceOrig}</s> → <strong style="color:var(--accent)">${priceDsc}</strong></p>` : ''}
+          <h3 class="ce-section-title">✅ Garantía</h3>
+          <p>${esc(d.guarantee)}</p>
+          <h3 class="ce-section-title">🧠 CTA</h3>
+          <p><strong>${esc(d.cta_button)}</strong></p>
+        </div>
         <div class="ce-actions">
           <button class="btn btn-primary" onclick="activateLandingFromEngine()">
             💻 Generar Landing Page con este copy →
@@ -4392,29 +4414,87 @@ El texto exacto del botón de compra + la micro-copy de confianza debajo del bot
   }
 }
 
+// ── TAREA 2: Adaptador/Parser — limpia residuos y parsea JSON estricto ────────
+function parseLandingCopy(rawText) {
+  const FALLBACK = {
+    hero_title: '',
+    pain_points: [],
+    unique_mechanism: '',
+    offer: { main_product: '', bonuses: [], price_original: 0, price_discount: 0 },
+    guarantee: '',
+    cta_button: 'Comprar ahora'
+  };
+
+  if (!rawText || typeof rawText !== 'string') return FALLBACK;
+
+  // Limpiar fences de markdown que el LLM pueda haber incluido por error
+  let cleaned = rawText
+    .trim()
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/```\s*$/,   '')
+    .trim();
+
+  // Extraer el primer bloque JSON completo si hay texto alrededor
+  const jsonStart = cleaned.indexOf('{');
+  const jsonEnd   = cleaned.lastIndexOf('}');
+  if (jsonStart !== -1 && jsonEnd > jsonStart) {
+    cleaned = cleaned.slice(jsonStart, jsonEnd + 1);
+  }
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    // Garantizar shape mínimo esperado
+    if (!parsed.offer)               parsed.offer = {};
+    if (!Array.isArray(parsed.offer.bonuses)) parsed.offer.bonuses = [];
+    if (!Array.isArray(parsed.pain_points))   parsed.pain_points   = [];
+    return { ...FALLBACK, ...parsed, offer: { ...FALLBACK.offer, ...parsed.offer } };
+  } catch (e) {
+    console.warn('[parseLandingCopy] JSON.parse falló — devolviendo fallback. Raw:', cleaned.substring(0, 300));
+    return FALLBACK;
+  }
+}
+
+// ── TAREA 3: Inyección por campo en el panel de preview ──────────────────────
 function updateLandingCopy() {
   const preview = document.getElementById('copy-preview');
-  const status = document.getElementById('copy-status');
+  const status  = document.getElementById('copy-status');
   if (!preview || !status) return;
 
-  if (!appState.finalCopy || (typeof appState.finalCopy === 'string' && appState.finalCopy.trim() === '')) {
+  const d = appState.finalCopy;
+  if (!d || (typeof d === 'string' && !d.trim())) {
     status.style.display = 'none';
-    status.textContent = '';
     preview.textContent = 'No hay copy disponible';
     return;
   }
 
   status.style.display = 'block';
-  status.textContent = 'Copy importado exitosamente desde el Conversion Engine.';
-  if (typeof appState.finalCopy === 'string') {
-    preview.textContent = appState.finalCopy;
-  } else {
-    try {
-      preview.textContent = JSON.stringify(appState.finalCopy, null, 2);
-    } catch (e) {
-      preview.textContent = String(appState.finalCopy);
-    }
-  }
+  status.textContent = 'Copy JSON importado exitosamente desde el Conversion Engine.';
+
+  // Si por algún motivo llegó como string en vez de objeto, intenta parsear
+  const obj = typeof d === 'object' ? d : parseLandingCopy(d);
+
+  const painHtml = Array.isArray(obj.pain_points)
+    ? `<ul>${obj.pain_points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`
+    : '';
+  const bonusHtml = Array.isArray(obj.offer?.bonuses)
+    ? `<ul>${obj.offer.bonuses.map((b, i) => `<li><strong>Bono ${i+1}:</strong> ${esc(b)}</li>`).join('')}</ul>`
+    : '';
+  const priceOrig = obj.offer?.price_original ? `$${obj.offer.price_original}` : '';
+  const priceDsc  = obj.offer?.price_discount  ? `$${obj.offer.price_discount}`  : '';
+
+  preview.innerHTML = `
+    <div class="landing-copy-preview-inner">
+      <h3>${esc(obj.hero_title)}</h3>
+      ${painHtml ? `<p><strong>Dolores del cliente:</strong></p>${painHtml}` : ''}
+      <p><strong>Mecanismo único:</strong> ${esc(obj.unique_mechanism)}</p>
+      <p><strong>Producto:</strong> ${esc(obj.offer?.main_product)}</p>
+      ${bonusHtml ? `<p><strong>Bonos:</strong></p>${bonusHtml}` : ''}
+      ${priceOrig ? `<p><s style="opacity:.5">${priceOrig}</s> → <strong>${priceDsc}</strong></p>` : ''}
+      <p><strong>Garantía:</strong> ${esc(obj.guarantee)}</p>
+      <p><strong>CTA:</strong> ${esc(obj.cta_button)}</p>
+    </div>
+  `;
 }
 
 function activateLandingFromEngine() {
@@ -4454,13 +4534,19 @@ function initLandingGeneratorEvents() {
 
   generateBtn.addEventListener("click", () => {
     const type = document.getElementById("landing-type").value;
-    const copy = document.getElementById("landing-copy").value.trim();
-    if (!copy) {
-      alert("Pega un copy primero.");
+    const copyText = document.getElementById("landing-copy").value.trim();
+
+    // Priorizar el objeto JSON ya estructurado en appState; si no, parsear el textarea
+    const copyObj = (appState.finalCopy && typeof appState.finalCopy === 'object')
+      ? appState.finalCopy
+      : parseLandingCopy(copyText);
+
+    if (!copyText && !appState.finalCopy) {
+      alert("Pega un copy primero o genera uno desde el Conversion Engine.");
       return;
     }
     if (type === "apple") {
-      const htmlContent = generateAppleLanding(copy);
+      const htmlContent = generateAppleLanding(copyObj);
       previewIframe.srcdoc = htmlContent;
       generatorPanel.classList.add("hidden");
       resultPanel.classList.remove("hidden");
@@ -4499,18 +4585,38 @@ function initLandingGeneratorEvents() {
   }
 }
 
-function generateAppleLanding(copy) {
-  const title = extractTitle(copy);
-  const subtitle = extractSubtitle(copy);
-  const feature = extractFeature(copy);
-  const benefit = extractBenefit(copy);
+// ── TAREA 3: Generador de landing inyecta cada campo del objeto JSON ─────────
+function generateAppleLanding(copyInput) {
+  // Aceptar tanto objeto JSON parseado como string (fallback)
+  const d = (typeof copyInput === 'object' && copyInput !== null)
+    ? copyInput
+    : parseLandingCopy(copyInput);
+
+  const title    = esc(d.hero_title)    || 'Tu solución está aquí';
+  const subtitle = esc(d.unique_mechanism) || 'Descubre cómo funciona.';
+  const feature  = Array.isArray(d.pain_points) && d.pain_points[0]
+    ? esc(d.pain_points[0]) + (d.pain_points[1] ? ' · ' + esc(d.pain_points[1]) : '')
+    : 'Resultados reales, metodología comprobada.';
+  const benefit  = esc(d.guarantee) || 'Garantía de satisfacción incluida.';
+  const ctaText  = esc(d.cta_button) || 'Comenzar ahora';
+  const product  = esc(d.offer?.main_product) || title;
+  const priceDsc = d.offer?.price_discount ? `$${d.offer.price_discount}` : '';
+  const priceOrig= d.offer?.price_original  ? `$${d.offer.price_original}` : '';
+  const bonusItems = Array.isArray(d.offer?.bonuses)
+    ? d.offer.bonuses.map((b, i) => `<li>✅ <strong>Bono ${i+1}:</strong> ${esc(b)}</li>`).join('')
+    : '';
+  const painCards = Array.isArray(d.pain_points) && d.pain_points.length
+    ? d.pain_points.map(p =>
+        `<div class="glass reveal vp-glow"><p>${esc(p)}</p></div>`
+      ).join('')
+    : '';
 
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>\${title}</title>
+  <title>${title}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -4654,21 +4760,30 @@ function generateAppleLanding(copy) {
 </head>
 <body>
   <section class="hero reveal vp-glow">
-    <h1>\${title}</h1>
-    <p>\${subtitle}</p>
+    <h1>${title}</h1>
+    <p>${subtitle}</p>
     <div class="btn-container">
-      <a href="#" class="vp-btn reveal">Comenzar</a>
-      <a href="#" class="vp-btn vp-btn-secondary reveal">Más información</a>
+      <a href="#checkout" class="vp-btn reveal">${ctaText}</a>
+      <a href="#features" class="vp-btn vp-btn-secondary reveal">Ver más</a>
     </div>
   </section>
+
+  ${painCards ? `<section class="features-section" id="features">
+    <h2 style="grid-column:1/-1;text-align:center;font-size:28px;margin-bottom:8px;color:#fff">¿Te identificas?</h2>
+    ${painCards}
+  </section>` : ''}
+
   <section class="features-section">
     <div class="glass reveal vp-glow">
-      <h3>Diseñado para destacar</h3>
-      <p>\${feature}</p>
+      <h3>🎯 ${product}</h3>
+      <p>${subtitle}</p>
+      ${bonusItems ? `<ul style="margin-top:16px;padding-left:0;list-style:none;color:#ccc">${bonusItems}</ul>` : ''}
     </div>
     <div class="glass reveal vp-glow">
-      <h3>Simple. Elegante. Poderoso.</h3>
-      <p>\${benefit}</p>
+      <h3>🛡️ Garantía incluida</h3>
+      <p>${benefit}</p>
+      ${priceDsc ? `<p style="margin-top:16px;font-size:22px;font-weight:700;color:#7cf">Precio: <s style="opacity:.4;font-size:16px">${priceOrig}</s> ${priceDsc}</p>` : ''}
+      <a href="#checkout" class="vp-btn" style="margin-top:20px;display:inline-block">${ctaText}</a>
     </div>
   </section>
   <script>
@@ -4689,29 +4804,7 @@ function generateAppleLanding(copy) {
 </html>`;
 }
 
-function extractTitle(copy) {
-  if (!copy) return "Apple Vision Pro";
-  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[0] || "Apple Vision Pro";
-}
-
-function extractSubtitle(copy) {
-  if (!copy) return "La era de la computación espacial ha llegado.";
-  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[1] || "La era de la computación espacial ha llegado.";
-}
-
-function extractFeature(copy) {
-  if (!copy) return "Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.";
-  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[2] || "Una interfaz tridimensional que responde a tus ojos, manos y voz de forma totalmente natural.";
-}
-
-function extractBenefit(copy) {
-  if (!copy) return "Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.";
-  const sentences = copy.split(/[.\n]/).map(s => s.trim()).filter(Boolean);
-  return sentences[3] || "Experimenta tus aplicaciones favoritas y sumérgete en entornos dinámicos e interactivos.";
-}
+// extractTitle/Subtitle/Feature/Benefit eliminados — reemplazados por parseLandingCopy() + generateAppleLanding(obj)
 
 // Inicializar eventos después de que el DOM esté listo
 function initLandingGenerator() {
