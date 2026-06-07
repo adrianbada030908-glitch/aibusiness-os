@@ -15,7 +15,8 @@ function attachModuleGlobals() {
     'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarLanding','usarProductoEnLanding','usarEnLandingPage',
     'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
     'guidedLoadProductos','selectAvatar','selectProducto','selectNicho','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
-    'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp'
+    'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp',
+    'selectEstrategia','guidedLoadEstrategias','runConversionEngine','activateLandingFromEngine'
   ];
 
   // funciones importadas
