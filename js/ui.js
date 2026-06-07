@@ -7,6 +7,8 @@ import { renderLandingCopy as landingRenderLandingCopy, renderFinalLandingPage a
 
 const generarIA = apiGenerarIA;
 
+const esc = (str) => String(str || '').replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
+
 function attachModuleGlobals() {
   const names = [
     'goStep','goHome','setLandingTab','activarPanel','generarIA','generarCopyDesdeProducto','generarProducto','asignarProductoFinal',
