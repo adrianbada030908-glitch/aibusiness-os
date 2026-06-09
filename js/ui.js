@@ -1544,19 +1544,20 @@ async function generarLanding() {
   const out = document.getElementById('landing-output');
   const nombreProducto = state.nombreProducto || state.producto || 'Producto Digital';
   const precio = state.precio || '$XX';
-  const styleKey = document.getElementById('landing-style').value;
+  const styleKey = document.getElementById('landing-type')?.value || 'autoridad';
   const nicho = state.nicho || state.giro || '';
   const copyBase = state.copyLanding ? state.copyLanding.substring(0, 2000) : '';
 
-  // Detect product personality + palette for "auto" mode
-  const productProfile = detectProductPersonality(nombreProducto, nicho);
-  const styleDirective = styleKey === 'auto'
-    ? `MODO AUTO — Elegí estilo visual Y paleta según psicología del color para este producto:
-Nombre: "${nombreProducto}" | Nicho: "${nicho}"
-${productProfile.styleHint}
-${productProfile.paletteHint}
-Aplicá la regla 60-30-10 y un solo color de CTA dominante en toda la página.`
-    : `${STYLE_PROMPTS[styleKey] || STYLE_PROMPTS['3d-glass']}\n${productProfile.paletteHint}`;
+  // Actualización: mapeo correcto de estilos a prompts
+  const STYLE_MAP = {
+    'autoridad': 'editorial',
+    'dolor': 'brutalist',
+    'oferta': 'neon-bold',
+    'visionario': 'cinematic',
+    'social': 'minimal-clean'
+  };
+
+  const styleDirective = `${STYLE_PROMPTS[STYLE_MAP[styleKey] || styleKey] || STYLE_PROMPTS['3d-glass']}\n${productProfile.paletteHint}`;
 
   let buyUrl = '', modeInstructions = '', downloadLabel = '', successLabel = '';
 
@@ -4523,8 +4524,8 @@ function updateLandingPreview() {
   const type = document.getElementById('landing-type')?.value || 'autoridad';
   
   let htmlContent = '';
-  // Se puede implementar la lógica de renderizado aquí según el tipo
-  htmlContent = generateLandingPreview(appState.finalCopy, type);
+  // Usamos el generador Apple como base para la previsualización
+  htmlContent = generateAppleLanding(appState.finalCopy);
   
   previewIframe.srcdoc = htmlContent;
 }
