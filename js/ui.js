@@ -4520,12 +4520,11 @@ function updateLandingPreview() {
   const previewIframe = document.getElementById('landing-preview');
   if (!previewIframe) return;
   
-  const type = document.getElementById('landing-type')?.value || 'apple';
+  const type = document.getElementById('landing-type')?.value || 'autoridad';
   
   let htmlContent = '';
-  if (type === 'apple') {
-    htmlContent = generateAppleLanding(appState.finalCopy);
-  }
+  // Se puede implementar la lógica de renderizado aquí según el tipo
+  htmlContent = generateLandingPreview(appState.finalCopy, type);
   
   previewIframe.srcdoc = htmlContent;
 }
@@ -4547,8 +4546,21 @@ function renderLandingCopy() {
   updateLandingPreview();
 }
 
-// Selección de estilo visual
-function initLandingStyleSelector() {}
+function generateLandingPreview(data, type) {
+    const d = data || {};
+    // Fallback básico para renderizar algo aunque no exista el generador completo todavía
+    return `
+      <html>
+        <body style="font-family:sans-serif; padding: 40px; text-align: center;">
+          <h1>${d.hero_title || 'Título en proceso...'}</h1>
+          <p>${d.unique_mechanism || 'Explicando valor...'}</p>
+          <div style="background:#f4f4f4; padding:20px; border-radius:10px;">
+            <p><strong>Estilo seleccionado:</strong> ${type}</p>
+          </div>
+        </body>
+      </html>
+    `;
+}
 
 function initRealTimeReactivity() {
   const inputs = [
