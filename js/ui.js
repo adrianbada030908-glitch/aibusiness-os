@@ -4521,13 +4521,33 @@ function updateLandingPreview() {
   const previewIframe = document.getElementById('landing-preview');
   if (!previewIframe) return;
   
-  const type = document.getElementById('landing-type')?.value || 'autoridad';
-  
-  let htmlContent = '';
-  // Usamos el generador Apple como base para la previsualización
-  htmlContent = generateAppleLanding(appState.finalCopy);
-  
-  previewIframe.srcdoc = htmlContent;
+  try {
+    const type = document.getElementById('landing-type')?.value || 'autoridad';
+    
+    if (!appState.finalCopy) {
+      console.warn('updateLandingPreview: appState.finalCopy is missing');
+    }
+
+    // Usamos el generador Apple como base para la previsualización
+    const htmlContent = generateAppleLanding(appState.finalCopy);
+    
+    if (!htmlContent) {
+      throw new Error('El generador devolvió un contenido vacío');
+    }
+
+    previewIframe.srcdoc = htmlContent;
+  } catch (err) {
+    console.error('Error updating landing preview:', err);
+    previewIframe.srcdoc = `
+      <html>
+        <body style="font-family:sans-serif; padding:20px; color:red; background:#fff; text-align:center;">
+          <h3>❌ Error en la Previsualización</h3>
+          <p>${err.message}</p>
+          <small>Revisa la consola del navegador para más detalles.</small>
+        </body>
+      </html>
+    `;
+  }
 }
 
 function activateLandingFromEngine() {
