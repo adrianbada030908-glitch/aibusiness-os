@@ -4557,6 +4557,7 @@ function generateLandingPreview(data, type) {
           <div style="background:#f4f4f4; padding:20px; border-radius:10px;">
             <p><strong>Estilo seleccionado:</strong> ${type}</p>
           </div>
+          <pre>${JSON.stringify(d, null, 2)}</pre>
         </body>
       </html>
     `;
