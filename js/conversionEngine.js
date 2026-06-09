@@ -80,16 +80,20 @@ ${JSON.stringify(producto, null, 2)}
 
 Genera un copy perfectamente estructurado para una Landing Page y devuélvelo únicamente como JSON válido. No incluyas texto fuera del JSON ni markdown.
 
-Estructura EXACTA:
+ESTRUCTURA OBLIGATORIA PARA EL JSON:
 {
-  "headline": "",
-  "subheadline": "",
-  "mechanism": "",
+  "headline": "Título potente: Promesa principal que elimina el mayor dolor del padre (máximo 15 palabras)",
+  "subheadline": "Descripción breve del método (mecanismo) y beneficio principal (2 frases máximo)",
+  "mechanism": "Explicación breve del 'cómo' del método (mecanismo único, simple y lógico)",
   "offer_stack": {
-    "product": "",
-    "bonuses": []
+    "product": "Nombre del producto principal + Formato (Ebook/Video)",
+    "bonuses": [
+      "Bono 1: Nombre atractivo enfocado en beneficio",
+      "Bono 2: Nombre atractivo enfocado en beneficio",
+      "Bono 3: Nombre atractivo enfocado en beneficio"
+    ]
   },
-  "cta": ""
+  "cta": "Llamado a la acción: Verbo de acción + Beneficio (ej: 'Quiero mi tranquilidad ahora')"
 }
 `;
 }

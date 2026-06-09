@@ -244,6 +244,15 @@
     transition: border-color 0.2s, box-shadow 0.2s; outline: none;
     resize: vertical;
   }
+
+  /* Autofill fix */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #060b14 inset !important;
+    -webkit-text-fill-color: #f1f5f9 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
   input:focus, textarea:focus, select:focus {
     border-color: var(--border-focus);
     box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
