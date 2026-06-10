@@ -1,3 +1,5 @@
+import { sanitizeJsonResponse } from './parser.js';
+
 // Función para generar el prompt basado en el estilo seleccionado
 export function getPromptForStyle(niche, style, data = {}) {
   const estilos = {
@@ -16,7 +18,7 @@ export function getPromptForStyle(niche, style, data = {}) {
     
     Estilo a seguir: ${selectedStyleDesc}
     
-    Debes devolver el contenido organizado EXACTAMENTE en formato JSON, sin texto adicional fuera del JSON. Usa estas claves:
+    IMPORTANTE: Debes devolver el contenido ÚNICAMENTE en formato JSON, sin texto adicional, sin introducciones, sin bloques de código si es posible. El JSON debe seguir exactamente esta estructura:
     {
         "hero_title": "Título impactante",
         "unique_mechanism": "Subtítulo de propuesta de valor",
@@ -77,13 +79,23 @@ export async function generarIA(prompt, options = {}, retries = 3, delay = 2000)
       }
 
       const payload = await response.json().catch(async () => ({ text: await response.text() }));
+      let finalContent;
       if (payload && typeof payload === 'object' && 'text' in payload) {
-        return payload.text;
+        finalContent = payload.text;
+      } else if (typeof payload === 'string') {
+        finalContent = payload;
+      } else {
+        finalContent = JSON.stringify(payload);
       }
-      if (typeof payload === 'string') {
-        return payload;
+      
+      // Aplicar sanitización robusta
+      const sanitized = sanitizeJsonResponse(finalContent);
+      try {
+        return JSON.parse(sanitized);
+      } catch (e) {
+        console.error("Error al parsear JSON de la IA:", e, "Contenido:", sanitized);
+        throw new Error("La IA no devolvió un formato JSON válido.");
       }
-      return JSON.stringify(payload);
     } catch (error) {
       clearTimeout(timeout);
       if (error.name === 'AbortError') {
