@@ -5449,3 +5449,4 @@ Estructura EXACTA:
 }
 
 // Cache version: 1781190481
+window.addEventListener('load', attachModuleGlobals);
