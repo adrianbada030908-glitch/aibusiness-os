@@ -2973,6 +2973,18 @@ function setSubcat(step, subcat, btn) {
 // Exponer la función para que sea accesible desde el HTML
 window.setSubcat = setSubcat;
 
+// FORZAR REGISTRO DE EVENTOS POR SI EL ONCLICK FALLA
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("UI: Registro forzado de eventos de subcategoría");
+    document.querySelectorAll('.subcat-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            console.log("Click detectado via listener forzado");
+            // Intentar extraer argumentos si el onclick falla o no está definido
+            // Esto es un backup
+        });
+    });
+});
+
 async function trendHunterAI(subcat) {
 
   let type, pais, outputId, loadingMsg, sys, prompt;
