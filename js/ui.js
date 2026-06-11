@@ -3227,27 +3227,6 @@ async function generarTraficoPremium() {
 - **Mercado objetivo:** ${mercado}
 - **Avatar / Cliente Ideal:** ${audiencia}
 - **Propuesta Única de Valor (UVP):** ${uvp || 'A definir por el usuario'}
-- **Canales de distribución/marketing:** ${canales}
-- **Estrategia seleccionada:** ${estrategia}
-- **Landing page lista:** ${tieneLanding}
-
-## 📦 ESTRUCTURA DEL PLAN (debe incluir obligatoriamente cada sección)
-
-/* El plan de tráfico ha sido movido a un servicio externo para evitar errores de sintaxis en UI */
-
-### 4️⃣ PLAN SEMANA A SEMANA (30 DÍAS)
-| Semana | Objetivo | Acciones clave | KPI |
-|--------|----------|----------------|-----|
-| Semana 1 | [objetivo] | [3-4 acciones] | [métrica] |
-| Semana 2 | [objetivo] | [3-4 acciones] | [métrica] |
-| Semana 3 | [objetivo] | [3-4 acciones] | [métrica] |
-| Semana 4 | [objetivo] | [3-4 acciones] | [métrica] |
-
-### 5️⃣ CANALES RECOMENDADOS (priorizados)
-1. **[Canal principal]** — [por qué es el mejor para empezar + táctica de entrada]
-2. **[Canal secundario]** — [cuándo activarlo + táctica]
-3. **[Canal de escalado]** — [para cuándo dejar las primeras 20 ventas]
-
 > Formato de salida: Texto en español latino, claro, con emojis estratégicos, títulos en negrita con **mardown**, listas con guiones. Sin JSON. Sin markdown de código. Que se vea profesional listo para imprimir.`;
 
   try {
