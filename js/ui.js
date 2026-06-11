@@ -3233,31 +3233,7 @@ async function generarTraficoPremium() {
 
 ## 📦 ESTRUCTURA DEL PLAN (debe incluir obligatoriamente cada sección)
 
-/*
-const ESTRUCTURA_TEMPLATE = `
-### 1️⃣ ÁNGULOS DE VENTA Y COPIES PERSUASIVOS
-Creá 3 ángulos de venta agresivos pero creíbles para anuncios y contenido orgánico:
-- **Ángulo 1:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
-- **Ángulo 2:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
-- **Ángulo 3:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
-
-### 2️⃣ EMBUDO DE VENTAS ÓPTIMO
-Diseñá la estructura del embudo ideal para este producto y canal:
-```
-Paso 1 (Top of Funnel): [qué contenido/lead magnet atrae]
-Paso 2 (Middle of Funnel): [cómo se nutre la relación]
-Paso 3 (Bottom of Funnel): [cómo se cierra la venta]
-```
-Incluí CTAs exactas para cada paso.
-
-### 3️⃣ ESTRATEGIA DE MANEJO DE OBJECIONES
-Listá las 5 objeciones más comunes para este nicho/producto y el contra-argumento exacto:
-1. Objeción: [texto] → Respuesta: [texto]
-2. Objeción: [texto] → Respuesta: [texto]
-`;
-*/3. Objeción: [texto] → Respuesta: [texto]
-4. Objeción: [texto] → Respuesta: [texto]
-5. Objeción: [texto] → Respuesta: [texto]
+/* El plan de tráfico ha sido movido a un servicio externo para evitar errores de sintaxis en UI */
 
 ### 4️⃣ PLAN SEMANA A SEMANA (30 DÍAS)
 | Semana | Objetivo | Acciones clave | KPI |
