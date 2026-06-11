@@ -36,7 +36,7 @@ function attachModuleGlobals() {
         if (typeof fn === 'function') window[n] = fn;
       }
     } catch (e) {
-      // ignora si la función no existe
+      console.warn('No se pudo asignar a window:', n, e);
     }
   });
 }
