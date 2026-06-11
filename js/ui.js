@@ -2951,16 +2951,27 @@ function markDone(stepIdx) {
 
 // ─── Step 0: Trend Hunter ─────────────────────────────────────────────────────
 // ── Subcategory navigation ────────────────────────────────────────────────────
+/** Activar la sub‑categoría seleccionada.
+ *  Expuesta a `window` para que pueda ser llamada desde atributos `onclick`
+ *  del HTML (ej.: `onclick="setSubcat(0,'nichos',this)"`).
+ */
 function setSubcat(step, subcat, btn) {
   // Desactivar todos los botones y paneles del step
   const subcats = document.getElementById(`subcats-${step}`);
+  if (!subcats) return;
   subcats.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
   const stepEl = document.getElementById(`step-${step}`);
-  stepEl.querySelectorAll('.subcat-panel').forEach(p => p.classList.remove('active'));
+  if (stepEl) {
+    stepEl.querySelectorAll('.subcat-panel').forEach(p => p.classList.remove('active'));
+  }
   // Activar el seleccionado
-  btn.classList.add('active');
-  document.getElementById(`s${step}-${subcat}`).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const panel = document.getElementById(`s${step}-${subcat}`);
+  if (panel) panel.classList.add('active');
 }
+
+// Exponer la función para que sea accesible desde el HTML
+window.setSubcat = setSubcat;
 
 async function trendHunterAI(subcat) {
 
