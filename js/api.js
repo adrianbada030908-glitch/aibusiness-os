@@ -35,7 +35,7 @@ export function getPromptForStyle(niche, style, data = {}) {
   `;
 }
 
-const WORKER_URL = 'https://aibusiness-proxy.adrianbada0309.workers.dev';
+const WORKER_URL = 'https://aibusiness.adrianbada0309.workers.dev';
 
 async function parseProxyError(res) {
   const contentType = res.headers.get('content-type') || '';

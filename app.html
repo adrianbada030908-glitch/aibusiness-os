@@ -2215,6 +2215,196 @@
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+
+  /* ══ OLA PREMIUM — LOADER CINEMATOGRÁFICO ═══════════════════════════════════ */
+  .trafico-premium-container {
+    position: relative;
+    min-height: 380px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, rgba(6,11,20,1) 0%, rgba(10,20,40,0.98) 30%, rgba(15,25,50,0.95) 60%, rgba(6,11,20,1) 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(56,189,248,0.08);
+    overflow: hidden;
+    padding: 48px 24px;
+    transition: all 0.5s var(--ease);
+  }
+  .trafico-premium-container::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 80%, rgba(56,189,248,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  /* Gradiente fluido de fondo */
+  .trafico-premium-container::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, rgba(56,189,248,0.02) 0%, transparent 40%, transparent 60%, rgba(129,140,248,0.02) 100%);
+    background-size: 200% 200%;
+    animation: fluidBg 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes fluidBg {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* La Ola SVG animada */
+  .ola-wave {
+    width: 320px;
+    height: 80px;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .ola-wave svg {
+    width: 100%;
+    height: 100%;
+  }
+  .ola-wave .wave-path {
+    fill: none;
+    stroke: url(#olaGradient);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 12px rgba(56,189,248,0.3));
+  }
+  .ola-wave .wave-path-bg {
+    fill: none;
+    stroke: rgba(56,189,248,0.08);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  /* Texto central premium */
+  .ola-microcopy {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 2;
+    animation: olaPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes olaPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* Estado completado */
+  .ola-success {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent3);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ola-success-icon {
+    font-size: 28px;
+    animation: olaPop 0.5s var(--ease);
+  }
+  @keyframes olaPop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  /* Fallback download link */
+  .ola-fallback {
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s;
+  }
+  .ola-fallback a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ola-fallback a:hover {
+    color: var(--accent2);
+  }
+  .ola-fallback.hidden {
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  /* Estado completado: contenedor se vuelve sutilmente verde/éxito */
+  .trafico-premium-container.completed {
+    border-color: rgba(74,222,128,0.15);
+    background: linear-gradient(160deg, rgba(6,15,10,1) 0%, rgba(10,25,20,0.98) 30%, rgba(15,30,20,0.95) 60%, rgba(6,15,10,1) 100%);
+  }
+  .trafico-premium-container.completed::before {
+    background: radial-gradient(ellipse at 50% 80%, rgba(74,222,128,0.04) 0%, transparent 70%);
+  }
+  .trafico-premium-container.completed .ola-wave {
+    animation: olaFadeOut 1s ease forwards;
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  @keyframes olaFadeOut {
+    to { opacity: 0; transform: scale(0.5); height: 0; margin: 0; }
+  }
+
+  /* Partículas sutiles */
+  .ola-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .ola-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(56,189,248,0.3);
+    border-radius: 50%;
+    animation: floatParticle 6s ease-in-out infinite;
+  }
+  .ola-particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+  .ola-particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 1.2s; width: 3px; height: 3px; }
+  .ola-particle:nth-child(3) { left: 45%; top: 30%; animation-delay: 2.4s; }
+  .ola-particle:nth-child(4) { left: 65%; top: 70%; animation-delay: 0.8s; width: 1.5px; height: 1.5px; }
+  .ola-particle:nth-child(5) { left: 80%; top: 40%; animation-delay: 3.6s; }
+  .ola-particle:nth-child(6) { left: 90%; top: 15%; animation-delay: 1.8s; width: 2.5px; height: 2.5px; }
+  @keyframes floatParticle {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { transform: translateY(-30px) scale(1.5); opacity: 0.8; }
+  }
+
+  /* Loader de respaldo para modo guiado (ola reemplaza guided-loader allí también) */
+  .guided-ola-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: 280px;
+    background: linear-gradient(160deg, rgba(6,11,20,1) 0%, rgba(10,20,40,0.98) 50%, rgba(6,11,20,1) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(56,189,248,0.06);
+  }
+  .guided-ola-wrapper .ola-wave {
+    width: 240px;
+    height: 60px;
+    margin-bottom: 20px;
+  }
+  .guided-ola-wrapper .ola-microcopy {
+    font-size: 14px;
+  }
   .skeleton-status {
     text-align: center; font-size: 13px; color: var(--accent);
     font-weight: 600; margin-top: 20px; padding-top: 16px;
@@ -3626,31 +3816,76 @@
     <div id="email-output"></div>
   </div>
 
-  <!-- STEP 6: Tráfico Orgánico -->
+  <!-- ══ STEP 6: Tráfico Premium (Fase 1 — UI Cinematográfica) ══════════════════ -->
   <div class="panel" id="step-6">
 
-    <div class="section-title">📈 Tráfico Orgánico Gratis</div>
-    <div class="section-desc">Estrategias reales para conseguir tus primeras visitas y ventas sin gastar un peso en publicidad.</div>
+    <div class="section-title">📈 Estrategia de Tráfico</div>
+    <div class="section-desc">Plan táctico personalizado para conseguir tus primeras visitas y ventas sin gastar un peso en publicidad.</div>
 
-    <div class="tip">
-      <strong>🚀 ¿Cómo usar este paso?</strong><br><br>
-      Clickeá "Generar estrategia orgánica" y recibís un plan completo con:<br><br>
-      → <strong>TikTok:</strong> el canal más rápido para crecir desde cero en <span data-current-year></span><br>
-      → <strong>Pinterest:</strong> tráfico pasivo que sigue llegando meses después<br>
-      → <strong>Facebook Groups:</strong> comunidades activas donde está tu audiencia<br>
-      → <strong>Reddit:</strong> ideal para nichos específicos y muy comprometidos<br>
-      → <strong>Comentarios estratégicos:</strong> cómo ganar visibilidad comentando en cuentas grandes<br>
-      → <strong>Captación de emails:</strong> cómo convertir visitas en suscriptores<br><br>
-      <strong>💡 Regla de oro:</strong> Antes de gastar en anuncios, validá con tráfico gratis. Si el orgánico no convierte, los anuncios tampoco van a funcionar.<br>
-      <strong>⚡ Meta:</strong> Conseguir tus primeras 10 ventas con tráfico gratis antes de invertir en Meta Ads.
+    <div class="trafico-premium-container" id="trafico-premium-box">
+      <!-- SVG OLA GRADIENTE (definición invisible) -->
+      <svg style="position:absolute;width:0;height:0;" aria-hidden="true">
+        <defs>
+          <linearGradient id="olaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(56,189,248,0.15)"/>
+            <stop offset="30%" stop-color="rgba(56,189,248,0.9)"/>
+            <stop offset="50%" stop-color="rgba(129,140,248,0.9)"/>
+            <stop offset="70%" stop-color="rgba(56,189,248,0.9)"/>
+            <stop offset="100%" stop-color="rgba(56,189,248,0.15)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <!-- Ola animada SVG -->
+      <div class="ola-wave" id="ola-wave-el">
+        <svg viewBox="0 0 320 80" preserveAspectRatio="none">
+          <path class="wave-path-bg" d="M0,40 Q40,20 80,40 T160,40 T240,40 T320,40" />
+          <path class="wave-path" id="ola-wave-path" d="M0,40 Q40,20 80,40 T160,40 T240,40 T320,40">
+            <animate attributeName="d" dur="4s" repeatCount="indefinite" values="
+              M0,40 Q40,20 80,40 T160,40 T240,40 T320,40;
+              M0,40 Q40,60 80,40 T160,40 T240,40 T320,40;
+              M0,40 Q40,30 80,48 T160,34 T240,44 T320,40;
+              M0,40 Q40,20 80,40 T160,40 T240,40 T320,40
+            "/>
+          </path>
+        </svg>
+      </div>
+
+      <!-- Microcopy central -->
+      <div class="ola-microcopy" id="ola-microcopy">Prepará tu estrategia personalizada...</div>
+
+      <!-- Estado éxito (oculto inicialmente) -->
+      <div class="ola-success" id="ola-success" style="display:none;">
+        <span class="ola-success-icon">✅</span>
+        Estrategia creada con éxito
+      </div>
+
+      <!-- Fallback descarga -->
+      <div class="ola-fallback hidden" id="ola-fallback">
+        ¿No comenzó la descarga automática?
+        <a onclick="descargarEstrategiaPDF()">Haz clic aquí para intentar descargar de nuevo.</a>
+      </div>
+
+      <!-- Partículas flotantes -->
+      <div class="ola-particles">
+        <div class="ola-particle"></div>
+        <div class="ola-particle"></div>
+        <div class="ola-particle"></div>
+        <div class="ola-particle"></div>
+        <div class="ola-particle"></div>
+        <div class="ola-particle"></div>
+      </div>
     </div>
 
-    <button class="btn btn-primary" onclick="generarTraficoGratis()">
-      <span>📈</span>
-      Generar estrategia orgánica
-    </button>
+    <div style="text-align:center;margin:16px 0 0;">
+      <button class="btn btn-primary" onclick="generarTraficoPremium()">
+        <span>📈</span>
+        Generar estrategia de tráfico
+      </button>
+    </div>
 
-    <div id="trafico-output"></div>
+    <!-- Output oculto (el contenido se renderiza para PDF, no visible) -->
+    <div id="trafico-output" style="display:none;"></div>
 
   </div>
 

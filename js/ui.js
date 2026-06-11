@@ -14,7 +14,7 @@ function attachModuleGlobals() {
     'goStep','goHome','setLandingTab','activarPanel','generarIA','generarCopyDesdeProducto','generarProducto','asignarProductoFinal',
     'renderLandingCopy','renderFinalLandingPage','volverALanding','descargarIndexHTML','authTab','authSubmit','toggleApiKeyVisibility','saveApiKey','onApiKeyInput','hideApiKeySetup',
     'authLogout','toggleAvatarMenu','closeAvatarMenu','abrirSoporte','openGuidedMode','closeGuidedMode','setSubcat','trendHunterAI',
-    'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarLanding','usarProductoEnLanding','usarEnLandingPage',
+    'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarTraficoPremium','descargarEstrategiaPDF','convertirTextoAHTML','generarLanding','usarProductoEnLanding','usarEnLandingPage',
     'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
     'guidedLoadProductos','selectAvatar','selectProducto','selectNicho','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
     'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp',
@@ -341,7 +341,7 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
 
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
+    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -436,7 +436,7 @@ async function callClaudeRaw(systemPrompt, userPrompt, outputEl, loadingMsg) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
 
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
+    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1714,7 +1714,7 @@ SECCIONES A GENERAR (en este orden exacto):
 
 Empieza con <!DOCTYPE html>. Texto 100% real para "${nombreProducto}".`;
 
-    const res1 = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
+    const res1 = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1804,7 +1804,7 @@ JAVASCRIPT AL FINAL DEL BODY:
 Cierra con </body></html>. Texto 100% real para "${nombreProducto}".`;
 
     // ── PARTE 2: Secciones 8-12 + cierre ─────────────────────────────────────
-    const res2 = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
+    const res2 = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -3164,6 +3164,343 @@ Si no llegás a la primera venta al día 30, el problema probable es: [diagnóst
   incrementUsage();
 }
 
+// ══ NUEVA FUNCIÓN PREMIUM — Tráfico con Ola + Auto-descarga PDF ═══════════════
+async function generarTraficoPremium() {
+
+  // 1. Resetear UI de la Ola al estado "cargando"
+  const box = document.getElementById('trafico-premium-box');
+  const microcopy = document.getElementById('ola-microcopy');
+  const successEl = document.getElementById('ola-success');
+  const fallbackEl = document.getElementById('ola-fallback');
+
+  microcopy.style.display = 'block';
+  microcopy.textContent = 'Diseñando tu estrategia personalizada...';
+  successEl.style.display = 'none';
+  fallbackEl.classList.add('hidden');
+  box.classList.remove('completed');
+
+  // 2. Inyección de datos acumulativos (Smart Context)
+  const producto = state.nombreProducto || state.producto || appState.businessCart?.selectedName || 'Producto digital';
+  const nicho = state.nicho || appState.businessCart?.selectedNiche?.titulo || 'General';
+  const precio = state.precio || appState.businessCart?.selectedPrice || 'A definir';
+  const mercado = state.mercado || 'Latinoamérica';
+  const audiencia = state.audiencia || appState.businessCart?.selectedAvatar?.nombre || 'Emprendedores digitales';
+  const uvp = state.giro || appState.businessCart?.selectedNiche?.resumen || '';
+  const canales = appState.businessCart?.selectedCanal || 'Orgánico multicanal';
+  const estrategia = appState.businessCart?.selectedStrategy || 'Contenido de valor + comunidad';
+  const tieneLanding = state.copyLanding ? 'Sí — landing page generada' : 'No generada aún';
+
+  // 3. Prompt Maestro — Rol CMO de élite (según el informe)
+  const sys = `Eres un Director de Marketing (CMO) experimentado con 15+ años de experiencia en startups digitales y escalamiento de infoproductos en Latinoamérica. Tu especialidad es diseñar estrategias de tráfico orgánico que generan ventas desde el día 1, no solo visitas. Cada recomendación debe ser táctica, accionable y adaptada EXACTAMENTE al producto, nicho, audiencia y canales del usuario. No des teoría — da un plan de guerra.`;
+
+  const prompt = `Diseñá un plan de tráfico orgánico premium y personalizado para este negocio (${getAppYear()}):
+
+## 📋 CONTEXTO DEL NEGOCIO (Inyectado desde sesión del usuario)
+- **Producto:** ${producto}
+- **Nicho:** ${nicho}
+- **Precio:** ${precio}
+- **Mercado objetivo:** ${mercado}
+- **Avatar / Cliente Ideal:** ${audiencia}
+- **Propuesta Única de Valor (UVP):** ${uvp || 'A definir por el usuario'}
+- **Canales de distribución/marketing:** ${canales}
+- **Estrategia seleccionada:** ${estrategia}
+- **Landing page lista:** ${tieneLanding}
+
+## 📦 ESTRUCTURA DEL PLAN (debe incluir obligatoriamente cada sección)
+
+### 1️⃣ ÁNGULOS DE VENTA Y COPIES PERSUASIVOS
+Creá 3 ángulos de venta agresivos pero creíbles para anuncios y contenido orgánico:
+- **Ángulo 1:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
+- **Ángulo 2:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
+- **Ángulo 3:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
+
+### 2️⃣ EMBUDO DE VENTAS ÓPTIMO
+Diseñá la estructura del embudo ideal para este producto y canal:
+```
+Paso 1 (Top of Funnel): [qué contenido/lead magnet atrae]
+Paso 2 (Middle of Funnel): [cómo se nutre la relación]
+Paso 3 (Bottom of Funnel): [cómo se cierra la venta]
+```
+Incluí CTAs exactas para cada paso.
+
+### 3️⃣ ESTRATEGIA DE MANEJO DE OBJECIONES
+Listá las 5 objeciones más comunes para este nicho/producto y el contra-argumento exacto:
+1. Objeción: [texto] → Respuesta: [texto]
+2. Objeción: [texto] → Respuesta: [texto]
+3. Objeción: [texto] → Respuesta: [texto]
+4. Objeción: [texto] → Respuesta: [texto]
+5. Objeción: [texto] → Respuesta: [texto]
+
+### 4️⃣ PLAN SEMANA A SEMANA (30 DÍAS)
+| Semana | Objetivo | Acciones clave | KPI |
+|--------|----------|----------------|-----|
+| Semana 1 | [objetivo] | [3-4 acciones] | [métrica] |
+| Semana 2 | [objetivo] | [3-4 acciones] | [métrica] |
+| Semana 3 | [objetivo] | [3-4 acciones] | [métrica] |
+| Semana 4 | [objetivo] | [3-4 acciones] | [métrica] |
+
+### 5️⃣ CANALES RECOMENDADOS (priorizados)
+1. **[Canal principal]** — [por qué es el mejor para empezar + táctica de entrada]
+2. **[Canal secundario]** — [cuándo activarlo + táctica]
+3. **[Canal de escalado]** — [para cuándo dejar las primeras 20 ventas]
+
+> Formato de salida: Texto en español latino, claro, con emojis estratégicos, títulos en negrita con **mardown**, listas con guiones. Sin JSON. Sin markdown de código. Que se vea profesional listo para imprimir.`;
+
+  try {
+    // 4. Llamar a la IA
+    const text = await callClaudeRaw(sys, prompt, document.getElementById('trafico-output'), 'Diseñando tu estrategia personalizada...');
+
+    if (!text) {
+      microcopy.textContent = '⚠️ Error al generar la estrategia. Intentá de nuevo.';
+      return;
+    }
+
+    // 5. Guardar el resultado para descarga
+    window._ultimaEstrategiaTrafico = text;
+    window._nombreProductoEstrategia = producto;
+
+    // 6. Transición a estado "completado"
+    microcopy.style.display = 'none';
+    successEl.style.display = 'flex';
+    box.classList.add('completed');
+
+    // 7. Auto-descarga del PDF (disparo automático)
+    setTimeout(() => {
+      descargarEstrategiaPDF();
+      // Mostrar fallback por si no descargó
+      fallbackEl.classList.remove('hidden');
+    }, 600);
+
+    incrementUsage();
+
+  } catch (err) {
+    microcopy.textContent = '⚠️ Error: ' + (err.message || 'Intentalo de nuevo');
+    console.error('[TraficoPremium]', err);
+  }
+}
+
+// Descargar estrategia como documento profesional
+function descargarEstrategiaPDF() {
+  const text = window._ultimaEstrategiaTrafico;
+  const nombre = window._nombreProductoEstrategia || 'estrategia';
+  if (!text) return;
+
+  const fecha = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+  const year = getAppYear();
+
+  // Generar HTML profesional con diseño tipo PDF premium
+  const htmlContent = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estrategia de Tráfico - ${nombre}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0a0f1a;
+    color: #e2e8f0;
+    padding: 0;
+    line-height: 1.7;
+  }
+  .paper {
+    max-width: 800px; margin: 0 auto; padding: 48px 40px;
+    background: linear-gradient(180deg, #0d1421 0%, #0a0f1a 100%);
+    min-height: 100vh;
+  }
+  .header {
+    text-align: center; padding-bottom: 32px;
+    border-bottom: 1px solid rgba(56,189,248,0.15);
+    margin-bottom: 32px;
+  }
+  .header-brand {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(56,189,248,0.6); margin-bottom: 12px;
+  }
+  .header-title {
+    font-size: 28px; font-weight: 800; color: #f1f5f9;
+    margin-bottom: 8px;
+  }
+  .header-sub {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+  }
+  .header-date {
+    font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 12px;
+  }
+  .section {
+    margin-bottom: 28px;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+  }
+  .section h2 {
+    font-size: 16px; font-weight: 700; color: #60b0f4;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .section p, .section li {
+    font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.8;
+  }
+  .section ul { padding-left: 20px; }
+  .section li { margin-bottom: 6px; }
+  .section strong { color: #f1f5f9; }
+  .footer {
+    text-align: center; padding-top: 32px; margin-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 11px; color: rgba(255,255,255,0.25);
+  }
+  .tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 10px; border-radius: 99px;
+    background: rgba(56,189,248,0.1); color: #60b0f4;
+    border: 1px solid rgba(56,189,248,0.2);
+    margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em;
+  }
+  h3 {
+    font-size: 14px; font-weight: 600; color: #cbd5e1;
+    margin: 12px 0 6px;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 12px 0;
+    font-size: 12px;
+  }
+  table th {
+    background: rgba(56,189,248,0.08);
+    color: #60b0f4; font-weight: 600; padding: 8px 12px;
+    text-align: left; border: 1px solid rgba(255,255,255,0.06);
+  }
+  table td {
+    padding: 8px 12px; border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+  }
+  @media print {
+    body { background: #0a0f1a; }
+    .paper { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="paper">
+  <div class="header">
+    <div class="header-brand">⚡ AI Business OS — Plan de Tráfico</div>
+    <div class="header-title">📈 Estrategia de Tráfico Orgánico</div>
+    <div class="header-sub">${nombre}</div>
+    <div class="header-date">Generado el ${fecha} · AI Business OS ${year}</div>
+  </div>
+  ${convertirTextoAHTML(text)}
+  <div class="footer">
+    AI Business OS — Digital Products Builder<br>
+    Estrategia generada con IA · Revisá y adaptá según tu negocio
+  </div>
+</div>
+<script>
+  // Auto-print al abrir (opcional)
+  setTimeout(() => { window.print(); }, 500);
+<\/script>
+</body>
+</html>`;
+
+  // Disparar descarga
+  const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `estrategia-trafico-${nombre.slice(0, 20).replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+// Helper: convertir texto plano con markdown simple a HTML
+function convertirTextoAHTML(texto) {
+  if (!texto) return '<p style="color:rgba(255,255,255,0.5)">Sin contenido disponible</p>';
+
+  let html = '';
+  const lineas = texto.split('\n');
+  let enLista = false;
+
+  for (let i = 0; i < lineas.length; i++) {
+    let linea = lineas[i];
+    const trimmed = linea.trim();
+
+    // Saltos de línea vacíos
+    if (trimmed === '') {
+      if (enLista) { html += '</ul>'; enLista = false; }
+      continue;
+    }
+
+    // Encabezados ##
+    if (trimmed.startsWith('## ')) {
+      if (enLista) { html += '</ul>'; enLista = false; }
+      const titulo = trimmed.replace(/^##\s+/, '').replace(/\*\*/g, '').trim();
+      html += `<div class="section"><h2>${titulo}</h2>`;
+      // No cerramos aún — lo cerramos en la siguiente sección
+      continue;
+    }
+
+    // Si comenzamos una sección, acumulamos contenido
+    if (html.endsWith('</h2>')) {
+      // La línea actual es contenido de la sección
+      html += procesarLinea(trimmed, linea);
+      // Cerramos la sección al final del bucle o en la siguiente ##
+      continue;
+    }
+
+    // Línea normal fuera de sección
+    if (enLista) { html += '</ul>'; enLista = false; }
+    html += procesarLinea(trimmed, linea);
+  }
+
+  if (enLista) html += '</ul>';
+
+  // Cerrar secciones abiertas
+  html = html.replace(/<div class="section"><h2>/g, '</div><div class="section"><h2>');
+  html = html.replace(/^<\/div>/, '');
+  if (html.includes('<h2>') && !html.endsWith('</div>')) {
+    html += '</div>';
+  }
+  // Wrap inicial si no hay secciones
+  if (!html.includes('class="section"')) {
+    html = `<div class="section">${html}</div>`;
+  }
+
+  return html;
+}
+
+function procesarLinea(trimmed, linea) {
+  // Listas con guiones
+  if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+    const texto = trimmed.replace(/^[-*]\s+/, '');
+    const bolded = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return `<li>${bolded}</li>`;
+  }
+  // Listas numeradas
+  if (/^\d+[\.\)]/.test(trimmed)) {
+    const texto = trimmed.replace(/^\d+[\.\)]\s*/, '');
+    const bolded = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return `<li>${bolded}</li>`;
+  }
+  // Tablas |
+  if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+    return procesarTabla(linea);
+  }
+  // Texto normal
+  const bolded = linea.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  return `<p>${bolded}</p>`;
+}
+
+function procesarTabla(linea) {
+  // Simple: convertir línea de tabla en fila HTML
+  const celdas = linea.split('|').filter(c => c.trim() !== '');
+  if (celdas.length === 0) return '';
+  // Detectar si es header (segunda línea con ---)
+  const esSeparador = celdas.every(c => /^[\s\-:]+$/.test(c.trim()));
+  if (esSeparador) return '';
+  return `<tr>${celdas.map(c => `<td>${c.trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</td>`).join('')}</tr>\n`;
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -3186,7 +3523,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ══ AUTH + PLANES + USAGE + ANTI-ABUSE ════════════════════════════════════════
 
-const WORKER_URL = 'https://aibusiness-proxy.adrianbada0309.workers.dev';
+const WORKER_URL = 'https://aibusiness.adrianbada0309.workers.dev';
 const _sb = supabase.createClient('https://gbfipugbxdxsccbnokcy.supabase.co', 'sb_publishable_nOFsgZnd3_SSTcUuZiyk8g_Pt9Pr3qh');
 
 // ── Configuración de planes ───────────────────────────────────────────────────
@@ -4293,7 +4630,7 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
 
     const controller = new AbortController();
     const tmout = setTimeout(() => controller.abort(), 55000);
-    const res = await fetch('https://aibusiness-proxy.adrianbada0309.workers.dev', {
+    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8 }),
       signal: controller.signal
