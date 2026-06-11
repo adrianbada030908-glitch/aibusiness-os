@@ -66,6 +66,14 @@ function applyDynamicYears() {
   });
 }
 
+/* ------------------------------------------------------------------
+   waitForClaude — helper de sincronización (resuelve inmediato)
+   Claude ya está disponible vía callClaudeRaw, no hace falta esperar
+   ------------------------------------------------------------------ */
+async function waitForClaude() {
+  return Promise.resolve();
+}
+
 // ─── API Key Setup ────────────────────────────────────────────────────────────
 function getApiKey() {
   return localStorage.getItem('gemini_api_key') || '';
