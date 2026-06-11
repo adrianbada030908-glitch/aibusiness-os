@@ -1,7 +1,7 @@
-import { sanitizeJsonResponse } from './parser.js';
+
 
 // Función para generar el prompt basado en el estilo seleccionado
-export function getPromptForStyle(niche, style, data = {}) {
+function getPromptForStyle(niche, style, data = {}) {
   const estilos = {
     'autoridad': "Enfócate en la experiencia, la lógica de negocio y la autoridad. Usa un tono profesional y directo.",
     'dolor': "Enfócate en el dolor del problema actual y cómo tu solución es la única salida. Tono persuasivo y empático.",
@@ -51,7 +51,7 @@ async function parseProxyError(res) {
   return text || `Error ${res.status}`;
 }
 
-export async function generarIA(prompt, options = {}, retries = 3, delay = 2000) {
+async function generarIA(prompt, options = {}, retries = 3, delay = 2000) {
   const { temperature = 0.8, maxTokens = 4096, timeoutMs = 45000 } = options;
 
   for (let i = 0; i < retries; i++) {

@@ -1,14 +1,6 @@
-import { appState, setFinalCopy, setLandingStyle } from './state.js';
-import { goStep as routerGoStep, goHome as routerGoHome, setLandingTab as routerSetLandingTab, activarPanel } from './router.js';
-// // import { generarIA as apiGenerarIA } from '.aibusiness.adrianbada0309.workers.dev.js';
-// Los módulos se cargan como scripts globales — las funciones están disponibles en window
-import { generarCopyDesdeProducto as conversionGenerarCopyDesdeProducto } from './conversionEngine.js';
-import { generarProducto as productGenerarProducto, asignarProductoFinal } from './productEngine.js';
-import { renderLandingCopy as landingRenderLandingCopy, renderFinalLandingPage as landingRenderFinalLandingPage, volverALanding as landingVolverALanding } from './landingEngine.js';
-window.renderFinalLandingPage = landingRenderFinalLandingPage;
+// window.renderFinalLandingPage = renderFinalLandingPage;
 
-// generarIA se define en api.js y se expone globalmente vía attachModuleGlobals
-const generarIA = window.generarIA || function() { throw new Error('generarIA no disponible — verificá que api.js cargó correctamente'); };
+
 
 const esc = (str) => String(str || '').replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
 
@@ -25,12 +17,11 @@ function attachModuleGlobals() {
   ];
 
   // funciones importadas
-  try { if (typeof routerGoStep === 'function') window.goStep = routerGoStep; } catch(e){}
-  try { if (typeof routerGoHome === 'function') window.goHome = routerGoHome; } catch(e){}
-  try { if (typeof routerSetLandingTab === 'function') window.setLandingTab = routerSetLandingTab; } catch(e){}
+  try { if (typeof goStep === 'function') window.goStep = goStep; } catch(e){}
+  try { if (typeof goHome === 'function') window.goHome = goHome; } catch(e){}
+  try { if (typeof setLandingTab === 'function') window.setLandingTab = setLandingTab; } catch(e){}
   try { if (typeof activarPanel === 'function') window.activarPanel = activarPanel; } catch(e){}
-  // generarIA ya está definida globalmente por api.js (script tag), no necesita re-exportar
-  try { if (typeof window.generarIA !== 'function' && typeof generarIA === 'function') window.generarIA = generarIA; } catch(e){}
+  try { if (typeof apiGenerarIA === 'function') window.generarIA = apiGenerarIA; } catch(e){}
 
   // adjuntar dinámicamente si existen en este módulo
   names.forEach(n => {
@@ -44,9 +35,6 @@ function attachModuleGlobals() {
     }
   });
 }
-
-// Asegurar que las funciones estén disponibles al cargar
-attachModuleGlobals();
 
 // ─── Fecha / año dinámico (siempre el momento de uso) ─────────────────────────
 function getAppYear() {
@@ -5454,4 +5442,26 @@ Estructura EXACTA:
 }
 
 // Cache version: 1781190481
-// attachModuleGlobals ya se ejecuta en DOMContentLoaded
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FALLBACK: Asegurar que todas las funciones críticas estén en window
+// ═══════════════════════════════════════════════════════════════════════════
+(function() {
+  const funcs = {
+    goStep, goHome, generarIA, trendHunterAI, generarContenido,
+    generarAnuncios, generarEmails, generarTraficoPremium,
+    openGuidedMode, closeGuidedMode, generarProducto,
+    asignarProductoFinal, generarCopyDesdeProducto,
+    renderLandingCopy, renderFinalLandingPage, volverALanding,
+    setLandingTab, activarPanel, parseAIResponse, extractJSON,
+    setProductoFinal, setFinalCopy, setFinalCopyRaw, setLandingStyle,
+    setCurrentPanel, sanitizeJsonResponse, getPromptForStyle,
+    normalizeCopy, buildPrompt
+  };
+  for (const [name, fn] of Object.entries(funcs)) {
+    if (typeof fn === 'function' && typeof window !== 'undefined') {
+      window[name] = window[name] || fn;
+    }
+  }
+})();

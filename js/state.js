@@ -1,4 +1,4 @@
-export const appState = {
+const appState = {
   productoFinal: null,
   finalCopy: null,
   finalCopyRaw: '',
@@ -17,11 +17,11 @@ export const appState = {
   },
 };
 
-export function setProductoFinal(producto) {
+function setProductoFinal(producto) {
   appState.productoFinal = producto;
 }
 
-export function setFinalCopy(finalCopy, raw = '') {
+function setFinalCopy(finalCopy, raw = '') {
   appState.finalCopy = finalCopy;
   if (typeof raw === 'string' && raw.length > 0) {
     appState.finalCopyRaw = raw;
@@ -30,15 +30,24 @@ export function setFinalCopy(finalCopy, raw = '') {
   }
 }
 
-export function setFinalCopyRaw(rawText) {
+function setFinalCopyRaw(rawText) {
   appState.finalCopyRaw = rawText || '';
 }
 
-export function setLandingStyle(style) {
+function setLandingStyle(style) {
   if (!style) return;
   appState.landingStyle = style;
 }
 
-export function setCurrentPanel(panelId) {
+function setCurrentPanel(panelId) {
   appState.currentPanel = panelId || appState.currentPanel;
 }
+
+
+// Exposición global
+window.appState = appState;
+window.setProductoFinal = setProductoFinal;
+window.setFinalCopy = setFinalCopy;
+window.setFinalCopyRaw = setFinalCopyRaw;
+window.setLandingStyle = setLandingStyle;
+window.setCurrentPanel = setCurrentPanel;

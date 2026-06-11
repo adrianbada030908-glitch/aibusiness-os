@@ -1,4 +1,4 @@
-import { generarIA } from './api.js';
+
 
 function normalizeCopy(rawResponse) {
   if (!rawResponse) {
@@ -98,8 +98,14 @@ ESTRUCTURA OBLIGATORIA PARA EL JSON:
 `;
 }
 
-export async function generarCopyDesdeProducto(producto) {
+async function generarCopyDesdeProducto(producto) {
   const prompt = buildPrompt(producto);
   const response = await generarIA(prompt, { temperature: 0.8, maxTokens: 4096 });
   return normalizeCopy(response);
 }
+
+
+// Exposición global
+window.generarCopyDesdeProducto = generarCopyDesdeProducto;
+window.normalizeCopy = normalizeCopy;
+window.buildPrompt = buildPrompt;

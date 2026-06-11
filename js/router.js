@@ -1,6 +1,6 @@
-import { setCurrentPanel } from './state.js';
 
-export function activarPanel(panelId) {
+
+function activarPanel(panelId) {
   const panel = document.getElementById(panelId);
   if (!panel) return;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -8,7 +8,7 @@ export function activarPanel(panelId) {
   setCurrentPanel(panelId);
 }
 
-export function goStep(stepIndex) {
+function goStep(stepIndex) {
   const homePage = document.getElementById('home-page');
   if (homePage) homePage.classList.remove('active');
 
@@ -27,7 +27,7 @@ export function goStep(stepIndex) {
   setCurrentPanel(`step-${stepIndex}`);
 }
 
-export function goHome() {
+function goHome() {
   const homePage = document.getElementById('home-page');
   if (homePage) homePage.classList.add('active');
 
@@ -38,7 +38,7 @@ export function goHome() {
   }
 }
 
-export function setLandingTab(tab) {
+function setLandingTab(tab) {
   document.querySelectorAll('.sub-tab').forEach((t, i) => {
     const active = (i === 0 && tab === 'copy') || (i === 1 && tab === 'html');
     t.classList.toggle('active', active);
@@ -49,3 +49,10 @@ export function setLandingTab(tab) {
   if (copySection) copySection.style.display = tab === 'copy' ? 'block' : 'none';
   if (htmlSection) htmlSection.style.display = tab === 'html' ? 'block' : 'none';
 }
+
+
+// Exposición global
+window.activarPanel = activarPanel;
+window.goStep = goStep;
+window.goHome = goHome;
+window.setLandingTab = setLandingTab;

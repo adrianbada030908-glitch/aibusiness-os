@@ -1,12 +1,12 @@
-import { appState, setLandingStyle } from './state.js';
-import { setLandingTab } from './router.js';
+
+
 
 function esc(text) {
   return String(text || '').replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
 }
 
 // ── TAREA 3: renderLandingCopy — inyecta cada campo del objeto JSON ──────────
-export function renderLandingCopy() {
+function renderLandingCopy() {
   const preview = document.getElementById('copy-preview');
   if (!preview) return;
 
@@ -52,7 +52,7 @@ export function renderLandingCopy() {
 }
 
 // ── TAREA 3: renderFinalLandingPage — inyecta cada campo en el panel ─────────
-export function renderFinalLandingPage() {
+function renderFinalLandingPage() {
   const panel = document.getElementById('panel-landing-generator');
   if (!panel) return;
 
@@ -88,7 +88,13 @@ export function renderFinalLandingPage() {
   `;
 }
 
-export function volverALanding() {
+function volverALanding() {
   setLandingTab('copy');
   renderLandingCopy();
 }
+
+
+// Exposición global
+window.renderLandingCopy = renderLandingCopy;
+window.renderFinalLandingPage = renderFinalLandingPage;
+window.volverALanding = volverALanding;
