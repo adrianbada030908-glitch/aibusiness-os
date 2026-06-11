@@ -3233,6 +3233,8 @@ async function generarTraficoPremium() {
 
 ## 📦 ESTRUCTURA DEL PLAN (debe incluir obligatoriamente cada sección)
 
+/*
+const ESTRUCTURA_TEMPLATE = `
 ### 1️⃣ ÁNGULOS DE VENTA Y COPIES PERSUASIVOS
 Creá 3 ángulos de venta agresivos pero creíbles para anuncios y contenido orgánico:
 - **Ángulo 1:** [nombre del ángulo] → [copy exacto de 1-2 líneas] → [por qué funciona psicológicamente]
@@ -3252,7 +3254,8 @@ Incluí CTAs exactas para cada paso.
 Listá las 5 objeciones más comunes para este nicho/producto y el contra-argumento exacto:
 1. Objeción: [texto] → Respuesta: [texto]
 2. Objeción: [texto] → Respuesta: [texto]
-3. Objeción: [texto] → Respuesta: [texto]
+`;
+*/3. Objeción: [texto] → Respuesta: [texto]
 4. Objeción: [texto] → Respuesta: [texto]
 5. Objeción: [texto] → Respuesta: [texto]
 
