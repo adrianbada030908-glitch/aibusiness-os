@@ -71,7 +71,8 @@ function waitForClaude() {
 
 // ─── API Key Setup ────────────────────────────────────────────────────────────
 function getApiKey() {
-  return localStorage.getItem('gemini_api_key') || '';
+  // API key gestionada por servidor (Worker /api) — el usuario no necesita poner la suya
+  return 'server-managed';
 }
 
 function showApiKeySetup() {
@@ -115,17 +116,11 @@ function toggleApiKeyVisibility() {
 }
 
 function updateApiIndicator() {
-  const key = getApiKey();
   const dot = document.getElementById('api-dot');
   const text = document.getElementById('api-indicator-text');
   if (!dot || !text) return;
-  if (key) {
-    dot.className = 'dot-status ok';
-    text.textContent = 'API conectada · ' + key.substring(0,8) + '···  (cambiar)';
-  } else {
-    dot.className = 'dot-status missing';
-    text.textContent = '⚠️ Conectá tu API key para empezar';
-  }
+  dot.className = 'dot-status ok';
+  text.textContent = '✓ API Server activo';
 }
 
 // Close overlay clicking outside
@@ -3488,11 +3483,8 @@ window.addEventListener('DOMContentLoaded', () => {
   buildChips('content-type-chips', contentTypes, 'contentType', 'Antes/Después del resultado');
   buildChips('ad-type-chips', adTypes, 'adType', 'Imagen estática + texto');
 
-  // Show setup if no API key saved
+  // API gestionada por servidor — no se requiere API key del usuario
   updateApiIndicator();
-  if (!getApiKey()) {
-    showApiKeySetup();
-  }
   updateUsageDisplay();
   if (typeof initLandingGenerator === 'function') {
     initLandingGenerator();
