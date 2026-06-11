@@ -1,12 +1,14 @@
 import { appState, setFinalCopy, setLandingStyle } from './state.js';
 import { goStep as routerGoStep, goHome as routerGoHome, setLandingTab as routerSetLandingTab, activarPanel } from './router.js';
-import { generarIA as apiGenerarIA } from './api.js';
+// // import { generarIA as apiGenerarIA } from '.aibusiness.adrianbada0309.workers.dev.js';
+// Los módulos se cargan como scripts globales — las funciones están disponibles en window
 import { generarCopyDesdeProducto as conversionGenerarCopyDesdeProducto } from './conversionEngine.js';
 import { generarProducto as productGenerarProducto, asignarProductoFinal } from './productEngine.js';
 import { renderLandingCopy as landingRenderLandingCopy, renderFinalLandingPage as landingRenderFinalLandingPage, volverALanding as landingVolverALanding } from './landingEngine.js';
 window.renderFinalLandingPage = landingRenderFinalLandingPage;
 
-const generarIA = apiGenerarIA;
+// generarIA se define en api.js y se expone globalmente vía attachModuleGlobals
+const generarIA = window.generarIA || function() { throw new Error('generarIA no disponible — verificá que api.js cargó correctamente'); };
 
 const esc = (str) => String(str || '').replace(/[&<>'"]/g, match => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[match]));
 
@@ -27,7 +29,8 @@ function attachModuleGlobals() {
   try { if (typeof routerGoHome === 'function') window.goHome = routerGoHome; } catch(e){}
   try { if (typeof routerSetLandingTab === 'function') window.setLandingTab = routerSetLandingTab; } catch(e){}
   try { if (typeof activarPanel === 'function') window.activarPanel = activarPanel; } catch(e){}
-  try { if (typeof apiGenerarIA === 'function') window.generarIA = apiGenerarIA; } catch(e){}
+  // generarIA ya está definida globalmente por api.js (script tag), no necesita re-exportar
+  try { if (typeof window.generarIA !== 'function' && typeof generarIA === 'function') window.generarIA = generarIA; } catch(e){}
 
   // adjuntar dinámicamente si existen en este módulo
   names.forEach(n => {
@@ -350,7 +353,7 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
 
-    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
+    const res = await fetch('/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -445,7 +448,7 @@ async function callClaudeRaw(systemPrompt, userPrompt, outputEl, loadingMsg) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
 
-    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
+    const res = await fetch('/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1723,7 +1726,7 @@ SECCIONES A GENERAR (en este orden exacto):
 
 Empieza con <!DOCTYPE html>. Texto 100% real para "${nombreProducto}".`;
 
-    const res1 = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
+    const res1 = await fetch('/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1813,7 +1816,7 @@ JAVASCRIPT AL FINAL DEL BODY:
 Cierra con </body></html>. Texto 100% real para "${nombreProducto}".`;
 
     // ── PARTE 2: Secciones 8-12 + cierre ─────────────────────────────────────
-    const res2 = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
+    const res2 = await fetch('/api', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -3507,7 +3510,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ══ AUTH + PLANES + USAGE + ANTI-ABUSE ════════════════════════════════════════
 
-const WORKER_URL = 'https://aibusiness.adrianbada0309.workers.dev';
+const WORKER_URL = 'aibusiness.adrianbada0309.workers.dev';
 const _sb = supabase.createClient('https://gbfipugbxdxsccbnokcy.supabase.co', 'sb_publishable_nOFsgZnd3_SSTcUuZiyk8g_Pt9Pr3qh');
 
 // ── Configuración de planes ───────────────────────────────────────────────────
@@ -4614,7 +4617,7 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
 
     const controller = new AbortController();
     const tmout = setTimeout(() => controller.abort(), 55000);
-    const res = await fetch('https://aibusiness.adrianbada0309.workers.dev', {
+    const res = await fetch('/api', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8 }),
       signal: controller.signal
@@ -5306,7 +5309,7 @@ function initRouter() {
 
 // Ejecutar adjuntos y arranque cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-//  try { attachModuleGlobals(); } catch (e) {}
+  try { attachModuleGlobals(); } catch (e) {}
   try { initApp(); } catch (e) {}
   try { initUI(); } catch (e) {}
   try { initRouter(); } catch (e) {}
@@ -5448,4 +5451,4 @@ Estructura EXACTA:
 }
 
 // Cache version: 1781190481
-window.addEventListener('load', attachModuleGlobals);
+// attachModuleGlobals ya se ejecuta en DOMContentLoaded

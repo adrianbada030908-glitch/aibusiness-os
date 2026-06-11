@@ -35,7 +35,7 @@ export function getPromptForStyle(niche, style, data = {}) {
   `;
 }
 
-const WORKER_URL = 'https://aibusiness.adrianbada0309.workers.dev';
+const WORKER_URL = '/api';
 
 async function parseProxyError(res) {
   const contentType = res.headers.get('content-type') || '';
@@ -108,4 +108,13 @@ export async function generarIA(prompt, options = {}, retries = 3, delay = 2000)
       throw error;
     }
   }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPOSICIÓN GLOBAL — para compatibilidad con scripts no-modulares
+// ═══════════════════════════════════════════════════════════════════════════
+if (typeof window !== 'undefined') {
+  window.generarIA = generarIA;
+  window.getPromptForStyle = getPromptForStyle;
 }
