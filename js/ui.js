@@ -3488,7 +3488,7 @@ function procesarTabla(linea) {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
-  attachModuleGlobals();
+//  attachModuleGlobals();
   applyDynamicYears();
   buildChips('platform-chips', platforms, 'platform', 'TikTok');
   buildChips('content-type-chips', contentTypes, 'contentType', 'Antes/Después del resultado');
@@ -5307,7 +5307,7 @@ function initRouter() {
 
 // Ejecutar adjuntos y arranque cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-  try { attachModuleGlobals(); } catch (e) {}
+//  try { attachModuleGlobals(); } catch (e) {}
   try { initApp(); } catch (e) {}
   try { initUI(); } catch (e) {}
   try { initRouter(); } catch (e) {}
