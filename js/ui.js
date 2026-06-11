@@ -45,6 +45,9 @@ function attachModuleGlobals() {
   });
 }
 
+// Asegurar que las funciones estén disponibles al cargar
+attachModuleGlobals();
+
 // ─── Fecha / año dinámico (siempre el momento de uso) ─────────────────────────
 function getAppYear() {
   return new Date().getFullYear();
