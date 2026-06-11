@@ -627,7 +627,7 @@ function copyText(btn) {
 
 // ─── Step 0: Nicho ────────────────────────────────────────────────────────────
 async function analizarNicho() {
-  const nicho = document.getElementById('nicho').value || state.nicho;
+  const nicho = document.getElementById('nicho').value || appState.nicho;
   const pais = document.getElementById('pais').value;
   const audiencia = document.getElementById('audiencia').value;
   const presupuesto = document.getElementById('presupuesto').value;
@@ -725,7 +725,7 @@ function renderProductoUI(rawText) {
   document.getElementById('pb-product-name').textContent = displayName;
   document.getElementById('pb-claim-text').textContent = transformClaim;
   document.getElementById('pb-product-hero').classList.add('visible');
-  state.nombreProducto = displayName;
+  appState.nombreProducto = displayName;
   const ln = document.getElementById('nombre-producto');
   if (ln && !ln.value) ln.value = displayName;
 
@@ -1085,7 +1085,7 @@ function exportarProductoPDF() {
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (state.nombreProducto || 'producto') + '.txt';
+  a.download = (appState.nombreProducto || 'producto') + '.txt';
   a.click();
 }
 
@@ -1119,7 +1119,7 @@ PRODUCTO: ${desc}
 FORMATO: ${tipo}
 PRECIO OBJETIVO: ${precio || 'recomendar entre $197–$997'}
 TRANSFORMACIÓN: ${transf || 'definir'}
-NICHO: ${state.nicho || 'General'}
+NICHO: ${appState.nicho || 'General'}
 
 ---NOMBRES_START---
 Devuelve exactamente 3 nombres. Para cada uno usa este formato EXACTO:
@@ -1241,13 +1241,13 @@ async function generarCopyLanding() {
 
   const sys = `Sos copywriter senior especializado en ventas de productos digitales para el mercado latinoamericano. Escribís copy que convierte sin mentir, sin exagerar y sin sonar a plantilla. Dominás la jerarquía de mensajes: el trabajo del headline es que lean el subheadline, el trabajo del subheadline es que lean el primer párrafo, y así hasta el CTA. Cada sección tiene un trabajo específico en el proceso de venta. Respondés en español, copy real y específico — nunca genérico ni de ejemplo.`;
   const prompt = `Copy completo de landing page de alta conversión para:
-Producto: ${nombre || state.producto || 'Producto digital'}
+Producto: ${nombre || appState.producto || 'Producto digital'}
 Propuesta central / hook: ${giro}
 Dolores del cliente: ${dolores || 'a desarrollar basándote en el nicho'}
 Bonos: ${bonos || 'a definir'}
-Precio: ${state.precio || 'a definir'}
-Audiencia: ${state.audiencia || 'emprendedores digitales LATAM'}
-Transformación prometida: ${state.transformacion || 'a definir'}
+Precio: ${appState.precio || 'a definir'}
+Audiencia: ${appState.audiencia || 'emprendedores digitales LATAM'}
+Transformación prometida: ${appState.transformacion || 'a definir'}
 
 REGLAS DE ESCRITURA:
 - Copy 100% real para este producto, no ejemplos entre corchetes
@@ -1301,7 +1301,7 @@ Una para el botón principal, una para el cierre de página. Texto de acción es
 
   const result = await callClaude(sys, prompt, 'landing-output', 'Escribiendo tu landing page...');
   if (result) {
-    state.copyLanding = result;
+    appState.copyLanding = result;
     markDone(2); incrementUsage();
     // Habilitar botón de transferencia
     document.getElementById('btn-enviar-copy-html').disabled = false;
@@ -1311,9 +1311,9 @@ Una para el botón principal, una para el cierre de página. Texto de acción es
 // ── Transferencia Producto → Landing ────────────────────────────────────────
 function usarProductoEnLanding() {
   // Extraer nombre y precio del state (ya guardados por generarProducto)
-  const nombre = state.producto || '';
-  const precio = state.precio || '';
-  const transf = state.transformacion || '';
+  const nombre = appState.producto || '';
+  const precio = appState.precio || '';
+  const transf = appState.transformacion || '';
 
   // Pre-completar campos de la split-screen
   const campoNombre = document.getElementById('inp-main-product');
@@ -1550,11 +1550,11 @@ const STYLE_PROMPTS = {
 // ── Master landing generator ──────────────────────────────────────────────────
 async function generarLanding() {
   const out = document.getElementById('landing-output');
-  const nombreProducto = state.nombreProducto || state.producto || 'Producto Digital';
-  const precio = state.precio || '$XX';
+  const nombreProducto = appState.nombreProducto || appState.producto || 'Producto Digital';
+  const precio = appState.precio || '$XX';
   const styleKey = document.getElementById('landing-type')?.value || 'autoridad';
-  const nicho = state.nicho || state.giro || '';
-  const copyBase = state.copyLanding ? state.copyLanding.substring(0, 2000) : '';
+  const nicho = appState.nicho || appState.giro || '';
+  const copyBase = appState.copyLanding ? appState.copyLanding.substring(0, 2000) : '';
 
   // Actualización: mapeo correcto de estilos a prompts
   const STYLE_MAP = {
@@ -1846,7 +1846,7 @@ Cierra con </body></html>. Texto 100% real para "${nombreProducto}".`;
     // Validación final
     if (!code || code.length < 5000) throw new Error('Landing incompleta. Intentá de nuevo.');
 
-    state.codigoHTML = code;
+    appState.codigoHTML = code;
     incrementUsage();
 
     const shopifyInstructions = landingMode === 'shopify' ? `
@@ -1938,16 +1938,16 @@ function detectProductPersonality(nombre, nicho) {
 
 
 function previsualizarHTML() {
-  if (!state.codigoHTML) return;
-  const blob = new Blob([state.codigoHTML], { type: 'text/html' });
+  if (!appState.codigoHTML) return;
+  const blob = new Blob([appState.codigoHTML], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   window.open(url, '_blank');
 }
 
 function abrirEditor() {
-  if (!state.codigoHTML) { alert('Primero generá una landing page'); return; }
+  if (!appState.codigoHTML) { alert('Primero generá una landing page'); return; }
   // Store the landing HTML so the editor can read it
-  localStorage.setItem('editor_landing_html', state.codigoHTML);
+  localStorage.setItem('editor_landing_html', appState.codigoHTML);
   // Build editor as blob and open in new tab
   const editorHTML = `<!DOCTYPE html>
 <html lang="es">
@@ -2752,25 +2752,25 @@ function showHint(msg) {
 }
 
 function copiarCodigo() {
-  if (state.codigoHTML) {
-    navigator.clipboard.writeText(state.codigoHTML).then(() => {
+  if (appState.codigoHTML) {
+    navigator.clipboard.writeText(appState.codigoHTML).then(() => {
       alert('✅ Código copiado al portapapeles');
     });
   }
 }
 
 function descargarHTML() {
-  if (!state.codigoHTML) return;
-  const blob = new Blob([state.codigoHTML], { type: 'text/html' });
+  if (!appState.codigoHTML) return;
+  const blob = new Blob([appState.codigoHTML], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (state.nombreProducto || 'landing-page').replace(/\s+/g, '-').toLowerCase() + '.html';
+  a.download = (appState.nombreProducto || 'landing-page').replace(/\s+/g, '-').toLowerCase() + '.html';
   a.click();
 }
 
 function descargarIndexHTML() {
-  if (!state.codigoHTML) return;
-  const blob = new Blob([state.codigoHTML], { type: 'text/html' });
+  if (!appState.codigoHTML) return;
+  const blob = new Blob([appState.codigoHTML], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'index.html';
@@ -2778,27 +2778,27 @@ function descargarIndexHTML() {
 }
 
 function descargarLiquid() {
-  if (!state.codigoHTML) return;
-  const blob = new Blob([state.codigoHTML], { type: 'text/plain' });
+  if (!appState.codigoHTML) return;
+  const blob = new Blob([appState.codigoHTML], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (state.nombreProducto || 'landing-page').replace(/\s+/g, '-').toLowerCase() + '.liquid';
+  a.download = (appState.nombreProducto || 'landing-page').replace(/\s+/g, '-').toLowerCase() + '.liquid';
   a.click();
 }
 
 // ─── Step 3: Contenido ────────────────────────────────────────────────────────
 async function generarContenido() {
-  const platform = state.platform || 'TikTok';
-  const contentType = state.contentType || 'Antes/Después del resultado';
+  const platform = appState.platform || 'TikTok';
+  const contentType = appState.contentType || 'Antes/Después del resultado';
   const cant = document.getElementById('cant-guiones').value;
 
   const sys = `Eres director creativo de contenido viral sin cara para el mercado hispanohablante. Dominás los mecanismos de distribución de ${platform} en ${getAppYear()}: qué señales mide el algoritmo, qué patrones de atención retienen el scroll y cómo construir un embudo de contenido que convierte audiencia en compradores. Entregás guiones ejecutables con texto literal listo para grabar — no descripciones de guiones ni estructuras vacías. Cada recomendación está calibrada para producción sin mostrar cara: texto en pantalla, B-roll, mockups, voice-over, animaciones de texto.`;
   const prompt = `${cant} guiones de contenido viral sin cara para ${platform} (${getAppYear()}).
-Producto: ${state.nombreProducto || state.producto || 'Producto digital'}
-Nicho: ${state.nicho || 'General'}
+Producto: ${appState.nombreProducto || appState.producto || 'Producto digital'}
+Nicho: ${appState.nicho || 'General'}
 Tipo de contenido: ${contentType}
-Promesa/hook del producto: ${state.giro || 'transformación del cliente'}
-Audiencia objetivo: ${state.audiencia || 'hispanohablantes interesados en el nicho'}
+Promesa/hook del producto: ${appState.giro || 'transformación del cliente'}
+Audiencia objetivo: ${appState.audiencia || 'hispanohablantes interesados en el nicho'}
 
 REGLA CRÍTICA: Cada guión debe tener un ángulo psicológico completamente distinto. No es el mismo concepto con diferente hook — son estrategias narrativas diferentes.
 
@@ -2844,13 +2844,13 @@ Incluí variedad de ángulos y una progresión lógica de frío a caliente.`;
 
 // ─── Step 4: Anuncios ─────────────────────────────────────────────────────────
 async function generarAnuncios() {
-  const tipoAd = state.adType || 'Imagen estática + texto';
+  const tipoAd = appState.adType || 'Imagen estática + texto';
   const objetivo = document.getElementById('objetivo-ad').value;
   const cant = document.getElementById('cant-ads').value;
 
   const sys = `Eres media buyer y copywriter de respuesta directa especializado en Meta Ads para productos digitales en Latinoamérica. Tu trabajo es generar anuncios que detengan el scroll, activen una emoción específica y conduzcan a un clic con intención de compra. Conocés las políticas de Meta, los formatos de mayor CTR en ${getAppYear()} y cómo estructurar copy que funciona tanto en frío como en retargeting. No escribís plantillas — escribís anuncios reales listos para publicar.`;
   const prompt = `${cant} ángulos de anuncio para Meta Ads:
-Producto: ${state.nombreProducto || state.producto || 'Producto digital'} · Nicho: ${state.nicho || 'General'} · Precio: ${state.precio || 'A definir'} · Tipo de creativo: ${tipoAd} · Objetivo: ${objetivo} · Promesa central: ${state.giro || state.transformacion || 'transformación del cliente'}
+Producto: ${appState.nombreProducto || appState.producto || 'Producto digital'} · Nicho: ${appState.nicho || 'General'} · Precio: ${appState.precio || 'A definir'} · Tipo de creativo: ${tipoAd} · Objetivo: ${objetivo} · Promesa central: ${appState.giro || appState.transformacion || 'transformación del cliente'}
 
 REGLA: Cada ángulo debe atacar una motivación psicológica diferente. No varíes solo el tono — cambiá el argumento central.
 
@@ -2899,11 +2899,11 @@ async function generarEmails() {
 
   const sys = `Eres copywriter senior especializado en email marketing para productos digitales en el mercado latinoamericano. Escribís emails que se abren, se leen hasta el final y convierten — porque parecen escritos por una persona real, no por un sistema. Dominás la progresión psicológica de una secuencia: construís confianza primero, después vendés. Cada email tiene un trabajo específico. Los asuntos no hacen click-bait — generan expectativa genuina. El copy no grita — persuade.`;
   const prompt = `Secuencia completa de emails: ${tipo}
-Producto: ${state.nombreProducto || state.producto || 'Producto digital'}
-Precio: ${state.precio || 'a definir'}
+Producto: ${appState.nombreProducto || appState.producto || 'Producto digital'}
+Precio: ${appState.precio || 'a definir'}
 Lead magnet entregado: ${leadMagnet || 'recurso gratuito del nicho'}
-Nicho: ${state.nicho || 'General'}
-Audiencia: ${state.audiencia || 'emprendedores digitales LATAM'}
+Nicho: ${appState.nicho || 'General'}
+Audiencia: ${appState.audiencia || 'emprendedores digitales LATAM'}
 
 REGLAS DE ESCRITURA:
 - Asunto: máx 50 caracteres, sin spam words (gratis, URGENTE!, $$$), que genere curiosidad genuina
@@ -3066,13 +3066,13 @@ Meta realista: X seguidores / Y leads / Z ventas en el mes 1`;
 async function generarTraficoGratis() {
 
   // Smart Context — heredar todo lo que el usuario ya configuró
-  const producto = state.nombreProducto || state.producto || 'Producto digital';
-  const nicho = state.nicho || 'General';
-  const precio = state.precio || 'A definir';
-  const mercado = state.mercado || 'Latinoamérica';
-  const audiencia = state.audiencia || 'Emprendedores digitales';
-  const giro = state.giro || '';
-  const tieneLanding = state.copyLanding ? 'Sí — landing page ya generada con copy específico' : 'No generada aún';
+  const producto = appState.nombreProducto || appState.producto || 'Producto digital';
+  const nicho = appState.nicho || 'General';
+  const precio = appState.precio || 'A definir';
+  const mercado = appState.mercado || 'Latinoamérica';
+  const audiencia = appState.audiencia || 'Emprendedores digitales';
+  const giro = appState.giro || '';
+  const tieneLanding = appState.copyLanding ? 'Sí — landing page ya generada con copy específico' : 'No generada aún';
 
   const sys = `Eres estratega de tráfico orgánico especializado en el embudo completo para infoproductos en Latinoamérica: desde el primer contacto con contenido hasta la compra. Diseñás sistemas de distribución personalizados — no recetas genéricas de "publicá 3 veces por día". Cada táctica que recomendás está calibrada para el producto, el nicho, la audiencia y el estadio actual del negocio. Priorizás velocidad de feedback: las primeras acciones generan datos que permiten ajustar antes de escalar.`;
 
@@ -3188,15 +3188,15 @@ async function generarTraficoPremium() {
   box.classList.remove('completed');
 
   // 2. Inyección de datos acumulativos (Smart Context)
-  const producto = state.nombreProducto || state.producto || appState.businessCart?.selectedName || 'Producto digital';
-  const nicho = state.nicho || appState.businessCart?.selectedNiche?.titulo || 'General';
-  const precio = state.precio || appState.businessCart?.selectedPrice || 'A definir';
-  const mercado = state.mercado || 'Latinoamérica';
-  const audiencia = state.audiencia || appState.businessCart?.selectedAvatar?.nombre || 'Emprendedores digitales';
-  const uvp = state.giro || appState.businessCart?.selectedNiche?.resumen || '';
+  const producto = appState.nombreProducto || appState.producto || appState.businessCart?.selectedName || 'Producto digital';
+  const nicho = appState.nicho || appState.businessCart?.selectedNiche?.titulo || 'General';
+  const precio = appState.precio || appState.businessCart?.selectedPrice || 'A definir';
+  const mercado = appState.mercado || 'Latinoamérica';
+  const audiencia = appState.audiencia || appState.businessCart?.selectedAvatar?.nombre || 'Emprendedores digitales';
+  const uvp = appState.giro || appState.businessCart?.selectedNiche?.resumen || '';
   const canales = appState.businessCart?.selectedCanal || 'Orgánico multicanal';
   const estrategia = appState.businessCart?.selectedStrategy || 'Contenido de valor + comunidad';
-  const tieneLanding = state.copyLanding ? 'Sí — landing page generada' : 'No generada aún';
+  const tieneLanding = appState.copyLanding ? 'Sí — landing page generada' : 'No generada aún';
 
   // 3. Prompt Maestro — Rol CMO de élite (según el informe)
   const sys = `Eres un Director de Marketing (CMO) experimentado con 15+ años de experiencia en startups digitales y escalamiento de infoproductos en Latinoamérica. Tu especialidad es diseñar estrategias de tráfico orgánico que generan ventas desde el día 1, no solo visitas. Cada recomendación debe ser táctica, accionable y adaptada EXACTAMENTE al producto, nicho, audiencia y canales del usuario. No des teoría — da un plan de guerra.`;
@@ -4060,13 +4060,13 @@ function closeGuidedMode() {
 function syncCartToState() {
   const c = appState.businessCart;
   if (c.selectedNiche)  {
-    state.nicho = c.selectedNiche.titulo;
+    appState.nicho = c.selectedNiche.titulo;
     // Pre-rellenar el selector de Trend Hunter (modo libre)
     const typeEl = document.getElementById('trend-type-nichos');
     if (typeEl) typeEl.value = c.selectedNiche.categoria || typeEl.value;
   }
-  if (c.selectedAvatar) state.audiencia = c.selectedAvatar.nombre || '';
-  if (c.selectedName)   state.nombreProducto = c.selectedName;
+  if (c.selectedAvatar) appState.audiencia = c.selectedAvatar.nombre || '';
+  if (c.selectedName)   appState.nombreProducto = c.selectedName;
 }
 
 // ── Navegación entre pasos ───────────────────────────────────────────────────
@@ -4396,8 +4396,8 @@ function selectProducto(idx) {
   appState.businessCart.selectedName     = p.nombre;
   appState.businessCart.selectedPrice    = p.precio;
   appState.businessCart.selectedPromesa  = p.promesa;
-  state.nombreProducto = p.nombre;
-  state.precio         = p.precio;
+  appState.nombreProducto = p.nombre;
+  appState.precio         = p.precio;
   document.querySelectorAll('#guided-producto-output .option-card').forEach((c, i) => {
     c.classList.toggle('selected', i === idx);
     const check = c.querySelector('.option-card-check');
@@ -4655,12 +4655,12 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
 
     // Guardar en appState para el Landing Generator
     appState.finalCopyRaw = text;
-    state.copyLanding    = text;
-    state.giro           = cart.selectedPromesa || '';
-    state.nicho          = cart.selectedNiche?.titulo || '';
-    state.audiencia      = cart.selectedAvatar?.nombre || '';
-    state.nombreProducto = cart.selectedName || '';
-    state.precio         = cart.selectedPrice || '';
+    appState.copyLanding    = text;
+    appState.giro           = cart.selectedPromesa || '';
+    appState.nicho          = cart.selectedNiche?.titulo || '';
+    appState.audiencia      = cart.selectedAvatar?.nombre || '';
+    appState.nombreProducto = cart.selectedName || '';
+    appState.precio         = cart.selectedPrice || '';
 
     // Normalizar la respuesta para garantizar que `appState.finalCopy` sea siempre un objeto
     let finalObj = null;
@@ -4721,7 +4721,7 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
       ? d.offer.bonuses.map((b, i) => `<li><strong>Bono ${i+1}:</strong> ${esc(b)}</li>`).join('')
       : '';
     const priceOrig = d.offer?.price_original ? `$${d.offer.price_original}` : '';
-    const priceDsc  = d.offer?.price_discount  ? `$${d.offer.price_discount}`  : (state.precio || '');
+    const priceDsc  = d.offer?.price_discount  ? `$${d.offer.price_discount}`  : (appState.precio || '');
 
     output.innerHTML = `
       <div class="ce-result">
