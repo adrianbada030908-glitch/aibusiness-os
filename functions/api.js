@@ -1,30 +1,16 @@
-export async function onRequest(context) {
+export async function onRequestPost(context) {
   const { request, env } = context;
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
+  const body = await request.json();
 
-  if (request.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  // Llamada a la API de Gemini usando la variable de entorno
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
 
-  try {
-    const body = await request.json();
-    // Asegúrate de que GEMINI_API_KEY esté configurada en las Environment Variables de Cloudflare Pages
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + env.GEMINI_API_KEY, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-
-    const data = await response.json();
-
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
-  }
+  const data = await response.json();
+  return new Response(JSON.stringify(data), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
