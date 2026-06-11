@@ -2973,13 +2973,6 @@ function setSubcat(step, subcat, btn) {
 // Exponer la función para que sea accesible desde el HTML
 window.setSubcat = setSubcat;
 
-}
-
-}
-
-// Exponer la función para que sea accesible desde el HTML
-window.setSubcat = setSubcat;
-
 async function trendHunterAI(subcat) {
 
   let type, pais, outputId, loadingMsg, sys, prompt;
