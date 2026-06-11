@@ -2956,36 +2956,30 @@ function markDone(stepIdx) {
  *  del HTML (ej.: `onclick="setSubcat(0,'nichos',this)"`).
  */
 function setSubcat(step, subcat, btn) {
-  // Desactivar todos los botones y paneles del step
+  console.log('UI: setSubcat ejecutando...');
   const subcats = document.getElementById(`subcats-${step}`);
-  if (!subcats) return;
+  if (!subcats) {
+      console.error('No se encontró el contenedor: subcats-'+step);
+      return;
+  }
   subcats.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
   const stepEl = document.getElementById(`step-${step}`);
   if (stepEl) {
     stepEl.querySelectorAll('.subcat-panel').forEach(p => p.classList.remove('active'));
   }
-  // Activar el seleccionado
   if (btn) btn.classList.add('active');
   const panel = document.getElementById(`s${step}-${subcat}`);
-  if (panel) panel.classList.add('active');
+  if (panel) {
+      panel.classList.add('active');
+  } else {
+      console.error('No se encontró el panel: s'+step+'-'+subcat);
+  }
 }
 
-// Exponer la función para que sea accesible desde el HTML
 window.setSubcat = setSubcat;
 
-// FORZAR REGISTRO DE EVENTOS POR SI EL ONCLICK FALLA
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("UI: Registro forzado de eventos de subcategoría");
-    document.querySelectorAll('.subcat-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            console.log("Click detectado via listener forzado");
-            // Intentar extraer argumentos si el onclick falla o no está definido
-            // Esto es un backup
-        });
-    });
-});
-
 async function trendHunterAI(subcat) {
+
 
   let type, pais, outputId, loadingMsg, sys, prompt;
 
@@ -5493,5 +5487,14 @@ Estructura EXACTA:
     const bonusesRaw = kv.bonuses || kv.bonos || kv.bonus;
     if (bonusesRaw) fallback.offer_stack.bonuses = bonusesRaw.split(/[,;]\s*/).map(s=>s.trim()).filter(Boolean);
     return fallback;
+}
+
+
+}
+}
+}
+}
+}
+}
 }
 
