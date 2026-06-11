@@ -3227,7 +3227,7 @@ async function generarTraficoPremium() {
 - **Mercado objetivo:** ${mercado}
 - **Avatar / Cliente Ideal:** ${audiencia}
 - **Propuesta Única de Valor (UVP):** ${uvp || 'A definir por el usuario'}
-> Formato de salida: Texto en español latino, claro, con emojis estratégicos, títulos en negrita con **mardown**, listas con guiones. Sin JSON. Sin markdown de código. Que se vea profesional listo para imprimir.`;
+//> Formato de salida: Texto en español latino, claro, con emojis estratégicos, títulos en negrita con **mardown**, listas con guiones. Sin JSON. Sin markdown de código. Que se vea profesional listo para imprimir.`;
 
   try {
     // 4. Llamar a la IA
