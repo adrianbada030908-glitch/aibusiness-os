@@ -4,6 +4,7 @@ import { generarIA as apiGenerarIA } from './api.js';
 import { generarCopyDesdeProducto as conversionGenerarCopyDesdeProducto } from './conversionEngine.js';
 import { generarProducto as productGenerarProducto, asignarProductoFinal } from './productEngine.js';
 import { renderLandingCopy as landingRenderLandingCopy, renderFinalLandingPage as landingRenderFinalLandingPage, volverALanding as landingVolverALanding } from './landingEngine.js';
+window.renderFinalLandingPage = landingRenderFinalLandingPage;
 
 const generarIA = apiGenerarIA;
 
