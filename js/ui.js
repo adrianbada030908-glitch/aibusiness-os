@@ -70,7 +70,7 @@ function applyDynamicYears() {
    waitForClaude — helper de sincronización (resuelve inmediato)
    Claude ya está disponible vía callClaudeRaw, no hace falta esperar
    ------------------------------------------------------------------ */
-async function waitForClaude() {
+function waitForClaude() {
   return Promise.resolve();
 }
 
