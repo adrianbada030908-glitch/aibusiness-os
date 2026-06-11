@@ -3501,7 +3501,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ══ AUTH + PLANES + USAGE + ANTI-ABUSE ════════════════════════════════════════
 
-const WORKER_URL = 'aibusiness.adrianbada0309.workers.dev';
+const WORKER_URL_UI = 'aibusiness.adrianbada0309.workers.dev';
 const _sb = supabase.createClient('https://gbfipugbxdxsccbnokcy.supabase.co', 'sb_publishable_nOFsgZnd3_SSTcUuZiyk8g_Pt9Pr3qh');
 
 // ── Configuración de planes ───────────────────────────────────────────────────
