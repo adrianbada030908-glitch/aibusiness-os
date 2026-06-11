@@ -5281,7 +5281,6 @@ function generateAppleLanding(copyInput) {
 
 // Inicializar eventos después de que el DOM esté listo
 function initLandingGenerator() {
-  initLandingStyleSelector();
   initLandingGeneratorEvents();
   renderLandingCopy();
 }
