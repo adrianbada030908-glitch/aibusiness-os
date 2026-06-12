@@ -604,13 +604,15 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
 
     const res = await fetch('/api', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-gemini-api-key': localStorage.getItem('gemini_api_key') || ''
+      },
       body: JSON.stringify({
         systemPrompt: withDateContext(systemPrompt),
         prompt: userPrompt,
         temperature: temperatura,
-        maxTokens: maxTok,
-        apiKey: localStorage.getItem('gemini_api_key') || undefined
+        maxTokens: maxTok
       }),
       signal: controller.signal
     });
@@ -636,7 +638,31 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
       }
       
       if (msg.includes('503') || msg.includes('UNAVAILABLE') || msg.includes('high demand')) {
-        out.innerHTML = '<div class="error-msg">⏳ Los servidores de Google Gemini están congestionados en este momento. Por favor, intentá de nuevo en unos segundos.</div>';
+        if (_retryCount < 3) {
+          const waitSec = 5 + (_retryCount * 3);
+          let remaining = waitSec;
+          out.innerHTML = `<div class="flex flex-col items-center justify-center h-full min-h-[200px] gap-4 p-6">
+            <div class="relative w-14 h-14">
+              <div class="absolute inset-0 border-4 border-amber-500/30 rounded-full"></div>
+              <div class="absolute inset-0 border-4 border-amber-400 rounded-full border-t-transparent animate-spin"></div>
+            </div>
+            <div class="text-center">
+              <div class="text-amber-400 font-bold text-sm tracking-widest uppercase mb-1">Servidores saturados</div>
+              <div class="text-slate-400 text-xs">Reintentando en <span id="retry-countdown-${outputId}" class="text-amber-300 font-bold">${waitSec}</span>s &nbsp;·&nbsp; Intento <strong class="text-slate-300">${_retryCount + 1}/3</strong></div>
+            </div>
+          </div>`;
+          await new Promise(resolve => {
+            const iv = setInterval(() => {
+              remaining--;
+              const el = document.getElementById('retry-countdown-' + outputId);
+              if (el) el.textContent = remaining;
+              if (remaining <= 0) clearInterval(iv);
+            }, 1000);
+            setTimeout(resolve, waitSec * 1000);
+          });
+          return callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temperatura, maxTok, _retryCount + 1);
+        }
+        out.innerHTML = '<div class="error-msg">⏳ Los servidores de Google Gemini siguen saturados. Esperá unos minutos y volvé a intentar.</div>';
         return null;
       }
       throw new Error(msg || 'Error ' + res.status);
@@ -708,13 +734,15 @@ async function callClaudeRaw(systemPrompt, userPrompt, outputEl, loadingMsg) {
 
     const res = await fetch('/api', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-gemini-api-key': localStorage.getItem('gemini_api_key') || ''
+      },
       body: JSON.stringify({
         systemPrompt: withDateContext(systemPrompt),
         prompt: userPrompt,
         temperature: 0.7,
-        maxTokens: 8192,
-        apiKey: localStorage.getItem('gemini_api_key') || undefined
+        maxTokens: 8192
       }),
       signal: controller.signal
     });
@@ -778,13 +806,25 @@ function renderOutput(container, text, mode = 'default') {
   });
 
   container.innerHTML = `
-    <div class="output-area">
-      <div class="output-content">${html}</div>
-      <div class="action-row">
-        <button class="btn btn-copy" onclick="copyText(this)">📋 Copiar todo</button>
-        <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Ir arriba</button>
+    <div class="output-area" id="general-pdf-area">
+      <div class="output-content" style="word-break: break-word; overflow-wrap: break-word;">${html}</div>
+      <div class="action-row" data-html2canvas-ignore>
+        <button class="btn btn-download" style="background:#0EA5E9;color:#0B1120;font-weight:bold;width:100%;margin-bottom:10px" onclick="downloadGeneralPDF(this)">📄 Descargar PDF</button>
+        <button class="btn btn-ghost" style="font-size:12px;padding:7px 14px;width:100%" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Ir arriba</button>
       </div>
     </div>`;
+}
+
+async function downloadGeneralPDF(btn) {
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Generando PDF...';
+  const element = btn.closest('.output-area').querySelector('.output-content');
+  const clone = element.cloneNode(true);
+  clone.style.padding = '20px'; clone.style.backgroundColor = '#1E293B'; clone.style.color = '#F1F5F9';
+  const opt = { margin: 0.5, filename: 'Contenido_AIBusinessOS.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+  try { await html2pdf().set(opt).from(clone).save(); btn.textContent = '✅ PDF Descargado!'; } 
+  catch(e) { btn.textContent = '❌ Error al crear PDF'; }
+  setTimeout(() => btn.textContent = originalText, 3000);
 }
 
 // Render anuncios en cards premium
@@ -885,8 +925,8 @@ function renderScriptCards(container, text) {
   if (sections.length <= 1) { renderOutput(container, text, 'skip'); return; }
 
   const cards = sections.map((section, i) => {
-    const titleMatch = section.match(/##\s+(?:🎬\s+)?GUIÓN\s+\d+[:\s]+(.+)/);
-    const title = titleMatch ? titleMatch[1].trim() : `Guión ${i+1}`;
+    const titleMatch = section.match(/##\s*(?:🎬\s+)?(?:GUIÓN|GUION)\s*\d*[:\s-]+(.+)/i);
+    const title = titleMatch ? titleMatch[1].trim() : `Opción Estratégica ${i+1}`;
 
     let body = section.replace(/##.*\n/, '').trim();
     body = body
@@ -905,12 +945,11 @@ function renderScriptCards(container, text) {
       <div class="ad-card phone-script-item bg-[#1E293B] border border-slate-700/50 rounded-2xl p-4 mb-4" style="border-left: 3px solid #0EA5E9;">
         <div class="ad-card-header flex items-center justify-between gap-2 border-b border-slate-700/50 pb-2 mb-3">
           <div class="flex items-center gap-2">
-            <div class="ad-card-num w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold bg-[#0EA5E9]/15 text-[#0EA5E9] border border-[#0EA5E9]/30">${i+1}</div>
-            <div class="ad-card-title text-xs font-bold text-[#F1F5F9] truncate max-w-[80%]">${title}</div>
+            <div class="ad-card-title text-[13px] font-bold text-[#F1F5F9] truncate max-w-[100%]">${title}</div>
           </div>
-          <button class="ad-card-copy text-slate-500 hover:text-white transition-colors cursor-pointer shrink-0" onclick="copyAdCard(this)" title="Copiar este guión">📋</button>
+          <button class="ad-card-copy text-slate-500 hover:text-[#0EA5E9] transition-colors cursor-pointer shrink-0" onclick="copyAdCard(this)" title="Copiar texto">📋</button>
         </div>
-        <div class="ad-card-body text-xs text-[#94A3B8] leading-relaxed overflow-x-auto break-words">${body}</div>
+        <div class="ad-card-body text-xs text-[#94A3B8] leading-relaxed break-words" style="word-break: break-word; overflow-wrap: break-word;">${body}</div>
       </div>`;
   }).join('');
 
@@ -5183,8 +5222,11 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
     const controller = new AbortController();
     const tmout = setTimeout(() => controller.abort(), 55000);
     const res = await fetch('/api', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8, apiKey: localStorage.getItem('gemini_api_key') || undefined }),
+      method: 'POST', headers: { 
+        'Content-Type': 'application/json',
+        'x-gemini-api-key': localStorage.getItem('gemini_api_key') || ''
+      },
+      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8 }),
       signal: controller.signal
     });
     clearTimeout(tmout);

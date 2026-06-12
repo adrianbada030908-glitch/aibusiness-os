@@ -146,8 +146,8 @@ export async function onRequest(context) {
 
   try {
     const body = await request.json().catch(() => ({}));
-    const { systemPrompt, prompt, temperature, maxTokens, apiKey: userApiKey } = body;
-
+    const { systemPrompt, prompt, temperature, maxTokens } = body;
+    const userApiKey = request.headers.get('x-gemini-api-key');
     if (!prompt || typeof prompt !== 'string') {
       return errorResponse('Falta el campo "prompt" en el body.', 400);
     }
