@@ -9,6 +9,29 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="src/styles/app.css">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"></noscript>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: { preflight: false },
+    theme: {
+      extend: {
+        colors: {
+          background: '#0B1120',
+          surface: '#1E293B',
+          primary: '#0EA5E9',
+          secondary: '#8B5CF6',
+          alert: '#EAB308',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* Fix tailwind borders without preflight */
+  .border, .border-t, .border-b, .border-l, .border-r, .border-x, .border-y {
+    border-style: solid;
+  }
+</style>
 <style>
 
   :root {
