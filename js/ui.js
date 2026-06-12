@@ -633,6 +633,11 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
         out.innerHTML = '<div class="error-msg">⏳ Límite de Gemini alcanzado. Esperá <strong>' + seg + ' segundos</strong> y volvé a intentar.</div>';
         return null;
       }
+      
+      if (msg.includes('503') || msg.includes('UNAVAILABLE') || msg.includes('high demand')) {
+        out.innerHTML = '<div class="error-msg">⏳ Los servidores de Google Gemini están congestionados en este momento. Por favor, intentá de nuevo en unos segundos.</div>';
+        return null;
+      }
       throw new Error(msg || 'Error ' + res.status);
     }
 
