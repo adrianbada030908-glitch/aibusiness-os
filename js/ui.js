@@ -36,9 +36,58 @@ function attachModuleGlobals() {
   });
 }
 
-// ─── Fecha / año dinámico (siempre el momento de uso) ─────────────────────────
 function getAppYear() {
   return new Date().getFullYear();
+}
+
+// Tailwind Paleta (Design System)
+const PALETTE = {
+  bg: '#0B1120',
+  card: '#1E293B',
+  primary: '#0EA5E9',
+  secondary: '#8B5CF6',
+  text: '#F1F5F9',
+  subtext: '#94A3B8',
+  alert: '#EAB308'
+};
+
+/* ------------------------------------------------------------------
+   REDESIGN COMPONENTS (V2)
+   ------------------------------------------------------------------ */
+
+// Trend Hunter AI Tabs (Pill-shaped)
+function renderTrendPills(containerId, activeTab, onSelect) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const tabs = ['Análisis', 'Vectores', 'Mapeo'];
+    container.innerHTML = `
+        <div class="flex space-x-2 p-1 bg-slate-900 rounded-full border border-slate-700">
+            ${tabs.map(tab => `
+                <button 
+                    data-tab="${tab}"
+                    class="pill-btn px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === tab ? 'bg-sky-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}"
+                >
+                    ${tab}
+                </button>
+            `).join('')}
+        </div>
+    `;
+    
+    // Use event delegation instead of broken inline onclick
+    container.querySelectorAll('.pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state visually
+            container.querySelectorAll('.pill-btn').forEach(b => {
+                b.className = 'pill-btn px-6 py-2 rounded-full text-sm font-medium transition-all text-slate-400 hover:text-white';
+            });
+            btn.className = 'pill-btn px-6 py-2 rounded-full text-sm font-medium transition-all bg-sky-500 text-white shadow-lg';
+            // Call the callback
+            if (typeof onSelect === 'function') {
+                onSelect(btn.dataset.tab);
+            }
+        });
+    });
 }
 
 function getAppDateLabel() {
@@ -2827,8 +2876,8 @@ Señal principal al algoritmo: [qué métrica prioriza este guión]
 | Día | Guión # | Mejor hora LATAM | Objetivo del día (awareness / consideración / conversión) |
 Incluí variedad de ángulos y una progresión lógica de frío a caliente.`;
 
-  const contResult = await callClaude(sys, prompt, 'contenido-output', 'Generando guiones de contenido...', TEMP.viral);
-  if (contResult) { const contOut = document.getElementById('contenido-output'); if (contOut) renderOutput(contOut, contResult, 'hooks'); }
+  const contResult = await callClaude(sys, prompt, 'contenido-screen', 'Generando guiones de contenido...', TEMP.viral);
+  if (contResult) { const contScreen = document.getElementById('contenido-screen'); if (contScreen) { contScreen.classList.remove('flex','items-center','justify-center','h-full'); renderOutput(contScreen, contResult, 'hooks'); } }
   markDone(3); incrementUsage();
 }
 
@@ -2882,6 +2931,103 @@ Orden de prioridad para testear estos ángulos, con justificación. Presupuesto 
 }
 
 // ─── Step 5: Emails ───────────────────────────────────────────────────────────
+// ─── Render Email Cards (V2 — Sidebar Index + Collapsible) ─────────────────
+function renderEmailCards(container, text) {
+  const sections = text.split(/(?=##\s+📧\s+EMAIL|##\s+EMAIL)/g).filter(s => s.trim().length > 50);
+
+  if (sections.length <= 1) {
+    // Fallback: render normal output into the parent
+    renderOutput(container, text);
+    return;
+  }
+
+  const emailColors = ['#38bdf8','#34d399','#a855f7','#f59e0b','#f87171','#818cf8'];
+
+  // Find the sidebar + cards container inside this wrapper
+  const sidebarEl = container.querySelector('#email-sidebar');
+  const cardsEl = container.querySelector('#email-cards-container');
+  if (!sidebarEl || !cardsEl) {
+    renderOutput(container, text);
+    return;
+  }
+
+  const sidebarItems = [];
+  const cardsHtml = sections.map((section, i) => {
+    const titleMatch = section.match(/##\s+(?:📧\s+)?EMAIL\s+\d+[:\s]+(.+)/);
+    const subjectMatch = section.match(/\*\*ASUNTO[^:]*:\*\*\s*★?\s*[ABC]:?\s*(.+?)(?:\n|$)/);
+    const whenMatch = section.match(/\*\*📅 Cuándo enviar:\*\*\s*(.+?)(?:\n|$)/);
+
+    const title = titleMatch ? titleMatch[1].trim() : `Email ${i+1}`;
+    const subject = subjectMatch ? subjectMatch[1].trim().replace(/[—–-]\s*.+/, '').trim() : 'Asunto pendiente';
+    const when = whenMatch ? whenMatch[1].trim() : '';
+    const color = emailColors[i % emailColors.length];
+    const id = `email-card-${i}`;
+
+    sidebarItems.push({ id, title, subject, color, index: i });
+
+    let body = section.replace(/##.*\n/, '').trim();
+    body = body
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^### (.+)$/gm, '<div class="ad-card-section-title">$1</div>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+      .replace(/\n\n/g, '<br>');
+
+    return `
+      <div class="email-card" id="${id}" style="border-left-color:${color}" data-email-index="${i}">
+        <div class="email-card-header">
+          <div class="flex items-center gap-3">
+            <div class="email-card-num" style="background:${color}20;color:${color};border-color:${color}40">${i+1}</div>
+            <div>
+              <div class="email-card-title">${title}</div>
+              ${subject ? `<div class="email-card-subject">📩 ${esc(subject)}</div>` : ''}
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            ${when ? `<span class="text-xs text-slate-500">${when}</span>` : ''}
+            <button class="email-card-copy" onclick="copyAdCard(this)" title="Copiar este email">📋</button>
+          </div>
+        </div>
+        <div class="email-card-body">${body}</div>
+      </div>`;
+  }).join('');
+
+  // Render sidebar
+  sidebarEl.innerHTML = `
+    <div class="email-sidebar-label">📬 Secuencia</div>
+    ${sidebarItems.map(item => `
+      <a href="#${item.id}" class="email-sidebar-link" data-target="${item.id}" style="border-left-color:${item.color}">
+        <span class="email-sidebar-num" style="background:${item.color}15;color:${item.color}">${item.index + 1}</span>
+        <div>
+          <div class="email-sidebar-title">${item.title}</div>
+          <div class="email-sidebar-subject">${esc(item.subject)}</div>
+        </div>
+      </a>
+    `).join('')}`;
+
+  // Render cards
+  cardsEl.innerHTML = `
+    <div class="email-cards-stack">${cardsHtml}</div>
+    <div class="action-row mt-4">
+      <button class="btn btn-copy" onclick="(() => { const t = Array.from(document.querySelectorAll('.email-card-body')).map(e => e.innerText).join('\\n\\n---\\n\\n'); navigator.clipboard.writeText(t).then(() => { this.textContent='✅ Copiado!'; setTimeout(() => this.textContent='📋 Copiar toda la secuencia', 2000); }); })()">📋 Copiar toda la secuencia</button>
+    </div>`;
+
+  // Add smooth scroll highlight for sidebar links
+  sidebarEl.querySelectorAll('.email-sidebar-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(link.dataset.target);
+      if (!target) return;
+      sidebarEl.querySelectorAll('.email-sidebar-link').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.style.transition = 'box-shadow 0.3s';
+      target.style.boxShadow = '0 0 20px rgba(56,189,248,0.2)';
+      setTimeout(() => { target.style.boxShadow = ''; }, 1500);
+    });
+  });
+}
+
 async function generarEmails() {
   const leadMagnet = document.getElementById('lead-magnet').value;
   const tipo = document.getElementById('tipo-email').value;
@@ -2928,7 +3074,25 @@ C: [asunto 3] — [disparador psicológico]
 **P.D.:** [si aplica — a menudo el segundo elemento más leído del email]
 ---`;
 
-  await callClaude(sys, prompt, 'email-output', 'Escribiendo tu secuencia de emails...');
+  const emailOut = document.getElementById('email-output');
+  const wrapper = document.getElementById('email-output-wrapper');
+
+  // Show wrapper, hide fallback before generating
+  if (wrapper) wrapper.style.display = 'none';
+  if (emailOut) emailOut.style.display = 'none';
+
+  // Use callClaudeRaw — returns raw text, no HTML rendering
+  const result = await callClaudeRaw(sys, prompt, emailOut, 'Escribiendo tu secuencia de emails...');
+
+  // Render into email cards from raw text
+  if (result && wrapper) {
+    renderEmailCards(wrapper, result);
+    wrapper.style.display = 'flex';
+  } else if (result && emailOut) {
+    renderOutput(emailOut, result);
+    emailOut.style.display = 'block';
+  }
+
   markDone(5); incrementUsage();
 }
 
