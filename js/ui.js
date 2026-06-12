@@ -609,7 +609,8 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
         systemPrompt: withDateContext(systemPrompt),
         prompt: userPrompt,
         temperature: temperatura,
-        maxTokens: maxTok
+        maxTokens: maxTok,
+        apiKey: localStorage.getItem('gemini_api_key') || undefined
       }),
       signal: controller.signal
     });
@@ -712,7 +713,8 @@ async function callClaudeRaw(systemPrompt, userPrompt, outputEl, loadingMsg) {
         systemPrompt: withDateContext(systemPrompt),
         prompt: userPrompt,
         temperature: 0.7,
-        maxTokens: 8192
+        maxTokens: 8192,
+        apiKey: localStorage.getItem('gemini_api_key') || undefined
       }),
       signal: controller.signal
     });
@@ -5182,7 +5184,7 @@ Recuerda devolver la respuesta ÚNICAMENTE en el formato JSON estructurado que d
     const tmout = setTimeout(() => controller.abort(), 55000);
     const res = await fetch('/api', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8 }),
+      body: JSON.stringify({ systemPrompt: withDateContext(sys), prompt, maxTokens: 8192, temperature: 0.8, apiKey: localStorage.getItem('gemini_api_key') || undefined }),
       signal: controller.signal
     });
     clearTimeout(tmout);

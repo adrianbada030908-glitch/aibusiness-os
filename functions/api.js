@@ -146,7 +146,7 @@ export async function onRequest(context) {
 
   try {
     const body = await request.json().catch(() => ({}));
-    const { systemPrompt, prompt, temperature, maxTokens } = body;
+    const { systemPrompt, prompt, temperature, maxTokens, apiKey: userApiKey } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return errorResponse('Falta el campo "prompt" en el body.', 400);
@@ -155,7 +155,7 @@ export async function onRequest(context) {
     // Combinar el systemPrompt con el prompt del usuario
     const finalPrompt = systemPrompt ? `${systemPrompt}\n\nUser Request:\n${prompt}` : prompt;
 
-    const apiKey = env.GEMINI_API_KEY;
+    const apiKey = userApiKey || env.GEMINI_API_KEY;
     if (!apiKey) {
       return errorResponse('GEMINI_API_KEY no configurada en el Worker.', 500);
     }
