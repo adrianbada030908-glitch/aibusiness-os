@@ -858,7 +858,7 @@ function renderAdCards(container, text) {
 
 // Render guiones en cards
 function renderScriptCards(container, text) {
-  const sections = text.split(/(?=##\s+🎬\s+GUIÓN|##\s+GUIÓN)/g).filter(s => s.trim().length > 50);
+  const sections = text.split(/(?=##\s+🎬\s+GUIÓN|##\s+GUIÓN)/g).filter(s => s.trim().length > 50 && s.includes('##'));
 
   if (sections.length <= 1) { renderOutput(container, text, 'skip'); return; }
 
@@ -884,21 +884,60 @@ function renderScriptCards(container, text) {
         <div class="ad-card-header flex items-center justify-between gap-2 border-b border-slate-700/50 pb-2 mb-3">
           <div class="flex items-center gap-2">
             <div class="ad-card-num w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold bg-[#0EA5E9]/15 text-[#0EA5E9] border border-[#0EA5E9]/30">${i+1}</div>
-            <div class="ad-card-title text-xs font-bold text-[#F1F5F9] truncate max-w-[160px]">${title}</div>
+            <div class="ad-card-title text-xs font-bold text-[#F1F5F9] truncate max-w-[80%]">${title}</div>
           </div>
-          <button class="ad-card-copy text-slate-500 hover:text-white transition-colors cursor-pointer" onclick="copyAdCard(this)" title="Copiar este guión">📋</button>
+          <button class="ad-card-copy text-slate-500 hover:text-white transition-colors cursor-pointer shrink-0" onclick="copyAdCard(this)" title="Copiar este guión">📋</button>
         </div>
-        <div class="ad-card-body text-xs text-[#94A3B8] leading-relaxed">${body}</div>
+        <div class="ad-card-body text-xs text-[#94A3B8] leading-relaxed overflow-x-auto break-words">${body}</div>
       </div>`;
   }).join('');
 
   container.innerHTML = `
     <div class="output-area p-1">
-      <div class="ad-cards-grid flex flex-col gap-1">${cards}</div>
+      <div class="ad-cards-grid flex flex-col gap-1" id="pdf-content-area">${cards}</div>
       <div class="action-row mt-3 pt-3 border-t border-slate-700/50 flex gap-2">
-        <button class="btn btn-copy flex-1 py-2 text-xs font-bold bg-[#0EA5E9] text-slate-950 rounded-lg text-center" onclick="copyText(this)">📋 Copiar todo</button>
+        <button class="btn btn-download flex-1 py-2 text-xs font-bold bg-[#0EA5E9] hover:bg-sky-400 text-slate-950 rounded-lg text-center transition-colors" onclick="downloadScriptsPDF(this)">📄 Descargar Guiones en PDF</button>
       </div>
     </div>`;
+}
+
+async function downloadScriptsPDF(btn) {
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Generando PDF...';
+  
+  const element = document.getElementById('pdf-content-area');
+  
+  // Clonar para no alterar la vista web durante la generación
+  const clone = element.cloneNode(true);
+  clone.style.padding = '20px';
+  clone.style.backgroundColor = '#1E293B';
+  clone.style.color = '#F1F5F9';
+  
+  // Ocultar botones de "Copiar" en el PDF
+  const copyBtns = clone.querySelectorAll('.ad-card-copy');
+  copyBtns.forEach(b => b.style.display = 'none');
+  
+  const opt = {
+    margin:       0.5,
+    filename:     'Guiones_Virales_AIBusinessOS.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  
+  try {
+    if (typeof html2pdf !== 'undefined') {
+      await html2pdf().set(opt).from(clone).save();
+      btn.textContent = '✅ PDF Descargado';
+    } else {
+      btn.textContent = '❌ Error: html2pdf no cargado';
+    }
+  } catch (err) {
+    console.error(err);
+    btn.textContent = '❌ Error al generar';
+  }
+  
+  setTimeout(() => btn.textContent = originalText, 3000);
 }
 
 function copyAdCard(btn) {
