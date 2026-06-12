@@ -623,7 +623,10 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
     await new Promise(r => setTimeout(r, 300));
 
     if (!res.ok) {
-      const msg = await parseProxyError(res);
+      let msg = await parseProxyError(res);
+      if (typeof msg !== 'string') {
+        msg = JSON.stringify(msg);
+      }
       if (msg.includes('quota') || msg.includes('Quota') || msg.includes('429')) {
         const retryMatch = msg.match(/retry in ([\d.]+)s/i);
         const seg = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) : 60;
