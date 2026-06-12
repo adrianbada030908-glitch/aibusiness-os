@@ -542,21 +542,33 @@ async function callClaude(systemPrompt, userPrompt, outputId, loadingMsg, temper
   const loaderId = 'loader-' + outputId;
 
   out.innerHTML = `
-  <div class="output-area loading" style="padding:32px 20px;">
-    <div class="loader">
-      <div class="loader-step-dots">
-        <div class="loader-dot active" id="${loaderId}-d0"></div>
-        <div class="loader-dot" id="${loaderId}-d1"></div>
-        <div class="loader-dot" id="${loaderId}-d2"></div>
-        <div class="loader-dot" id="${loaderId}-d3"></div>
+  <div class="flex flex-col items-center justify-center h-full min-h-[300px] w-full p-8">
+    <div class="relative flex items-center justify-center mb-8">
+      <div class="absolute bg-[#0EA5E9]/20 blur-[32px] rounded-full w-32 h-32 animate-pulse"></div>
+      <div class="w-20 h-20 bg-[#1E293B] border border-[#0EA5E9]/40 rounded-3xl shadow-[0_0_30px_rgba(14,165,233,0.2)] flex items-center justify-center relative z-10 overflow-hidden group">
+        <div class="absolute inset-[-50%] bg-gradient-to-r from-transparent via-[#0EA5E9]/30 to-transparent animate-[spin_3s_linear_infinite]"></div>
+        <div class="absolute inset-[2px] bg-[#0B1120] rounded-[22px] flex items-center justify-center">
+          <span class="text-3xl animate-bounce" style="animation-duration: 2s;">✨</span>
+        </div>
       </div>
-      <div class="progress-wrap" style="width:280px;">
-        <div class="progress-bar" id="${loaderId}-bar" style="width:0%"></div>
+    </div>
+    
+    <h3 class="text-lg font-bold text-[#F1F5F9] mb-2 tracking-wide text-center" id="${loaderId}-msg">${loadingMsg}</h3>
+    <p class="text-xs text-[#94A3B8] text-center mb-6">El modelo está procesando tu solicitud...</p>
+    
+    <div class="w-full max-w-md">
+      <div class="flex justify-between text-[11px] uppercase tracking-widest text-[#94A3B8] font-bold mb-3 px-1">
+        <span>Progreso</span>
+        <span class="text-[#0EA5E9]" id="${loaderId}-pct">0%</span>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span class="progress-pct" id="${loaderId}-pct">0%</span>
-        <div class="loader-text" id="${loaderId}-msg">${loadingMsg}</div>
+      <div class="w-full h-2 bg-[#0B1120] border border-slate-700/50 rounded-full overflow-hidden shadow-inner">
+        <div class="h-full bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] rounded-full transition-all duration-1000 ease-out relative" id="${loaderId}-bar" style="width:0%"></div>
       </div>
+    </div>
+    
+    <!-- Puntos de legado ocultos para que el JS existente no falle -->
+    <div class="hidden">
+      <div id="${loaderId}-d0"></div><div id="${loaderId}-d1"></div><div id="${loaderId}-d2"></div><div id="${loaderId}-d3"></div>
     </div>
   </div>`;
 
