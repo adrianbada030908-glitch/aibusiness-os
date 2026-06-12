@@ -51,6 +51,205 @@ const PALETTE = {
   alert: '#EAB308'
 };
 
+const CATEGORY_EMOJIS = {
+  'Salud y bienestar': '🏥',
+  'Finanzas personales': '💰',
+  'Tecnología e IA': '🤖',
+  'Negocios digitales': '🚀',
+  'Productividad': '⚡',
+  'Relaciones y lifestyle': '❤️',
+  'Fitness y deporte': '🏋️',
+  'Educación y carreras': '🎓',
+  'Tendencias virales TikTok': '🔥',
+  'Nichos ocultos': '🔍',
+  'Latinoamérica': '🌎',
+  'Estados Unidos': '🇺🇸',
+  'México': '🇲🇽',
+  'España': '🇪🇸',
+  'Venezuela': '🇻🇪',
+  'Colombia': '🇨🇴',
+  'Argentina': '🇦🇷',
+  'Global': '🌐',
+  'Ganar dinero online': '💰',
+  'Salud y pérdida de peso': '🥗',
+  'Productividad y hábitos': '⏰',
+  'IA y tecnología': '🤖',
+  'Relaciones y autoestima': '🌱',
+  'Emprendimiento': '🚀',
+  'Lifestyle y minimalismo': '🏡',
+  'TikTok': '🎵',
+  'Instagram Reels': '📸',
+  'YouTube Shorts': '▶️',
+  'Las 3 plataformas': '🌐',
+  'Testeo de ángulos (ABO)': '🔬',
+  'Escalar un ganador (CBO)': '📈',
+  'Retargeting (visitantes landing)': '🔄',
+  'Anuncio frío (audience nueva)': '❄️',
+  '5 ángulos diferentes': '🎭',
+  '3 ángulos × 2 variaciones': '👥',
+  '10 hooks para testear': '⚓',
+  'Secuencia de bienvenida + venta (5 emails)': '👋',
+  'Secuencia de nurturing (3 emails de valor + oferta)': '🌱',
+  'Email de venta directo (1 email potente)': '💥',
+  'Secuencia de abandono de carrito (3 emails)': '🛒',
+  'Ebook / PDF': '📚',
+  'Curso online': '🎓',
+  'Membresía': '👥',
+  'Templates / Plantillas': '🛠️',
+  'Coaching / Mentoría': '🤝',
+  'Cualquier formato': '🌐',
+  '3 guiones': '📄',
+  '5 guiones': '📃',
+  '7 guiones (1 semana)': '📅',
+  '14 guiones (2 semanas)': '📆'
+};
+
+function initCustomDropdown(selectId, emojiMap = CATEGORY_EMOJIS) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+
+  if (select.dataset.customInitialized) return;
+  select.dataset.customInitialized = "true";
+
+  select.style.display = 'none';
+
+  const container = document.createElement('div');
+  container.className = 'relative w-full custom-select-container';
+
+  const selectedText = select.options[select.selectedIndex]?.text || '';
+  const selectedEmoji = emojiMap[selectedText] || '🔹';
+
+  const triggerBtn = document.createElement('button');
+  triggerBtn.className = 'w-full flex items-center justify-between bg-[#1E293B] border border-slate-700 rounded-xl px-4 py-3 text-[#F1F5F9] focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none text-left text-sm transition-all cursor-pointer';
+  triggerBtn.innerHTML = `
+    <span class="flex items-center gap-2 select-value-label">
+      <span class="text-base">${selectedEmoji}</span>
+      <span>${selectedText}</span>
+    </span>
+    <span class="text-slate-500 text-xs transition-transform duration-200 chevron-icon">▼</span>
+  `;
+
+  const dropdownPanel = document.createElement('div');
+  dropdownPanel.className = 'absolute z-50 left-0 right-0 mt-2 bg-[#1E293B] border border-slate-700/80 rounded-xl shadow-2xl p-2 hidden select-dropdown-panel transition-all';
+  
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Buscar...';
+  searchInput.className = 'w-full mb-2 bg-[#0B1120] border border-slate-700 rounded-lg px-3 py-2 text-xs text-[#F1F5F9] outline-none focus:border-[#0EA5E9] transition-all';
+
+  const listContainer = document.createElement('div');
+  listContainer.className = 'max-h-48 overflow-y-auto space-y-1 pr-1 custom-scrollbar';
+
+  const options = Array.from(select.options);
+  
+  function renderOptions(filterText = '') {
+    listContainer.innerHTML = '';
+    const filtered = options.filter(opt => opt.text.toLowerCase().includes(filterText.toLowerCase()));
+    
+    if (filtered.length === 0) {
+      listContainer.innerHTML = '<div class="text-xs text-slate-500 px-3 py-2 text-center">Sin resultados</div>';
+      return;
+    }
+
+    filtered.forEach(opt => {
+      const emoji = emojiMap[opt.text] || '🔹';
+      const item = document.createElement('div');
+      const isSelected = opt.value === select.value;
+      item.className = `flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+        isSelected ? 'bg-[#0EA5E9]/15 text-[#0EA5E9]' : 'text-[#94A3B8] hover:bg-[#0EA5E9]/5 hover:text-[#F1F5F9]'
+      }`;
+      item.innerHTML = `
+        <span class="text-sm">${emoji}</span>
+        <span>${opt.text}</span>
+      `;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        select.value = opt.value;
+        triggerBtn.querySelector('.select-value-label').innerHTML = `
+          <span class="text-base">${emoji}</span>
+          <span>${opt.text}</span>
+        `;
+        
+        select.dispatchEvent(new Event('change'));
+        
+        dropdownPanel.classList.add('hidden');
+        triggerBtn.querySelector('.chevron-icon').style.transform = '';
+        searchInput.value = '';
+        renderOptions();
+      });
+      listContainer.appendChild(item);
+    });
+  }
+
+  renderOptions();
+
+  searchInput.addEventListener('input', (e) => {
+    renderOptions(e.target.value);
+  });
+
+  triggerBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    document.querySelectorAll('.select-dropdown-panel').forEach(panel => {
+      if (panel !== dropdownPanel) {
+        panel.classList.add('hidden');
+        const trigger = panel.previousElementSibling;
+        if (trigger) {
+          const chevron = trigger.querySelector('.chevron-icon');
+          if (chevron) chevron.style.transform = '';
+        }
+      }
+    });
+
+    const isHidden = dropdownPanel.classList.contains('hidden');
+    if (isHidden) {
+      dropdownPanel.classList.remove('hidden');
+      triggerBtn.querySelector('.chevron-icon').style.transform = 'rotate(180deg)';
+      searchInput.focus();
+    } else {
+      dropdownPanel.classList.add('hidden');
+      triggerBtn.querySelector('.chevron-icon').style.transform = '';
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) {
+      dropdownPanel.classList.add('hidden');
+      triggerBtn.querySelector('.chevron-icon').style.transform = '';
+    }
+  });
+
+  dropdownPanel.appendChild(searchInput);
+  dropdownPanel.appendChild(listContainer);
+  container.appendChild(triggerBtn);
+  container.appendChild(dropdownPanel);
+
+  select.parentNode.insertBefore(container, select);
+}
+
+function initAllCustomDropdowns() {
+  const dropdownIds = [
+    'trend-type-nichos',
+    'pais-nichos',
+    'trend-type-viralidad',
+    'plataforma-viralidad',
+    'pais-competencia',
+    'tipo-competencia',
+    'cant-guiones',
+    'objetivo-ad',
+    'cant-ads',
+    'tipo-email'
+  ];
+  dropdownIds.forEach(id => {
+    try {
+      initCustomDropdown(id);
+    } catch (e) {
+      console.warn('Could not initialize dropdown for ID:', id, e);
+    }
+  });
+}
+
 /* ------------------------------------------------------------------
    REDESIGN COMPONENTS (V2)
    ------------------------------------------------------------------ */
@@ -243,6 +442,9 @@ function initDashboard() {
 
   // Sync usage al dashboard
   syncDashUsage();
+
+  // Initialize V2 Custom Searchable Dropdowns
+  initAllCustomDropdowns();
 }
 
 async function syncDashUsage() {
@@ -565,42 +767,91 @@ function renderOutput(container, text, mode = 'default') {
 
 // Render anuncios en cards premium
 function renderAdCards(container, text) {
-  const sections = text.split(/(?=##\s+🎯\s+ÁNGULO|##\s+ÁNGULO)/g).filter(s => s.trim().length > 50);
+  const sections = text.split(/(?=##\s+🎯\s+ÁNGULO|##\s+ÁNGULO|##\s+📣\s+ÁNGULO)/g).filter(s => s.trim().length > 50);
 
   if (sections.length <= 1) { renderOutput(container, text, 'skip'); return; }
 
-  const adColors = ['#38bdf8','#34d399','#a855f7','#f59e0b','#f87171','#818cf8'];
+  const adColors = ['#0EA5E9','#34d399','#8B5CF6','#EAB308','#f87171','#818cf8'];
 
   const cards = sections.map((section, i) => {
-    const titleMatch = section.match(/##\s+(?:🎯\s+)?ÁNGULO\s+\d+[:\s]+(.+)/);
+    const titleMatch = section.match(/##\s+(?:🎯|📣)?\s*ÁNGULO\s+\d+[:\s]+(.+)/);
     const title = titleMatch ? titleMatch[1].trim() : `Ángulo ${i+1}`;
     const color = adColors[i % adColors.length];
 
-    let body = section.replace(/##.*\n/, '').trim();
-    // Convertir markdown básico
-    body = body
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^### (.+)$/gm, '<div class="ad-card-section-title">$1</div>')
-      .replace(/^- (.+)$/gm, '<li>$1</li>')
-      .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-      .replace(/\n\n/g, '<br>');
+    // Parse subcomponents
+    const primaryTextMatch = section.match(/\*\*TEXTO PRINCIPAL[^*]*:\*\*\s*([\s\S]*?)(?=\*\*HEADLINE|\*\*DESCRIPCIÓN|\*\*CTA|\*\*CREATIVIDAD|$)/i);
+    const headlineMatch = section.match(/\*\*HEADLINE[^*]*:\*\*\s*(.*?)(?=\n|\*\*DESCRIPCIÓN|\*\*CTA|\*\*CREATIVIDAD|$)/i);
+    const descMatch = section.match(/\*\*DESCRIPCIÓN[^*]*:\*\*\s*(.*?)(?=\n|\*\*CTA|\*\*CREATIVIDAD|$)/i);
+    const ctaMatch = section.match(/\*\*CTA[^*]*:\*\*\s*(.*?)(?=\n|\*\*CREATIVIDAD|$)/i);
+    const creativeMatch = section.match(/\*\*CREATIVIDAD RECOMENDADA[^*]*:\*\*\s*([\s\S]*?)(?=\*\*SEGMENTACIÓN|$)/i);
+    const targetingMatch = section.match(/\*\*SEGMENTACIÓN SUGERIDA[^*]*:\*\*\s*([\s\S]*?)(?=\*\*KPI|$)/i);
+
+    const primaryText = primaryTextMatch ? primaryTextMatch[1].trim().replace(/\n\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') : '';
+    const headline = headlineMatch ? headlineMatch[1].trim() : '¡Lanzamiento Especial!';
+    const description = descMatch ? descMatch[1].trim() : 'Disponible por tiempo limitado';
+    const cta = ctaMatch ? ctaMatch[1].trim().replace(/[\[\]]/g, '') : 'Más información';
+    const creative = creativeMatch ? creativeMatch[1].trim().replace(/\n\n/g, '<br>') : '';
+    const targeting = targetingMatch ? targetingMatch[1].trim().replace(/\n\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') : '';
+
+    const brandName = window.appState?.nombreProducto || 'AI Business OS';
 
     return `
-      <div class="ad-card" style="border-left-color:${color}">
-        <div class="ad-card-header">
-          <div class="ad-card-num" style="background:${color}20;color:${color};border-color:${color}40">${i+1}</div>
-          <div class="ad-card-title">${title}</div>
-          <button class="ad-card-copy" onclick="copyAdCard(this)" title="Copiar este ángulo">📋</button>
+      <div class="ad-card bg-[#1E293B] border border-slate-700/50 rounded-2xl mb-8 overflow-hidden shadow-xl" style="border-left: 4px solid ${color}">
+        <!-- Mockup Header -->
+        <div class="p-4 border-b border-slate-700/30 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <!-- Brand Avatar -->
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#0EA5E9] to-[#8B5CF6] flex items-center justify-center font-bold text-xs text-slate-950">
+              ⚡
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#F1F5F9]">${brandName}</div>
+              <div class="text-[10px] text-[#94A3B8] flex items-center gap-1">Publicidad · 🌐</div>
+            </div>
+          </div>
+          <button class="ad-card-copy text-slate-500 hover:text-white transition-colors cursor-pointer bg-transparent border-0" onclick="copyAdCard(this)" title="Copiar este anuncio">📋</button>
         </div>
-        <div class="ad-card-body">${body}</div>
+
+        <!-- Copy Area -->
+        <div class="px-4 py-3 text-xs text-[#F1F5F9] leading-relaxed select-all">
+          ${primaryText || section.replace(/##.*\n/, '').trim().substring(0, 300) + '...'}
+        </div>
+
+        <!-- Creative Area / Media Placeholder -->
+        <div class="bg-gradient-to-br from-[#0B1120] to-[#1E293B] border-y border-slate-700/30 h-48 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden">
+          <!-- Decorative background graphic -->
+          <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#0EA5E9_1px,transparent_1px)] [background-size:16px_16px]"></div>
+          <div class="relative z-10 space-y-2">
+            <span class="text-2xl text-[#8B5CF6]">🖼️</span>
+            <div class="text-xs font-bold text-[#F1F5F9] max-w-xs mx-auto">${title}</div>
+            <div class="text-[9px] text-[#94A3B8] max-w-xs mx-auto italic">${creative.replace(/<br>/g, ' ').substring(0, 120)}...</div>
+          </div>
+        </div>
+
+        <!-- Mockup Footer -->
+        <div class="bg-[#0B1120] p-4 flex items-center justify-between border-b border-slate-700/30">
+          <div class="flex-1 min-w-0 pr-4">
+            <div class="text-[10px] text-[#94A3B8] uppercase tracking-wider font-bold">Patrocinado</div>
+            <div class="text-xs font-bold text-[#F1F5F9] truncate mt-0.5">${headline}</div>
+            <div class="text-[10px] text-[#94A3B8] truncate">${description}</div>
+          </div>
+          <button class="bg-[#1E293B] border border-slate-700 hover:border-[#0EA5E9] hover:bg-[#0EA5E9]/10 text-[#F1F5F9] hover:text-[#0EA5E9] text-[11px] font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer shrink-0">
+            ${cta}
+          </button>
+        </div>
+
+        <!-- Meta Info / targeting Suggestion -->
+        <div class="p-4 bg-[#1E293B]/50 text-[11px] text-[#94A3B8] space-y-2 border-t border-slate-700/30">
+          ${targeting ? `<div><strong>🎯 Segmentación sugerida:</strong><br>${targeting}</div>` : ''}
+        </div>
       </div>`;
   }).join('');
 
   container.innerHTML = `
-    <div class="output-area">
-      <div class="ad-cards-grid">${cards}</div>
-      <div class="action-row">
-        <button class="btn btn-copy" onclick="copyText(this)">📋 Copiar todo</button>
+    <div class="output-area p-1">
+      <div class="flex flex-col">${cards}</div>
+      <div class="action-row mt-4 pt-4 border-t border-slate-700/50">
+        <button class="btn btn-copy w-full py-3 text-xs font-bold bg-[#0EA5E9] text-slate-950 rounded-xl" onclick="copyText(this)">📋 Copiar toda la campaña</button>
       </div>
     </div>`;
 }
@@ -617,6 +868,11 @@ function renderScriptCards(container, text) {
 
     let body = section.replace(/##.*\n/, '').trim();
     body = body
+      .replace(/\*\*HOOK\s*(\(.*?\))?[^*]*:\*\*/gi, '<div class="text-[10px] tracking-wider text-[#0EA5E9] font-extrabold uppercase mt-4 mb-1 border-b border-[#0EA5E9]/20 pb-0.5">🎬 Hook (0-3s)</div>')
+      .replace(/\*\*DESARROLLO[^*]*:\*\*/gi, '<div class="text-[10px] tracking-wider text-[#8B5CF6] font-extrabold uppercase mt-4 mb-1 border-b border-[#8B5CF6]/20 pb-0.5">📈 Desarrollo</div>')
+      .replace(/\*\*CTA[^*]*:\*\*/gi, '<div class="text-[10px] tracking-wider text-[#34d399] font-extrabold uppercase mt-4 mb-1 border-b border-[#34d399]/20 pb-0.5">🎯 CTA</div>')
+      .replace(/\*\*PRODUCCIÓN[^*]*:\*\*/gi, '<div class="text-[10px] tracking-wider text-[#EAB308] font-extrabold uppercase mt-4 mb-1 border-b border-[#EAB308]/20 pb-0.5">🛠️ Producción</div>')
+      .replace(/\*\*MÉTRICAS ESPERADAS[^*]*:\*\*/gi, '<div class="text-[10px] tracking-wider text-[#f87171] font-extrabold uppercase mt-4 mb-1 border-b border-[#f87171]/20 pb-0.5">📊 Métricas</div>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/^### (.+)$/gm, '<div class="ad-card-section-title">$1</div>')
       .replace(/^- (.+)$/gm, '<li>$1</li>')
@@ -624,21 +880,23 @@ function renderScriptCards(container, text) {
       .replace(/\n\n/g, '<br>');
 
     return `
-      <div class="ad-card" style="border-left-color:#818cf8">
-        <div class="ad-card-header">
-          <div class="ad-card-num" style="background:#818cf820;color:#818cf8;border-color:#818cf840">${i+1}</div>
-          <div class="ad-card-title">🎬 ${title}</div>
-          <button class="ad-card-copy" onclick="copyAdCard(this)" title="Copiar este guión">📋</button>
+      <div class="ad-card phone-script-item bg-[#1E293B] border border-slate-700/50 rounded-2xl p-4 mb-4" style="border-left: 3px solid #0EA5E9;">
+        <div class="ad-card-header flex items-center justify-between gap-2 border-b border-slate-700/50 pb-2 mb-3">
+          <div class="flex items-center gap-2">
+            <div class="ad-card-num w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold bg-[#0EA5E9]/15 text-[#0EA5E9] border border-[#0EA5E9]/30">${i+1}</div>
+            <div class="ad-card-title text-xs font-bold text-[#F1F5F9] truncate max-w-[160px]">${title}</div>
+          </div>
+          <button class="ad-card-copy text-slate-500 hover:text-white transition-colors cursor-pointer" onclick="copyAdCard(this)" title="Copiar este guión">📋</button>
         </div>
-        <div class="ad-card-body">${body}</div>
+        <div class="ad-card-body text-xs text-[#94A3B8] leading-relaxed">${body}</div>
       </div>`;
   }).join('');
 
   container.innerHTML = `
-    <div class="output-area">
-      <div class="ad-cards-grid">${cards}</div>
-      <div class="action-row">
-        <button class="btn btn-copy" onclick="copyText(this)">📋 Copiar todo</button>
+    <div class="output-area p-1">
+      <div class="ad-cards-grid flex flex-col gap-1">${cards}</div>
+      <div class="action-row mt-3 pt-3 border-t border-slate-700/50 flex gap-2">
+        <button class="btn btn-copy flex-1 py-2 text-xs font-bold bg-[#0EA5E9] text-slate-950 rounded-lg text-center" onclick="copyText(this)">📋 Copiar todo</button>
       </div>
     </div>`;
 }
@@ -2936,14 +3194,12 @@ function renderEmailCards(container, text) {
   const sections = text.split(/(?=##\s+📧\s+EMAIL|##\s+EMAIL)/g).filter(s => s.trim().length > 50);
 
   if (sections.length <= 1) {
-    // Fallback: render normal output into the parent
     renderOutput(container, text);
     return;
   }
 
-  const emailColors = ['#38bdf8','#34d399','#a855f7','#f59e0b','#f87171','#818cf8'];
+  const emailColors = ['#0EA5E9','#34d399','#8B5CF6','#EAB308','#f87171','#818cf8'];
 
-  // Find the sidebar + cards container inside this wrapper
   const sidebarEl = container.querySelector('#email-sidebar');
   const cardsEl = container.querySelector('#email-cards-container');
   if (!sidebarEl || !cardsEl) {
@@ -2954,11 +3210,13 @@ function renderEmailCards(container, text) {
   const sidebarItems = [];
   const cardsHtml = sections.map((section, i) => {
     const titleMatch = section.match(/##\s+(?:📧\s+)?EMAIL\s+\d+[:\s]+(.+)/);
-    const subjectMatch = section.match(/\*\*ASUNTO[^:]*:\*\*\s*★?\s*[ABC]:?\s*(.+?)(?:\n|$)/);
+    const subjectMatch = section.match(/\*\*ASUNTO[^:]*:\*\*\s*★?\s*[ABC]:?\s*(.+?)(?:\n|$)/) || section.match(/\*\*ASUNTO[^:]*:\*\*\s*(.+?)(?:\n|$)/);
     const whenMatch = section.match(/\*\*📅 Cuándo enviar:\*\*\s*(.+?)(?:\n|$)/);
+    const previewMatch = section.match(/\*\*Preview text:\*\*\s*(.+?)(?:\n|$)/i) || section.match(/Preview:\s*(.+?)(?:\n|$)/i);
 
     const title = titleMatch ? titleMatch[1].trim() : `Email ${i+1}`;
-    const subject = subjectMatch ? subjectMatch[1].trim().replace(/[—–-]\s*.+/, '').trim() : 'Asunto pendiente';
+    const subject = subjectMatch ? subjectMatch[1].trim().replace(/[—–-]\s*.+/, '').replace(/[★\*]/g, '').trim() : 'Asunto recomendado';
+    const previewText = previewMatch ? previewMatch[1].trim() : 'Pre-visualización de tu correo';
     const when = whenMatch ? whenMatch[1].trim() : '';
     const color = emailColors[i % emailColors.length];
     const id = `email-card-${i}`;
@@ -2966,7 +3224,11 @@ function renderEmailCards(container, text) {
     sidebarItems.push({ id, title, subject, color, index: i });
 
     let body = section.replace(/##.*\n/, '').trim();
-    body = body
+    const bodyMatch = body.match(/\*\*CUERPO COMPLETO:\*\*\s*([\s\S]+?)(?=\*\*CTA:|\*\*P\.D\.:|$)/i) ||
+                      body.match(/\*\*CUERPO:\*\*\s*([\s\S]+?)(?=\*\*CTA:|\*\*P\.D\.:|$)/i);
+    let bodyText = bodyMatch ? bodyMatch[1].trim() : body;
+    
+    bodyText = bodyText
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/^### (.+)$/gm, '<div class="ad-card-section-title">$1</div>')
       .replace(/^- (.+)$/gm, '<li>$1</li>')
@@ -2974,59 +3236,137 @@ function renderEmailCards(container, text) {
       .replace(/\n\n/g, '<br>');
 
     return `
-      <div class="email-card" id="${id}" style="border-left-color:${color}" data-email-index="${i}">
-        <div class="email-card-header">
-          <div class="flex items-center gap-3">
-            <div class="email-card-num" style="background:${color}20;color:${color};border-color:${color}40">${i+1}</div>
-            <div>
-              <div class="email-card-title">${title}</div>
-              ${subject ? `<div class="email-card-subject">📩 ${esc(subject)}</div>` : ''}
-            </div>
+      <div class="email-card-panel hidden bg-[#1E293B] border border-slate-700/50 rounded-2xl p-5 shadow-xl relative" id="${id}" data-email-index="${i}" style="border-left: 4px solid ${color}">
+        <!-- Floating actions -->
+        <div class="absolute top-4 right-4 flex items-center gap-1.5">
+          <button class="w-8 h-8 rounded-lg bg-[#0B1120] border border-slate-700 text-slate-400 hover:text-white hover:border-[#8B5CF6] hover:bg-[#8B5CF6]/10 transition-all cursor-pointer flex items-center justify-center" onclick="copyEmailContent('${id}')" title="Copiar este email">📋</button>
+          <button class="w-8 h-8 rounded-lg bg-[#0B1120] border border-slate-700 text-slate-400 hover:text-white hover:border-[#8B5CF6] hover:bg-[#8B5CF6]/10 transition-all cursor-pointer flex items-center justify-center" onclick="downloadEmailTxt('${id}')" title="Descargar como TXT">📥</button>
+          <button class="w-8 h-8 rounded-lg bg-[#0B1120] border border-slate-700 text-slate-400 hover:text-white hover:border-[#8B5CF6] hover:bg-[#8B5CF6]/10 transition-all cursor-pointer flex items-center justify-center" onclick="exportEmailSim('${id}')" title="Exportar">🚀</button>
+        </div>
+
+        <div class="mb-5 space-y-3">
+          <div class="pr-28">
+            <label class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block mb-1">📬 Asunto Recomendado</label>
+            <input type="text" readonly value="${esc(subject)}" class="w-full bg-[#0B1120] text-[#F1F5F9] border border-slate-700/50 rounded-xl px-3 py-2 text-xs focus:outline-none select-all" onclick="this.select()" />
           </div>
-          <div class="flex items-center gap-2">
-            ${when ? `<span class="text-xs text-slate-500">${when}</span>` : ''}
-            <button class="email-card-copy" onclick="copyAdCard(this)" title="Copiar este email">📋</button>
+          <div class="pr-28">
+            <label class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block mb-1">🔍 Texto de Vista Previa (Preview)</label>
+            <input type="text" readonly value="${esc(previewText)}" class="w-full bg-[#0B1120] text-[#F1F5F9] border border-slate-700/50 rounded-xl px-3 py-2 text-xs focus:outline-none select-all" onclick="this.select()" />
           </div>
         </div>
-        <div class="email-card-body">${body}</div>
+
+        <!-- Body Area -->
+        <div class="border-t border-slate-700/50 pt-4 mt-4">
+          <div class="text-sm font-bold text-[#F1F5F9] mb-3 flex items-center justify-between">
+            <span>✉️ Cuerpo del Mensaje</span>
+            ${when ? `<span class="text-[10px] bg-[#0EA5E9]/10 text-[#0EA5E9] border border-[#0EA5E9]/20 px-2.5 py-1 rounded-full">${when}</span>` : ''}
+          </div>
+          <div class="email-card-body text-xs text-[#94A3B8] leading-relaxed whitespace-pre-wrap select-all">${bodyText}</div>
+        </div>
       </div>`;
   }).join('');
 
-  // Render sidebar
+  // Render sidebar links
   sidebarEl.innerHTML = `
-    <div class="email-sidebar-label">📬 Secuencia</div>
+    <div class="email-sidebar-label text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2 mb-3">📬 Secuencia</div>
     ${sidebarItems.map(item => `
-      <a href="#${item.id}" class="email-sidebar-link" data-target="${item.id}" style="border-left-color:${item.color}">
-        <span class="email-sidebar-num" style="background:${item.color}15;color:${item.color}">${item.index + 1}</span>
-        <div>
-          <div class="email-sidebar-title">${item.title}</div>
-          <div class="email-sidebar-subject">${esc(item.subject)}</div>
+      <a href="#${item.id}" class="email-sidebar-link flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/50 transition-all" data-target="${item.id}" style="border-left: 2px solid transparent;">
+        <span class="email-sidebar-num w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold" style="background:${item.color}15;color:${item.color}">${item.index + 1}</span>
+        <div class="min-w-0 flex-1">
+          <div class="email-sidebar-title text-xs font-semibold text-slate-300 truncate">${item.title}</div>
+          <div class="email-sidebar-subject text-[10px] text-slate-500 truncate mt-0.5">${esc(item.subject)}</div>
         </div>
       </a>
     `).join('')}`;
 
-  // Render cards
+  // Render email cards area
   cardsEl.innerHTML = `
-    <div class="email-cards-stack">${cardsHtml}</div>
-    <div class="action-row mt-4">
-      <button class="btn btn-copy" onclick="(() => { const t = Array.from(document.querySelectorAll('.email-card-body')).map(e => e.innerText).join('\\n\\n---\\n\\n'); navigator.clipboard.writeText(t).then(() => { this.textContent='✅ Copiado!'; setTimeout(() => this.textContent='📋 Copiar toda la secuencia', 2000); }); })()">📋 Copiar toda la secuencia</button>
+    <div class="email-cards-stack flex flex-col gap-4">${cardsHtml}</div>
+    <div class="action-row mt-4 pt-4 border-t border-slate-700/50 flex gap-2 justify-between">
+      <button class="btn btn-copy flex-1 py-3 text-xs font-bold bg-[#0EA5E9] text-slate-950 rounded-xl cursor-pointer" onclick="copyAllEmailsSec()">📋 Copiar toda la secuencia</button>
     </div>`;
 
-  // Add smooth scroll highlight for sidebar links
-  sidebarEl.querySelectorAll('.email-sidebar-link').forEach(link => {
+  // Attach tabs interaction
+  const links = sidebarEl.querySelectorAll('.email-sidebar-link');
+  const panels = cardsEl.querySelectorAll('.email-card-panel');
+
+  function showEmailPanel(index) {
+    links.forEach((link, idx) => {
+      if (idx === index) {
+        link.classList.add('active');
+        link.style.borderLeftColor = sidebarItems[idx].color;
+      } else {
+        link.classList.remove('active');
+        link.style.borderLeftColor = 'transparent';
+      }
+    });
+
+    panels.forEach((panel, idx) => {
+      if (idx === index) {
+        panel.classList.remove('hidden');
+      } else {
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  links.forEach((link, index) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      const target = document.getElementById(link.dataset.target);
-      if (!target) return;
-      sidebarEl.querySelectorAll('.email-sidebar-link').forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      target.style.transition = 'box-shadow 0.3s';
-      target.style.boxShadow = '0 0 20px rgba(56,189,248,0.2)';
-      setTimeout(() => { target.style.boxShadow = ''; }, 1500);
+      showEmailPanel(index);
     });
   });
+
+  // Show first email by default
+  if (links.length > 0) {
+    showEmailPanel(0);
+  }
 }
+
+function copyEmailContent(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const subject = card.querySelector('input[value]').value;
+  const body = card.querySelector('.email-card-body').innerText;
+  const fullText = `Asunto: ${subject}\n\nCuerpo:\n${body}`;
+  navigator.clipboard.writeText(fullText).then(() => {
+    showToast('📋 Email copiado al portapapeles');
+  });
+}
+window.copyEmailContent = copyEmailContent;
+
+function downloadEmailTxt(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const subject = card.querySelector('input[value]').value;
+  const body = card.querySelector('.email-card-body').innerText;
+  const fullText = `Asunto: ${subject}\n\nCuerpo:\n${body}`;
+  const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${id}.txt`;
+  a.click();
+  showToast('📥 Archivo descargado');
+}
+window.downloadEmailTxt = downloadEmailTxt;
+
+function exportEmailSim(id) {
+  showToast('🚀 Secuencia exportada con éxito');
+}
+window.exportEmailSim = exportEmailSim;
+
+function copyAllEmailsSec() {
+  const texts = [];
+  document.querySelectorAll('.email-card-panel').forEach((panel, i) => {
+    const subject = panel.querySelector('input[value]').value;
+    const body = panel.querySelector('.email-card-body').innerText;
+    texts.push(`=== EMAIL ${i+1} ===\nAsunto: ${subject}\n\nCuerpo:\n${body}`);
+  });
+  navigator.clipboard.writeText(texts.join('\n\n--------------------------\n\n')).then(() => {
+    showToast('📋 Secuencia completa copiada');
+  });
+}
+window.copyAllEmailsSec = copyAllEmailsSec;
 
 async function generarEmails() {
   const leadMagnet = document.getElementById('lead-magnet').value;
@@ -3230,8 +3570,25 @@ Semana 4: primeras ventas y ajuste
 Meta realista: X seguidores / Y leads / Z ventas en el mes 1`;
   }
 
-  await callClaude(sys, prompt, outputId, loadingMsg);
-  incrementUsage();
+  const btn = document.querySelector(`button[onclick*="trendHunterAI('${subcat}')"]`);
+  let originalHtml = '';
+  if (btn) {
+    originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="animation: spin 1s linear infinite; width: 1.25rem; height: 1.25rem; vertical-align: middle; margin-right: 0.5rem;"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg> Analizando...`;
+  }
+
+  try {
+    await callClaude(sys, prompt, outputId, loadingMsg);
+    incrementUsage();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (btn) {
+      btn.innerHTML = originalHtml;
+      btn.disabled = false;
+    }
+  }
 }
 
 async function generarTraficoGratis() {

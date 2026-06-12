@@ -7,31 +7,32 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="src/styles/app.css">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"></noscript>
 <style>
 
   :root {
-    --bg: #020408;
-    --bg-elevated: #060b14;
+    --bg: #0B1120;
+    --bg-elevated: #1E293B;
     --surface: rgba(255,255,255,0.025);
     --surface2: rgba(255,255,255,0.045);
     --surface3: rgba(255,255,255,0.07);
     --border: rgba(255,255,255,0.06);
     --border2: rgba(255,255,255,0.1);
-    --border-focus: rgba(56,189,248,0.45);
-    --accent: #38bdf8;
-    --accent-bright: #7dd3fc;
-    --accent2: #60a5fa;
+    --border-focus: rgba(14,165,233,0.45);
+    --accent: #0EA5E9;
+    --accent-bright: #38bdf8;
+    --accent2: #8B5CF6;
     --accent-deep: #0284c7;
     --accent3: #34d399;
     --accent3-dim: rgba(52,211,153,0.12);
-    --text: #f1f5f9;
+    --text: #F1F5F9;
     --text-soft: #cbd5e1;
-    --muted: #475569;
-    --muted2: #94a3b8;
+    --muted: #94A3B8;
+    --muted2: #94A3B8;
     --danger: #f87171;
-    --warn: #fbbf24;
-    --glow: 0 0 80px rgba(56,189,248,0.12);
+    --warn: #EAB308;
+    --glow: 0 0 80px rgba(14,165,233,0.12);
     --radius-card: 20px;
     --radius-btn: 10px;
     --radius-input: 12px;
@@ -3774,47 +3775,65 @@
           <label>📱 Plataforma</label>
           <div class="grid grid-cols-3 gap-3" id="platform-buttons">
             <button class="platform-btn active" data-platform="TikTok" onclick="selectPlatform(this)">
-              <div class="text-2xl mb-1">🎵</div>
-              <div class="text-xs font-medium">TikTok</div>
+              <svg class="w-6 h-6 mx-auto mb-1 opacity-90 transition-transform duration-200 hover:scale-110" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem; width: 1.5rem; margin-left: auto; margin-right: auto;"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12.99 2.68 1.48 4.14 1.62v3.91c-1.32-.16-2.61-.66-3.69-1.48-.6-.46-1.12-1.03-1.54-1.68v7.94c.05 1.57-.42 3.19-1.46 4.38-1.29 1.41-3.29 2.12-5.18 1.83-1.89-.25-3.62-1.45-4.48-3.15-1.04-1.92-.85-4.43.46-6.16.99-1.28 2.6-2.07 4.22-2.12v3.96c-1 .09-2.02.73-2.43 1.68-.42.92-.19 2.09.53 2.76.67.62 1.74.75 2.5.28.48-.28.78-.8.81-1.36-.01-2.92-.01-5.83-.01-8.75V0z"/></svg>
+              <div class="text-[11px] font-semibold">TikTok</div>
             </button>
             <button class="platform-btn" data-platform="Instagram Reels" onclick="selectPlatform(this)">
-              <div class="text-2xl mb-1">📸</div>
-              <div class="text-xs font-medium">Reels</div>
+              <svg class="w-6 h-6 mx-auto mb-1 opacity-90 transition-transform duration-200 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem; width: 1.5rem; margin-left: auto; margin-right: auto;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              <div class="text-[11px] font-semibold">Reels</div>
             </button>
             <button class="platform-btn" data-platform="YouTube Shorts" onclick="selectPlatform(this)">
-              <div class="text-2xl mb-1">▶️</div>
-              <div class="text-xs font-medium">Shorts</div>
+              <svg class="w-6 h-6 mx-auto mb-1 opacity-90 transition-transform duration-200 hover:scale-110" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem; width: 1.5rem; margin-left: auto; margin-right: auto;"><path d="M17.713 8.37A2.88 2.88 0 0015.4 7H9.28a3.17 3.17 0 00-2.8 1.7 2.87 2.87 0 00.33 3.12l.96.72v-1.14a1.86 1.86 0 011.83-1.85h3.06l-2.3 3.06a2.88 2.88 0 00.33 3.73 2.86 2.86 0 002.3.96h6.12a3.17 3.17 0 002.8-1.7 2.87 2.87 0 00-.33-3.12l-.96-.72v1.14a1.86 1.86 0 01-1.83 1.85h-3.06l2.3-3.06c.64-.85.64-2.04 0-2.89v-.04z"/></svg>
+              <div class="text-[11px] font-semibold">Shorts</div>
             </button>
           </div>
         </div>
-
+ 
         <!-- Tipo de Contenido — Grid de tarjetas -->
         <div class="input-group">
           <label>🎬 Tipo de contenido</label>
           <div class="grid grid-cols-2 gap-2" id="content-type-grid">
-            <div class="content-card active" data-type="Antes/Después" onclick="selectContentType(this)">
-              <span class="text-lg">📊</span>
-              <span class="text-xs font-medium">Antes/Después</span>
+            <div class="content-card active flex items-start gap-2.5 p-3" data-type="Antes/Después" onclick="selectContentType(this)">
+              <span class="text-xl">📊</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Antes/Después</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">Muestra la transformación de tu cliente.</span>
+              </div>
             </div>
-            <div class="content-card" data-type="Tip rápido" onclick="selectContentType(this)">
-              <span class="text-lg">⚡</span>
-              <span class="text-xs font-medium">Tip rápido</span>
+            <div class="content-card flex items-start gap-2.5 p-3" data-type="Tip rápido" onclick="selectContentType(this)">
+              <span class="text-xl">⚡</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Tip rápido</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">Consejo directo en menos de 15s.</span>
+              </div>
             </div>
-            <div class="content-card" data-type="Historia" onclick="selectContentType(this)">
-              <span class="text-lg">📖</span>
-              <span class="text-xs font-medium">Historia</span>
+            <div class="content-card flex items-start gap-2.5 p-3" data-type="Historia" onclick="selectContentType(this)">
+              <span class="text-xl">📖</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Historia</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">Origen del producto o caso emotivo.</span>
+              </div>
             </div>
-            <div class="content-card" data-type="Errores" onclick="selectContentType(this)">
-              <span class="text-lg">❌</span>
-              <span class="text-xs font-medium">Errores</span>
+            <div class="content-card flex items-start gap-2.5 p-3" data-type="Errores" onclick="selectContentType(this)">
+              <span class="text-xl">❌</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Errores</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">3 fallos típicos y cómo resolverlos.</span>
+              </div>
             </div>
-            <div class="content-card" data-type="Revelación" onclick="selectContentType(this)">
-              <span class="text-lg">🔑</span>
-              <span class="text-xs font-medium">Revelación</span>
+            <div class="content-card flex items-start gap-2.5 p-3" data-type="Revelación" onclick="selectContentType(this)">
+              <span class="text-xl">🔑</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Revelación</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">Truco exclusivo que nadie comparte.</span>
+              </div>
             </div>
-            <div class="content-card" data-type="Testimonio" onclick="selectContentType(this)">
-              <span class="text-lg">🗣️</span>
-              <span class="text-xs font-medium">Testimonio</span>
+            <div class="content-card flex items-start gap-2.5 p-3" data-type="Testimonio" onclick="selectContentType(this)">
+              <span class="text-xl">🗣️</span>
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold text-[#F1F5F9] leading-tight">Testimonio</span>
+                <span class="text-[10px] text-[#94A3B8] mt-0.5 leading-normal">Reseña o comentario real de cliente.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -4093,102 +4112,174 @@
         <div class="section-title">🎯 Anuncios de Meta Ads</div>
         <div class="section-desc">Ángulos, hooks y copy listos para tus campañas de Facebook e Instagram.</div>
       </div>
-      <!-- Floating action buttons -->
-      <div class="flex gap-2 shrink-0 ad-actions">
-        <button class="btn-ghost" style="font-size:11px;padding:8px 14px;border-radius:8px;" onclick="document.getElementById('objetivo-ad').scrollIntoView({behavior:'smooth',block:'center'})">
-          ⚙️ Configurar
-        </button>
-        <button class="btn-ghost" style="font-size:11px;padding:8px 14px;border-radius:8px;" onclick="document.getElementById('anuncios-output').scrollIntoView({behavior:'smooth',block:'start'})">
-          📋 Resultados
-        </button>
+    </div>
+ 
+    <!-- Stepper UI — 3 pasos visuales interactivos -->
+    <div class="stepper-wrapper flex justify-between items-center mb-6 p-4 bg-[#1E293B]/40 border border-slate-700/50 rounded-2xl">
+      <div class="stepper-step active flex items-center gap-2 cursor-pointer" id="astep-0" onclick="setAdStep(1)">
+        <div class="stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-[#0EA5E9] text-slate-950 transition-colors">1</div>
+        <div class="stepper-label text-xs font-semibold text-[#0EA5E9] transition-colors">Formato</div>
+      </div>
+      <div class="stepper-line flex-1 h-[2px] bg-slate-800 mx-4" id="aline-0"></div>
+      <div class="stepper-step flex items-center gap-2 cursor-pointer" id="astep-1" onclick="setAdStep(2)">
+        <div class="stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-slate-800 text-[#94A3B8] border border-slate-700/50 transition-colors">2</div>
+        <div class="stepper-label text-xs font-semibold text-[#94A3B8] transition-colors">Objetivo</div>
+      </div>
+      <div class="stepper-line flex-1 h-[2px] bg-slate-800 mx-4" id="aline-1"></div>
+      <div class="stepper-step flex items-center gap-2 cursor-pointer" id="astep-2" onclick="setAdStep(3)">
+        <div class="stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-slate-800 text-[#94A3B8] border border-slate-700/50 transition-colors">3</div>
+        <div class="stepper-label text-xs font-semibold text-[#94A3B8] transition-colors">Generación</div>
       </div>
     </div>
 
-    <!-- Stepper UI — 4 pasos visuales -->
-    <div class="stepper-wrapper">
-      <div class="stepper-step active" id="astep-0">
-        <div class="stepper-circle">1</div>
-        <div class="stepper-label">Creativo</div>
-      </div>
-      <div class="stepper-line"></div>
-      <div class="stepper-step" id="astep-1">
-        <div class="stepper-circle">2</div>
-        <div class="stepper-label">Segmentación</div>
-      </div>
-      <div class="stepper-line"></div>
-      <div class="stepper-step" id="astep-2">
-        <div class="stepper-circle">3</div>
-        <div class="stepper-label">Copia</div>
-      </div>
-      <div class="stepper-line"></div>
-      <div class="stepper-step" id="astep-3">
-        <div class="stepper-circle">4</div>
-        <div class="stepper-label">Revisión</div>
-      </div>
-    </div>
-
-    <!-- Collapsable config panel -->
-    <details class="bg-slate-800/50 border border-slate-700/50 rounded-xl mb-5 overflow-hidden" open>
-      <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer text-slate-300 hover:text-white transition-colors text-sm font-medium">
-        <span class="text-sky-400 text-lg">🎯</span>
-        <span class="font-semibold">Configuración de Anuncios</span>
-        <span class="ml-auto text-slate-500 text-xs">click para colapsar</span>
+    <!-- Caja de Instrucciones Colapsable (Accordion) -->
+    <details class="bg-slate-800/30 border border-slate-700/30 rounded-2xl mb-6 overflow-hidden">
+      <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer text-slate-300 hover:text-white transition-colors text-sm font-semibold">
+        <span class="text-[#EAB308] text-lg font-bold">⚠️</span>
+        <span>¿Cómo usar este paso?</span>
+        <span class="ml-auto text-slate-500 text-xs">click para expandir</span>
       </summary>
-      <div class="px-5 pb-5 pt-1 border-t border-slate-700/50">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Col 1: Tipo de creativo -->
-          <div class="input-group">
-            <label>🖼️ Tipo de creativo</label>
-            <div class="grid grid-cols-2 gap-2" id="ad-type-grid">
-              <div class="ad-type-card active" data-type="Imagen estática + texto" onclick="selectAdType(this)">
-                <span class="text-xl">🖼️</span>
-                <span class="text-xs font-medium">Imagen</span>
-              </div>
-              <div class="ad-type-card" data-type="Video (guión UGC)" onclick="selectAdType(this)">
-                <span class="text-xl">🎬</span>
-                <span class="text-xs font-medium">Video UGC</span>
-              </div>
-              <div class="ad-type-card" data-type="Video (voz en off)" onclick="selectAdType(this)">
-                <span class="text-xl">🎙️</span>
-                <span class="text-xs font-medium">Voz en off</span>
-              </div>
-              <div class="ad-type-card" data-type="Carrusel de imágenes" onclick="selectAdType(this)">
-                <span class="text-xl">🎠</span>
-                <span class="text-xs font-medium">Carrusel</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Col 2: Objetivo -->
-          <div class="input-group">
-            <label>🎯 Objetivo</label>
-            <select id="objetivo-ad" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:border-sky-500 outline-none transition-all">
-              <option>Testeo de ángulos (ABO)</option>
-              <option>Escalar un ganador (CBO)</option>
-              <option>Retargeting (visitantes landing)</option>
-              <option>Anuncio frío (audience nueva)</option>
-            </select>
-          </div>
-
-          <!-- Col 3: Variaciones -->
-          <div class="input-group">
-            <label>📊 Variaciones</label>
-            <select id="cant-ads" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:border-sky-500 outline-none transition-all">
-              <option>5 ángulos diferentes</option>
-              <option>3 ángulos × 2 variaciones</option>
-              <option>10 hooks para testear</option>
-            </select>
-          </div>
-        </div>
+      <div class="px-5 pb-5 pt-3 border-t border-slate-700/30 text-sm text-[#94A3B8] leading-relaxed space-y-2">
+        <p>1. <strong>Seleccioná el Formato:</strong> Elegí si querés una imagen estática, video UGC o carrusel. Los videos UGC tienen el mayor CTR actual.</p>
+        <p>2. <strong>Elegí el Objetivo:</strong> Configurá si es para testear nuevos ángulos o para retargeting.</p>
+        <p>3. <strong>Generá y Testeá:</strong> Copiá el copy principal y el headline directamente al administrador de anuncios de Meta.</p>
+        <p class="pt-2 text-[#EAB308]"><strong>💡 Tip de Conversión:</strong> Testeá siempre al menos 3 copys diferentes con la misma imagen para encontrar el ángulo ganador.</p>
       </div>
     </details>
 
-    <button class="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 bg-gradient-to-r from-sky-500 to-violet-500 hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] mb-6" onclick="generarAnuncios()">
-      🎯 Generar anuncios Meta Ads
-    </button>
+    <!-- STEP CONTENT 1: Formato -->
+    <div id="ad-step-content-1" class="ad-step-content space-y-5">
+      <div class="bg-[#1E293B] border border-slate-700/50 rounded-2xl p-5">
+        <label class="block text-xs font-bold text-slate-300 mb-3">🖼️ Tipo de creativo / Formato de Anuncio</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="ad-type-grid">
+          <div class="ad-type-card active flex flex-col items-center justify-center p-4 bg-[#0B1120] border border-slate-700 rounded-xl cursor-pointer hover:border-[#0EA5E9] transition-all" data-type="Imagen estática + texto" onclick="selectAdType(this)">
+            <span class="text-2xl mb-2">🖼️</span>
+            <span class="text-xs font-semibold text-slate-200">Imagen</span>
+          </div>
+          <div class="ad-type-card flex flex-col items-center justify-center p-4 bg-[#0B1120] border border-slate-700 rounded-xl cursor-pointer hover:border-[#0EA5E9] transition-all" data-type="Video (guión UGC)" onclick="selectAdType(this)">
+            <span class="text-2xl mb-2">🎬</span>
+            <span class="text-xs font-semibold text-slate-200">Video UGC</span>
+          </div>
+          <div class="ad-type-card flex flex-col items-center justify-center p-4 bg-[#0B1120] border border-slate-700 rounded-xl cursor-pointer hover:border-[#0EA5E9] transition-all" data-type="Video (voz en off)" onclick="selectAdType(this)">
+            <span class="text-2xl mb-2">🎙️</span>
+            <span class="text-xs font-semibold text-slate-200">Voz en off</span>
+          </div>
+          <div class="ad-type-card flex flex-col items-center justify-center p-4 bg-[#0B1120] border border-slate-700 rounded-xl cursor-pointer hover:border-[#0EA5E9] transition-all" data-type="Carrusel de imágenes" onclick="selectAdType(this)">
+            <span class="text-2xl mb-2">🎠</span>
+            <span class="text-xs font-semibold text-slate-200">Carrusel</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button class="btn btn-primary" onclick="setAdStep(2)">Siguiente Paso →</button>
+      </div>
+    </div>
 
-    <!-- Output area + optional feed mockup -->
-    <div id="anuncios-output"></div>
+    <!-- STEP CONTENT 2: Objetivo -->
+    <div id="ad-step-content-2" class="ad-step-content space-y-5 hidden">
+      <div class="bg-[#1E293B] border border-slate-700/50 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="input-group">
+          <label>🎯 Objetivo de Campaña</label>
+          <select id="objetivo-ad" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:border-sky-500 outline-none transition-all">
+            <option>Testeo de ángulos (ABO)</option>
+            <option>Escalar un ganador (CBO)</option>
+            <option>Retargeting (visitantes landing)</option>
+            <option>Anuncio frío (audience nueva)</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>📊 Variaciones a Generar</label>
+          <select id="cant-ads" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:border-sky-500 outline-none transition-all">
+            <option>5 ángulos diferentes</option>
+            <option>3 ángulos × 2 variaciones</option>
+            <option>10 hooks para testear</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-between">
+        <button class="btn btn-ghost" onclick="setAdStep(1)">← Anterior</button>
+        <button class="btn btn-primary" onclick="setAdStep(3)">Siguiente Paso →</button>
+      </div>
+    </div>
+
+    <!-- STEP CONTENT 3: Generación -->
+    <div id="ad-step-content-3" class="ad-step-content space-y-5 hidden">
+      <div class="bg-[#1E293B] border border-slate-700/50 rounded-2xl p-5 flex items-center justify-between">
+        <div>
+          <h4 class="text-[#F1F5F9] font-bold text-sm">¿Todo listo para generar?</h4>
+          <p class="text-[#94A3B8] text-xs mt-1">Hacé click en Generar para iniciar el motor de copywriter de Meta Ads.</p>
+        </div>
+        <button class="btn btn-ghost" onclick="setAdStep(2)">← Revisar config</button>
+      </div>
+
+      <button class="w-full py-4 rounded-xl font-bold text-[#0B1120] transition-all duration-300 bg-gradient-to-r from-sky-500 to-violet-500 hover:shadow-[0_0_20px_rgba(56,189,248,0.4)]" onclick="generarAnuncios()">
+        🎯 Generar anuncios Meta Ads
+      </button>
+
+      <!-- Output area + simulated feed mockup -->
+      <div id="anuncios-output"></div>
+    </div>
+
+    <style>
+      .ad-type-card.active {
+        border-color: #0EA5E9 !important;
+        background: rgba(14, 165, 233, 0.1) !important;
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.15);
+      }
+    </style>
+
+    <script>
+      function setAdStep(stepNum) {
+        document.querySelectorAll('.ad-step-content').forEach(function(el, index) {
+          if (index === (stepNum - 1)) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+        
+        for (var i = 0; i < 3; i++) {
+          var stepEl = document.getElementById('astep-' + i);
+          var lineEl = document.getElementById('aline-' + i);
+          
+          if (stepEl) {
+            var circle = stepEl.querySelector('.stepper-circle');
+            var label = stepEl.querySelector('.stepper-label');
+            
+            if (i < stepNum - 1) {
+              circle.className = 'stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-[#0EA5E9]/20 text-[#0EA5E9] border border-[#0EA5E9]/50';
+              label.className = 'stepper-label text-xs font-semibold text-[#F1F5F9]';
+            } else if (i === stepNum - 1) {
+              circle.className = 'stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-[#0EA5E9] text-[#0B1120]';
+              label.className = 'stepper-label text-xs font-semibold text-[#0EA5E9]';
+            } else {
+              circle.className = 'stepper-circle w-6 h-6 rounded-full flex items-center justify-center font-semibold text-xs bg-slate-800 text-[#94A3B8] border border-slate-700/50';
+              label.className = 'stepper-label text-xs font-semibold text-[#94A3B8]';
+            }
+          }
+          
+          if (lineEl) {
+            if (i < stepNum - 1) {
+              lineEl.className = 'stepper-line flex-1 h-[2px] mx-4 bg-[#0EA5E9] transition-colors';
+            } else {
+              lineEl.className = 'stepper-line flex-1 h-[2px] mx-4 bg-slate-800 transition-colors';
+            }
+          }
+        }
+      }
+
+      function selectAdType(el) {
+        document.querySelectorAll('.ad-type-card').forEach(function(c) { c.classList.remove('active'); });
+        el.classList.add('active');
+        var type = el.dataset.type;
+        if (window.appState) appState.adType = type;
+      }
+      
+      // Auto initialize Step 1
+      setTimeout(function() {
+        setAdStep(1);
+      }, 100);
+    </script>
   </div>
 
   <!-- STEP 5: Email (V2 — Sidebar Index + Floating Buttons + Email Cards) -->
