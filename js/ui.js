@@ -527,7 +527,7 @@ async function parseProxyError(res) {
   if (contentType.includes('application/json')) {
     const body = await res.json().catch(() => null);
     if (body) {
-      if (body.error) return body.error;
+      if (typeof body.error === 'string') return body.error;
       if (body.message) return body.message;
       return JSON.stringify(body);
     }

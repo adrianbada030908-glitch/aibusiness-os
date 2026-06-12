@@ -146,11 +146,14 @@ export async function onRequest(context) {
 
   try {
     const body = await request.json().catch(() => ({}));
-    const { prompt, temperature, maxTokens } = body;
+    const { systemPrompt, prompt, temperature, maxTokens } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return errorResponse('Falta el campo "prompt" en el body.', 400);
     }
+
+    // Combinar el systemPrompt con el prompt del usuario
+    const finalPrompt = systemPrompt ? `${systemPrompt}\n\nUser Request:\n${prompt}` : prompt;
 
     const apiKey = env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -167,7 +170,7 @@ export async function onRequest(context) {
       );
     }
 
-    const result = await callGemini(prompt, temperature, maxTokens, apiKey);
+    const result = await callGemini(finalPrompt, temperature, maxTokens, apiKey);
     const usage = await incrementUsage(userId, env);
 
     return jsonResponse({
