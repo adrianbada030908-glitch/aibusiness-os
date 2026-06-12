@@ -12,7 +12,7 @@ function attachModuleGlobals() {
     'generarContenido','generarAnuncios','generarEmails','generarTraficoGratis','generarTraficoPremium','descargarEstrategiaPDF','convertirTextoAHTML','generarLanding','usarProductoEnLanding','usarEnLandingPage',
     'enviarCopyAlGenerador','togglePbSection','exportarProductoPDF','guidedLoadNichos','guidedLoadAvatars','guidedNext','guidedBack',
     'guidedLoadProductos','selectAvatar','selectProducto','selectNicho','copyText','copyAdCard','markDone','buildChips','initLandingGenerator','initLandingGeneratorEvents',
-    'initEditor','applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp',
+    'applyDynamicYears','updateApiIndicator','initDashboard','updateUsageDisplay','updateAvatarRing','showApp',
     'selectEstrategia','guidedLoadEstrategias','runConversionEngine','activateLandingFromEngine'
   ];
 
@@ -6016,24 +6016,4 @@ Estructura EXACTA:
 // Cache version: 1781190481
 
 
-// ═══════════════════════════════════════════════════════════════════════════
-// FALLBACK: Asegurar que todas las funciones críticas estén en window
-// ═══════════════════════════════════════════════════════════════════════════
-(function() {
-  const funcs = {
-    goStep, goHome, generarIA, trendHunterAI, generarContenido,
-    generarAnuncios, generarEmails, generarTraficoPremium,
-    openGuidedMode, closeGuidedMode, generarProducto,
-    asignarProductoFinal, generarCopyDesdeProducto,
-    renderLandingCopy, renderFinalLandingPage, volverALanding,
-    setLandingTab, activarPanel, parseAIResponse, extractJSON,
-    setProductoFinal, setFinalCopy, setFinalCopyRaw, setLandingStyle,
-    setCurrentPanel, sanitizeJsonResponse, getPromptForStyle,
-    normalizeCopy, buildPrompt
-  };
-  for (const [name, fn] of Object.entries(funcs)) {
-    if (typeof fn === 'function' && typeof window !== 'undefined') {
-      window[name] = window[name] || fn;
-    }
-  }
-})();
+// Bloque Fallback obsoleto eliminado para evitar ReferenceErrors

@@ -3377,21 +3377,7 @@
 
     <!-- Navegación en Píldoras (V2 Pill Design) -->
     <div id="trend-pills-container" class="mb-8"></div>
-    <script>
-      (function() {
-        var tabMap = { 'Análisis': 'nichos', 'Vectores': 'viralidad', 'Mapeo': 'competencia' };
-        renderTrendPills('trend-pills-container', 'Análisis', function(tab) {
-          var subcat = tabMap[tab] || 'nichos';
-          var stepEl = document.getElementById('step-0');
-          if (!stepEl) return;
-          // Hide all subcat panels
-          stepEl.querySelectorAll('.subcat-panel').forEach(function(p) { p.classList.remove('active'); });
-          // Show the selected one
-          var panel = document.getElementById('s0-' + subcat);
-          if (panel) panel.classList.add('active');
-        });
-      })();
-    </script>
+    <!-- Script obsoleto eliminado -->
 
     <!-- SUBCAT: Análisis de Nichos -->
     <div class="subcat-panel active space-y-6" id="s0-nichos">
