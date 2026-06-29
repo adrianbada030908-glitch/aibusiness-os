@@ -1522,10 +1522,10 @@ function exportarProductoPDF() {
 }
 
 async function generarProducto() {
-  const desc = document.getElementById('producto-desc').value;
-  const tipo = document.getElementById('tipo-producto').value;
-  const precio = document.getElementById('precio').value;
-  const transf = document.getElementById('transformacion').value;
+  const desc = document.getElementById('product-topic')?.value || document.getElementById('producto-desc')?.value;
+  const tipo = document.getElementById('product-type')?.value || document.getElementById('tipo-producto')?.value || 'Curso';
+  const precio = document.getElementById('product-level')?.value || document.getElementById('precio')?.value || 'Mid-ticket';
+  const transf = desc;
 
   if (!desc) { alert('Describí tu producto primero'); return; }
   Object.assign(state, { producto: desc, precio, transformacion: transf });
@@ -3222,7 +3222,7 @@ function descargarLiquid() {
 async function generarContenido() {
   const platform = appState.platform || 'TikTok';
   const contentType = appState.contentType || 'Antes/Después del resultado';
-  const cant = document.getElementById('cant-guiones').value;
+  const cant = document.getElementById('cant-guiones')?.value || '3';
 
   const sys = `Eres director creativo de contenido viral sin cara para el mercado hispanohablante. Dominás los mecanismos de distribución de ${platform} en ${getAppYear()}: qué señales mide el algoritmo, qué patrones de atención retienen el scroll y cómo construir un embudo de contenido que convierte audiencia en compradores. Entregás guiones ejecutables con texto literal listo para grabar — no descripciones de guiones ni estructuras vacías. Cada recomendación está calibrada para producción sin mostrar cara: texto en pantalla, B-roll, mockups, voice-over, animaciones de texto.`;
   const prompt = `${cant} guiones de contenido viral sin cara para ${platform} (${getAppYear()}).
@@ -3277,8 +3277,8 @@ Incluí variedad de ángulos y una progresión lógica de frío a caliente.`;
 // ─── Step 4: Anuncios ─────────────────────────────────────────────────────────
 async function generarAnuncios() {
   const tipoAd = appState.adType || 'Imagen estática + texto';
-  const objetivo = document.getElementById('objetivo-ad').value;
-  const cant = document.getElementById('cant-ads').value;
+  const objetivo = document.getElementById('ad-topic')?.value || document.getElementById('objetivo-ad')?.value || 'Venta directa';
+  const cant = document.getElementById('cant-ads')?.value || '3';
 
   const sys = `Eres media buyer y copywriter de respuesta directa especializado en Meta Ads para productos digitales en Latinoamérica. Tu trabajo es generar anuncios que detengan el scroll, activen una emoción específica y conduzcan a un clic con intención de compra. Conocés las políticas de Meta, los formatos de mayor CTR en ${getAppYear()} y cómo estructurar copy que funciona tanto en frío como en retargeting. No escribís plantillas — escribís anuncios reales listos para publicar.`;
   const prompt = `${cant} ángulos de anuncio para Meta Ads:
@@ -3504,8 +3504,8 @@ function copyAllEmailsSec() {
 window.copyAllEmailsSec = copyAllEmailsSec;
 
 async function generarEmails() {
-  const leadMagnet = document.getElementById('lead-magnet').value;
-  const tipo = document.getElementById('tipo-email').value;
+  const leadMagnet = document.getElementById('email-topic')?.value || document.getElementById('lead-magnet')?.value || 'Producto principal';
+  const tipo = document.getElementById('email-topic')?.value || document.getElementById('tipo-email')?.value || 'Secuencia de Venta';
   Object.assign(state, { leadMagnet, tipoEmail: tipo });
 
   const sys = `Eres copywriter senior especializado en email marketing para productos digitales en el mercado latinoamericano. Escribís emails que se abren, se leen hasta el final y convierten — porque parecen escritos por una persona real, no por un sistema. Dominás la progresión psicológica de una secuencia: construís confianza primero, después vendés. Cada email tiene un trabajo específico. Los asuntos no hacen click-bait — generan expectativa genuina. El copy no grita — persuade.`;
