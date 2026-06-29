@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AI Business OS - Product Creator</title>
+<title>Product Builder</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -108,14 +108,19 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(241, 245, 249, 0.1);
         }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.08);
+            border-radius: 1rem;
+        }
         .accent-glow {
             box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
         }
-        .sidebar-active {
-            color: #89ceff;
-            font-weight: 700;
-            border-right: 2px solid #89ceff;
-        }
+        /* Panel visibility */
+        .panel { display: none; }
+        .panel.active { display: block; }
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -126,6 +131,8 @@
             background: #353436;
             border-radius: 10px;
         }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         .module-accordion:checked ~ .module-content {
             max-height: 1000px;
             opacity: 1;
@@ -137,6 +144,10 @@
             overflow: hidden;
             transition: all 0.3s ease-out;
         }
+        /* Preview glow for landing designer */
+        .preview-glow { box-shadow: 0 0 80px rgba(14,165,233,0.08); }
+        /* Accent gradient as background */
+        .bg-accent-gradient { background: linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%); }
     </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -144,7 +155,7 @@
 <body class="bg-background text-on-background font-body-md selection:bg-primary/30">
 <div id="auth-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,4,8,0.97);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px;font-family:Inter,system-ui,sans-serif;">
   <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:40px 36px;width:100%;max-width:420px;">
-    <div style="text-align:center;margin-bottom:28px"><div style="font-size:32px;margin-bottom:8px">⚡</div><div style="font-size:20px;font-weight:800;color:#f1f5f9;">AI Business OS</div><div style="font-size:13px;color:#64748b;margin-top:4px">Tu plataforma de negocios digitales</div></div>
+    <div style="text-align:center;margin-bottom:28px"><div style="font-size:32px;margin-bottom:8px">⚡</div><div style="font-size:20px;font-weight:800;color:#f1f5f9;">Product Builder</div><div style="font-size:13px;color:#64748b;margin-top:4px">Tu plataforma de negocios digitales</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:20px;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px">
       <button id="tab-login" onclick="authTab('login')" style="padding:9px;border:1px solid rgba(56,189,248,0.3);border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;background:rgba(56,189,248,0.15);color:#f1f5f9;font-family:inherit;">Iniciar sesión</button>
       <button id="tab-register" onclick="authTab('register')" style="padding:9px;border:1px solid transparent;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;background:transparent;color:#64748b;font-family:inherit;">Crear cuenta</button>
@@ -168,7 +179,7 @@
 <!-- ── API Key Setup Overlay ─────────────────────────────────────── -->
 <div class="setup-overlay" id="setup-overlay" style="display:none">
   <div class="setup-card">
-    <div class="setup-logo">⚡ AI Business OS</div>
+    <div class="setup-logo">⚡ Product Builder</div>
     <p class="setup-sub">Para usar la herramienta necesitás conectar tu API key de Gemini. Es gratis y tarda 2 minutos.</p>
 
     <div class="setup-steps">
@@ -211,55 +222,55 @@
 
 <aside class="h-screen w-64 fixed left-0 top-0 border-r border-border-subtle bg-surface/60 backdrop-blur-xl flex flex-col py-6 px-4 z-50">
 <div class="mb-10 px-2">
-<span class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient">AI Business OS</span>
+<span class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient">Product Builder</span>
 <p class="font-label-caps text-label-caps text-text-secondary mt-1">Elite Edition</p>
 </div>
 <nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#" id="sb-6" onclick="goStep(6)" id="sb-5" onclick="goStep(5)" id="sb-4" onclick="goStep(4)" id="sb-3" onclick="goStep(3)" id="sb-2" onclick="goStep(2)" id="sb-1" onclick="goStep(1)" id="sb-0" onclick="goStep(0)" onclick="showHome()">
+<a href="#" id="sb-home" onclick="showHome(); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">dashboard</span>
-                Dashboard
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Dashboard
+</a>
+<a href="#" id="sb-0" onclick="goStep(0); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">trending_up</span>
-                Trend Hunter
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5" href="#">
+Trend Hunter
+</a>
+<a href="#" id="sb-1" onclick="goStep(1); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">auto_awesome</span>
-                Product Creator
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Product Creator
+</a>
+<a href="#" id="sb-2" onclick="goStep(2); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">web</span>
-                Landing Pages
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Landing Pages
+</a>
+<a href="#" id="sb-3" onclick="goStep(3); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">description</span>
-                Content
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Content
+</a>
+<a href="#" id="sb-4" onclick="goStep(4); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">campaign</span>
-                Ad Copy
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Ad Copy
+</a>
+<a href="#" id="sb-5" onclick="goStep(5); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">mail</span>
-                Email Marketing
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+Email Marketing
+</a>
+<a href="#" id="sb-6" onclick="goStep(6); return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200">
 <span class="material-symbols-outlined">ads_click</span>
-                Traffic Strategy
-            </a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 mt-auto" href="#">
+Traffic Strategy
+</a>
+<a href="#" onclick="return false;" class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 mt-auto">
 <span class="material-symbols-outlined">settings</span>
-                Settings
-            </a>
+Settings
+</a>
 </nav>
 <div class="mt-6 pt-6 border-t border-border-subtle">
-<button id="btn-upgrade-sidebar" class="w-full py-3 px-4 rounded-xl bg-accent-gradient text-white font-bold text-sm accent-glow hover:scale-[1.02] active:scale-95 transition-transform">
-                Upgrade Plan
-            </button>
+<button id="btn-upgrade-sidebar" onclick="abrirModalPlanes()" class="w-full py-3 px-4 rounded-xl bg-accent-gradient text-white font-bold text-sm accent-glow hover:scale-[1.02] active:scale-95 transition-transform">
+Upgrade Plan
+</button>
 </div>
 </aside>
 <header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 h-20 px-8 flex justify-between items-center bg-surface/60 backdrop-blur-xl border-b border-border-subtle">
-<h2 id="module-title" class="font-headline-md text-headline-md text-primary">Product Creator</h2>
+<h2 id="module-title" class="font-headline-md text-headline-md text-primary">Product Builder</h2>
 <div class="flex items-center gap-6">
 <div class="relative group">
 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-secondary group-focus-within:text-primary transition-colors">search</span>
@@ -307,212 +318,13 @@
 </header>
 <main class="ml-64 pt-20 flex min-h-screen" id="main-content" style="width: calc(100% - 16rem);">
 
-  <!-- Steps Nav -->
-  <div class="steps-nav">
-    <button class="step-btn active" id="nav-0" onclick="goStep(0)">🔥 Oportunidades</button>
-    <button class="step-btn" id="nav-1" onclick="goStep(1)">📦 Producto</button>
-    <button class="step-btn" id="nav-2" onclick="goStep(2)">💻 Landing</button>
-    <button class="step-btn" id="nav-3" onclick="goStep(3)">📱 Contenido</button>
-    <button class="step-btn" id="nav-4" onclick="goStep(4)">🎯 Anuncios</button>
-    <button class="step-btn" id="nav-5" onclick="goStep(5)">📧 Email</button>
-    <button class="step-btn" id="nav-6" onclick="goStep(6)">📈 Tráfico</button>
-  </div>
+  
+  
 
-  <main class="panels-wrap">
-
-  <!-- HOME PAGE — completamente separado del contenido de módulos -->
-  <div class="home-page active" id="home-page">
-    <div class="home-page-inner">
-
-      <!-- Bienvenida personalizada -->
-      <div class="dash-header">
-        <div>
-          <div class="dash-greeting" id="dash-greeting">Buenos días</div>
-          <h1 class="dash-title">Tu sistema operativo de negocios digitales</h1>
-          <p class="dash-sub">Todo lo que necesitas para lanzar, vender y escalar — en un solo lugar.</p>
-        </div>
-        <div class="dash-status">
-          <div class="dash-status-dot"></div>
-          <span>Gemini 2.5 Flash activo</span>
-        </div>
-      </div>
-
-      <!-- BOTÓN MODO GUIADO -->
-      <button class="btn-guided-entry" onclick="openGuidedMode()">
-        <div class="btn-guided-icon">🧭</div>
-        <div class="btn-guided-text">
-          <div class="btn-guided-title">Modo Guiado — Business Builder</div>
-          <div class="btn-guided-sub">Construí tu negocio paso a paso con selecciones clicables. La IA te guía.</div>
-        </div>
-        <span class="btn-guided-badge">Nuevo</span>
-        <span class="btn-guided-arrow">›</span>
-      </button>
-
-      <!-- Flujo guiado -->
-      <div class="dash-flow-wrap">
-        <div class="dash-flow-label">🚀 Flujo recomendado para lanzar tu primer producto</div>
-        <div class="dash-flow">
-          <div class="dash-flow-step" onclick="goStep(0)">
-            <div class="dash-flow-num">1</div>
-            <div class="dash-flow-icon">🔥</div>
-            <div class="dash-flow-name">Trend Hunter</div>
-            <div class="dash-flow-desc">Encuentra tu nicho</div>
-          </div>
-          <div class="dash-flow-arrow">→</div>
-          <div class="dash-flow-step" onclick="goStep(1)">
-            <div class="dash-flow-num">2</div>
-            <div class="dash-flow-icon">📦</div>
-            <div class="dash-flow-name">Producto</div>
-            <div class="dash-flow-desc">Crea tu oferta</div>
-          </div>
-          <div class="dash-flow-arrow">→</div>
-          <div class="dash-flow-step" onclick="goStep(2)">
-            <div class="dash-flow-num">3</div>
-            <div class="dash-flow-icon">💻</div>
-            <div class="dash-flow-name">Landing Page</div>
-            <div class="dash-flow-desc">Página de ventas</div>
-          </div>
-          <div class="dash-flow-arrow">→</div>
-          <div class="dash-flow-step" onclick="goStep(3)">
-            <div class="dash-flow-num">4</div>
-            <div class="dash-flow-icon">📱</div>
-            <div class="dash-flow-name">Contenido</div>
-            <div class="dash-flow-desc">Atrae audiencia</div>
-          </div>
-          <div class="dash-flow-arrow">→</div>
-          <div class="dash-flow-step" onclick="goStep(4)">
-            <div class="dash-flow-num">5</div>
-            <div class="dash-flow-icon">🎯</div>
-            <div class="dash-flow-name">Anuncios</div>
-            <div class="dash-flow-desc">Escala con ads</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Grid módulos + stats -->
-      <div class="dash-grid">
-
-        <!-- Módulos acceso rápido -->
-        <div class="dash-section">
-          <div class="dash-section-title">Módulos</div>
-          <div class="dash-modules">
-            <div class="dash-module" onclick="goStep(0)">
-              <span class="dash-module-icon">🔥</span>
-              <div>
-                <div class="dash-module-name">Trend Hunter</div>
-                <div class="dash-module-desc">Nichos · Viralidad · Competencia</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(1)">
-              <span class="dash-module-icon">📦</span>
-              <div>
-                <div class="dash-module-name">Creador de Producto</div>
-                <div class="dash-module-desc">Nombres · Índice · Bonos · Precio</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(2)">
-              <span class="dash-module-icon">💻</span>
-              <div>
-                <div class="dash-module-name">Landing Page</div>
-                <div class="dash-module-desc">Copy · HTML · Estilos premium</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(3)">
-              <span class="dash-module-icon">📱</span>
-              <div>
-                <div class="dash-module-name">Contenido Viral</div>
-                <div class="dash-module-desc">Guiones · Hooks · Sin cara</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(4)">
-              <span class="dash-module-icon">🎯</span>
-              <div>
-                <div class="dash-module-name">Meta Anuncios</div>
-                <div class="dash-module-desc">Copy · Ángulos · Creativos</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(5)">
-              <span class="dash-module-icon">📧</span>
-              <div>
-                <div class="dash-module-name">Email Marketing</div>
-                <div class="dash-module-desc">Secuencias · Bienvenida · Venta</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-            <div class="dash-module" onclick="goStep(6)">
-              <span class="dash-module-icon">📈</span>
-              <div>
-                <div class="dash-module-name">Estrategia de Tráfico</div>
-                <div class="dash-module-desc">SEO · Pinterest · Reddit · Orgánico</div>
-              </div>
-              <span class="dash-module-arrow">›</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Panel lateral -->
-        <div class="dash-side">
-
-          <!-- Uso del día -->
-          <div class="dash-card">
-            <div class="dash-card-title">📊 Uso hoy</div>
-            <div class="dash-usage-display" id="dash-usage-display">
-              <div class="dash-usage-num" id="dash-usage-num">—</div>
-              <div class="dash-usage-label">generaciones disponibles</div>
-              <div class="dash-usage-bar-wrap">
-                <div class="dash-usage-bar" id="dash-usage-bar"></div>
-              </div>
-              <div class="dash-usage-reset" id="dash-usage-reset">Cargando...</div>
-            </div>
-          </div>
-
-          <!-- Tips del sistema -->
-          <div class="dash-card">
-            <div class="dash-card-title">💡 Consejo del día</div>
-            <div class="dash-tip" id="dash-tip-text">Cargando consejo...</div>
-          </div>
-
-          <!-- Estado del sistema -->
-          <div class="dash-card">
-            <div class="dash-card-title">⚡ Estado del sistema</div>
-            <div class="dash-status-list">
-              <div class="dash-status-item">
-                <span class="dash-status-dot green"></span>
-                <span>Gemini 2.5 Flash</span>
-                <span class="dash-status-val">Activo</span>
-              </div>
-              <div class="dash-status-item">
-                <span class="dash-status-dot green"></span>
-                <span>Base de datos</span>
-                <span class="dash-status-val">Conectada</span>
-              </div>
-              <div class="dash-status-item">
-                <span class="dash-status-dot green"></span>
-                <span>Generador HTML</span>
-                <span class="dash-status-val">Listo</span>
-              </div>
-              <div class="dash-status-item">
-                <span class="dash-status-dot yellow"></span>
-                <span>Stripe</span>
-                <span class="dash-status-val">Próximamente</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </div>
-  <!-- FIN HOME PAGE -->
+  
 
   <!-- MÓDULOS — panel-surface independiente del home -->
-  <div class="panel-surface">
+  
 
   <!-- STEP 0: Trend Hunter -->
   <div id="step-0" class="panel active flex-1">
@@ -833,7 +645,7 @@
 </div>
 <!-- Footer Links -->
 <footer class="mt-20 py-8 border-t border-border-subtle flex justify-between items-center">
-<span class="text-text-secondary text-sm">© 2024 AI Business OS. Designed for LATAM Growth.</span>
+<span class="text-text-secondary text-sm">© 2024 Product Builder. Designed for LATAM Growth.</span>
 <div class="flex gap-8">
 <a class="text-text-secondary text-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
 <a class="text-text-secondary text-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
@@ -1263,7 +1075,7 @@
 </label>
 <label class="block">
 <span class="font-label-caps text-label-caps text-text-secondary block mb-3">Product Name</span>
-<input class="w-full bg-surface-container border border-border-subtle rounded-lg p-4 outline-none focus:border-primary text-text-primary" placeholder="e.g. AI Business OS 2.0" type="text"/>
+<input class="w-full bg-surface-container border border-border-subtle rounded-lg p-4 outline-none focus:border-primary text-text-primary" placeholder="e.g. Product Builder" type="text"/>
 </label>
 <label class="block">
 <span class="font-label-caps text-label-caps text-text-secondary block mb-3">Target Audience Persona</span>
@@ -1312,7 +1124,7 @@
 <span class="font-label-caps text-[10px] text-primary block mb-1">PRIMARY TEXT</span>
 <p class="text-body-md text-text-primary leading-relaxed">
                                             Ever felt like your Meta Ads are a black hole for cash? 💸<br/><br/>
-                                            Most digital entrepreneurs in LATAM are manually fighting algorithms that change every week. We built the AI Business OS to be your unfair advantage. It automates the "boring" so you can focus on the "visionary".<br/><br/>
+                                            Most digital entrepreneurs in LATAM are manually fighting algorithms that change every week. We built the Product Builder to be your unfair advantage. It automates the "boring" so you can focus on the "visionary".<br/><br/>
                                             ✅ 3x Average ROAS Increase<br/>
                                             ✅ Real-time Market Sentiment Analysis<br/>
                                             ✅ One-click Creative Scaling<br/><br/>
@@ -1371,7 +1183,7 @@
 <div class="p-3 flex items-center gap-2">
 <div class="w-8 h-8 rounded-full bg-accent-gradient"></div>
 <div>
-<p class="text-xs font-bold text-white">AI Business OS</p>
+<p class="text-xs font-bold text-white">Product Builder</p>
 <p class="text-[10px] text-gray-400">Sponsored • <span class="material-symbols-outlined text-[10px] align-middle">public</span></p>
 </div>
 </div>

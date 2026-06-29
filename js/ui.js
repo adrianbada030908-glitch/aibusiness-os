@@ -477,21 +477,43 @@ function goStep(n) {
   const homePage = document.getElementById('home-page');
   if (homePage) homePage.classList.remove('active');
 
-  // Mostrar panel correcto
-  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===n));
+  // Map step index to panel IDs
+  const panelIds = ['step-0', 'step-1', 'panel-landing-generator', 'step-3', 'step-4', 'step-5', 'step-6'];
 
-  // Actualizar step-btn original (por si acaso)
-  document.querySelectorAll('.step-btn').forEach((b,i) => {
-    b.classList.remove('active');
-    if (i===n) b.classList.add('active');
-  });
+  // Ocultar todos los panels y mostrar el correcto
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const targetId = panelIds[n];
+  const target = document.getElementById(targetId);
+  if (target) target.classList.add('active');
 
-  // Actualizar sidebar buttons
+  // Actualizar sidebar links — active styling
+  const sidebarActiveClass = 'text-primary font-bold border-r-2 border-primary bg-primary/5';
+  const sidebarInactiveClass = 'text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary';
   for (let i = 0; i <= 6; i++) {
     const sb = document.getElementById('sb-' + i);
-    if (sb) sb.classList.toggle('active', i === n);
+    if (sb) {
+      // Remove all variant classes first
+      sb.className = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200';
+      if (i === n) {
+        sb.className += ' ' + sidebarActiveClass;
+      } else {
+        sb.className += ' ' + sidebarInactiveClass;
+      }
+    }
   }
+  // Deactivate home button
+  const sbHome = document.getElementById('sb-home');
+  if (sbHome) {
+    sbHome.className = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ' + sidebarInactiveClass;
+  }
+
+  // Update header title
+  const titles = ['Trend Hunter', 'Product Creator', 'Landing Pages', 'Content Engine', 'Ad Copy', 'Email Marketing', 'Traffic Strategy'];
+  const headerTitle = document.getElementById('module-title');
+  if (headerTitle) headerTitle.textContent = titles[n] || 'Product Builder';
 }
+
+function showHome() { goHome(); }
 
 function goHome() {
   // Mostrar home page
@@ -502,10 +524,23 @@ function goHome() {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
 
   // Desactivar todos los sidebar buttons
+  const sidebarInactiveClass = 'text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary';
+  const sidebarActiveClass = 'text-primary font-bold border-r-2 border-primary bg-primary/5';
   for (let i = 0; i <= 6; i++) {
     const sb = document.getElementById('sb-' + i);
-    if (sb) sb.classList.remove('active');
+    if (sb) {
+      sb.className = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ' + sidebarInactiveClass;
+    }
   }
+  // Activate home button
+  const sbHome = document.getElementById('sb-home');
+  if (sbHome) {
+    sbHome.className = 'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ' + sidebarActiveClass;
+  }
+
+  // Update header title
+  const headerTitle = document.getElementById('module-title');
+  if (headerTitle) headerTitle.textContent = 'Product Builder';
 }
 
 function setLandingTab(tab) {
@@ -855,7 +890,7 @@ function renderAdCards(container, text) {
     const creative = creativeMatch ? creativeMatch[1].trim().replace(/\n\n/g, '<br>') : '';
     const targeting = targetingMatch ? targetingMatch[1].trim().replace(/\n\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') : '';
 
-    const brandName = window.appState?.nombreProducto || 'AI Business OS';
+    const brandName = window.appState?.nombreProducto || 'Product Builder';
 
     return `
       <div class="ad-card bg-[#1E293B] border border-slate-700/50 rounded-2xl mb-8 overflow-hidden shadow-xl" style="border-left: 4px solid ${color}">
@@ -3978,14 +4013,14 @@ function descargarEstrategiaPDF() {
 <body>
 <div class="paper">
   <div class="header">
-    <div class="header-brand">⚡ AI Business OS — Plan de Tráfico</div>
+    <div class="header-brand">⚡ Product Builder — Plan de Tráfico</div>
     <div class="header-title">📈 Estrategia de Tráfico Orgánico</div>
     <div class="header-sub">${nombre}</div>
-    <div class="header-date">Generado el ${fecha} · AI Business OS ${year}</div>
+    <div class="header-date">Generado el ${fecha} · Product Builder ${year}</div>
   </div>
   ${convertirTextoAHTML(text)}
   <div class="footer">
-    AI Business OS — Digital Products Builder<br>
+    Product Builder — Digital Products Builder<br>
     Estrategia generada con IA · Revisá y adaptá según tu negocio
   </div>
 </div>
@@ -4306,7 +4341,7 @@ document.addEventListener('click', (e) => {
 
 function abrirSoporte() {
   const email = 'adrianbada0309@gmail.com';
-  const subject = encodeURIComponent('Soporte AI Business OS');
+  const subject = encodeURIComponent('Soporte Product Builder');
   const body = encodeURIComponent('Hola, necesito ayuda con:\n\n');
   window.open('mailto:' + email + '?subject=' + subject + '&body=' + body);
 }
@@ -5650,7 +5685,7 @@ function initLandingGeneratorEvents() {
       ],
       unique_mechanism: 'Nuestra metodología paso a paso te guía de cero a tus primeros clientes utilizando inteligencia artificial adaptativa.',
       offer: {
-        main_product: 'AI Business OS Pro',
+        main_product: 'Product Builder Pro',
         bonuses: [
           'Bono 1: Acceso a la comunidad VIP',
           'Bono 2: Plantillas de emails de alta conversión',
