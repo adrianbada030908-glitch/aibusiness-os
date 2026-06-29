@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organic Viral Content Module | AI Business OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&family=Syne:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+        .accent-glow:hover {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(137, 206, 255, 0.2);
+            border-radius: 10px;
+        }
+        .platform-tiktok:hover { border-color: #ff0050; box-shadow: 0 0 15px rgba(255, 0, 80, 0.15); }
+        .platform-reels:hover { border-color: #e1306c; box-shadow: 0 0 15px rgba(225, 48, 108, 0.15); }
+        .platform-shorts:hover { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.15); }
+        
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        .animate-pulse-slow {
+            animation: subtle-pulse 4s infinite ease-in-out;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f20",
+                        "tertiary-fixed": "#ffdcbd",
+                        "surface-elevated": "#1E293B",
+                        "on-primary": "#00344d",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-primary-container": "#003751",
+                        "on-surface-variant": "#bec8d2",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "accent-gradient": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+                        "primary": "#89ceff",
+                        "surface-container-low": "#1c1b1c",
+                        "background": "#131314",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "tertiary-container": "#de8712",
+                        "surface-variant": "#353436",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "text-secondary": "#94A3B8",
+                        "on-background": "#e5e2e3",
+                        "surface": "#131314",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "surface-tint": "#89ceff",
+                        "inverse-primary": "#006591",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-highest": "#353436",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c9e6ff",
+                        "primary-container": "#0ea5e9",
+                        "primary-fixed-dim": "#89ceff",
+                        "text-primary": "#FFFFFF",
+                        "surface-bright": "#3a393a",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed": "#23005c",
+                        "inverse-on-surface": "#313031",
+                        "outline": "#88929b",
+                        "on-secondary-container": "#c4abff",
+                        "inverse-surface": "#e5e2e3",
+                        "outline-variant": "#3e4850",
+                        "on-tertiary-container": "#4d2b00",
+                        "on-primary-fixed": "#001e2f",
+                        "border-subtle": "rgba(241, 245, 249, 0.1)",
+                        "tertiary": "#ffb86e",
+                        "on-tertiary": "#492900",
+                        "surface-dim": "#131314",
+                        "on-error": "#690005",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed-dim": "#ffb86e",
+                        "on-secondary": "#3c0091"
+                    },
+                    "fontFamily": {
+                        "display-hero": ["Syne"],
+                        "headline-md": ["Syne"],
+                        "headline-lg": ["Syne"],
+                        "body-lg": ["DM Sans"],
+                        "body-md": ["DM Sans"],
+                        "label-caps": ["DM Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-border-subtle bg-surface/60 backdrop-blur-xl flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient">AI Business OS</h1>
+<p class="text-[10px] font-label-caps tracking-widest text-text-secondary">ELITE EDITION</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+                Trend Hunter
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5" href="#">
+<span class="material-symbols-outlined">description</span>
+                Content
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+                Product Creator
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">web</span>
+                Landing Pages
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">campaign</span>
+                Ad Copy
+            </a>
+</nav>
+<div class="mt-auto border-t border-border-subtle pt-6">
+<div class="bg-primary/10 rounded-xl p-4 mb-6">
+<p class="text-xs font-label-caps text-primary mb-2">CURRENT PLAN</p>
+<p class="text-sm font-bold text-white mb-3">Enterprise Elite</p>
+<button class="w-full py-2 bg-accent-gradient rounded-lg text-xs font-bold text-white scale-102 active:scale-95 transition-transform">Upgrade Plan</button>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+<span class="text-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span class="text-sm">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-surface/60 backdrop-blur-xl border-b border-border-subtle flex items-center justify-between px-8 z-40">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md text-white tracking-tight">Content Studio</h2>
+<span class="bg-primary/10 text-primary text-[10px] font-label-caps px-2 py-1 rounded">BETA 2.0</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-text-secondary group-hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-text-secondary hover:text-primary cursor-pointer transition-colors">payments</span>
+<div class="flex items-center gap-3 pl-4 border-l border-border-subtle">
+<div class="text-right">
+<p class="text-sm font-bold text-white">Alex Rivera</p>
+<p class="text-[10px] text-text-secondary font-label-caps">PRO ENTREPRENEUR</p>
+</div>
+<div class="w-10 h-10 rounded-full border border-primary/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a young entrepreneur with a modern, technical aesthetic. Dark background with subtle blue rim lighting, high-contrast photography, sharp focus on facial features. Professional digital business attire. Cohesive with a high-end AI dashboard style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEP829Vjke4OWSmAeG4B40zgkQn_zEDW-a7irSPt_-QoMaE9xd8oFDoTGyWboUyh9JFP2Z6kO-95uYw-B9B1mgBg4WYMPxIuEiOohBPV2NkVrrR1HRvmf1lmlBiAb77G1hQtASQGCTlrEIOTHQdzlwikHSDiRIPAqTOhMNKzQ5IFB1W4PTj4oErYGGmw6DI48iu6a-WZA6-nvc4YTa4AVWjwJ4cXy8OFKQIN8DiSwFO6VcuMtcLQIYZw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 min-h-screen">
+<div class="p-8 max-w-[1400px] mx-auto">
+<!-- Hero Header Section -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-headline-lg text-headline-lg mb-2">Organic Viral <span class="text-primary italic">Engine</span></h1>
+<p class="text-text-secondary text-body-lg max-w-2xl">Craft high-retention social media scripts designed for the algorithm. Select your platform, pick a content blueprint, and let the AI architect your viral moment.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 glass-card rounded-xl text-white font-bold flex items-center gap-2 hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">history</span>
+                            Recent Drafts
+                        </button>
+<button class="px-8 py-3 bg-accent-gradient rounded-xl text-white font-bold shadow-lg shadow-primary/20 scale-102 active:scale-95 transition-all">
+                            Generate Script
+                        </button>
+</div>
+</div>
+</section>
+<!-- Workspace Bento Grid -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Configuration Panel -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- Platform Selection -->
+<div class="glass-card rounded-2xl p-6">
+<label class="block text-xs font-label-caps text-text-secondary mb-4">CHOOSE PLATFORM</label>
+<div class="grid grid-cols-3 gap-4">
+<button class="platform-tiktok flex flex-col items-center gap-3 p-4 rounded-xl border border-border-subtle bg-background transition-all group">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ff0050]/10 text-[#ff0050]">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<span class="text-sm font-bold">TikTok</span>
+</button>
+<button class="platform-reels flex flex-col items-center gap-3 p-4 rounded-xl border border-primary bg-primary/5 transition-all group">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">movie</span>
+</div>
+<span class="text-sm font-bold">Instagram Reels</span>
+</button>
+<button class="platform-shorts flex flex-col items-center gap-3 p-4 rounded-xl border border-border-subtle bg-background transition-all group">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ff0000]/10 text-[#ff0000]">
+<span class="material-symbols-outlined">play_circle</span>
+</div>
+<span class="text-sm font-bold">YouTube Shorts</span>
+</button>
+</div>
+</div>
+<!-- Content Type Grid -->
+<div class="glass-card rounded-2xl p-6">
+<label class="block text-xs font-label-caps text-text-secondary mb-4">CONTENT STRATEGY</label>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-xl border border-primary/30 bg-primary/5 cursor-pointer hover:border-primary transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary">compare</span>
+<span class="text-[10px] font-label-caps bg-primary/20 text-primary px-2 py-0.5 rounded">HIGH CONVERSION</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Before / After</h4>
+<p class="text-[11px] text-text-secondary leading-tight">Showcase transformation and results quickly.</p>
+</div>
+<div class="p-4 rounded-xl border border-border-subtle hover:border-white/20 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-text-secondary">auto_stories</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Storytime</h4>
+<p class="text-[11px] text-text-secondary leading-tight">Personal narrative to build trust and authority.</p>
+</div>
+<div class="p-4 rounded-xl border border-border-subtle hover:border-white/20 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-text-secondary">lightbulb</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Quick Tip</h4>
+<p class="text-[11px] text-text-secondary leading-tight">Fast-paced value delivery for high saves.</p>
+</div>
+<div class="p-4 rounded-xl border border-border-subtle hover:border-white/20 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-text-secondary">warning</span>
+</div>
+<h4 class="font-bold text-sm mb-1">Common Errors</h4>
+<p class="text-[11px] text-text-secondary leading-tight">Pattern-interrupt hook focusing on mistakes.</p>
+</div>
+</div>
+</div>
+<!-- Input Controls -->
+<div class="glass-card rounded-2xl p-6">
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-label-caps text-text-secondary mb-3">NUMBER OF SCRIPTS</label>
+<div class="flex items-center gap-4">
+<input class="flex-grow accent-primary h-1.5 bg-background rounded-lg appearance-none cursor-pointer" max="10" min="1" type="range" value="3"/>
+<span class="w-12 h-10 flex items-center justify-center bg-background border border-border-subtle rounded-lg font-bold text-primary">03</span>
+</div>
+</div>
+<div>
+<label class="block text-xs font-label-caps text-text-secondary mb-3">TARGET TOPIC / KEYWORDS</label>
+<input class="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm" placeholder="e.g. Scaling a SaaS to 10k MRR" type="text"/>
+</div>
+</div>
+</div>
+<!-- AI Reference Asset -->
+<div class="h-48 rounded-2xl overflow-hidden relative border border-border-subtle">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkon-nEF4IcOkBI9VCQqCw7XwSHzq2N7MzM1KUcPcIGZwsR4Jvm742p7oOaXxC4LTyGmO0W3XPR7ZzFfRj0kuIjIe-1sTrRjJFdeFvV7tvm5Kp89sT88SClkoAdoey43R1C6SAEvFiW8Y1XoZ4P2dCBzV8Uv2uZf0tcFBBEd4TuCYnOMLUET7TYoE1EsA4uK5_q5QSMpm48vqgj39yDlYlpDtO4rsyQ34dEkLXKm906AvxR8LIDjlaSMGM1AIOLQeeYzQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<p class="text-[10px] font-label-caps text-primary mb-1">REFERENCE LOADED</p>
+<p class="text-xs font-medium text-white line-clamp-1">Viral_Flow_Dynamics_06-29.png</p>
+</div>
+<div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md p-1.5 rounded-full">
+<span class="material-symbols-outlined text-xs text-white">visibility</span>
+</div>
+</div>
+</div>
+<!-- Right Preview Panel -->
+<div class="col-span-12 lg:col-span-7 h-full">
+<div class="glass-card rounded-3xl h-full flex flex-col overflow-hidden">
+<div class="p-6 border-b border-border-subtle flex items-center justify-between bg-white/5">
+<div class="flex items-center gap-3">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-error/40"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary/40"></div>
+<div class="w-3 h-3 rounded-full bg-primary/40"></div>
+</div>
+<span class="text-xs font-label-caps text-text-secondary ml-2 tracking-widest">SCRIPT_GEN_V2.OS</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+</button>
+<button class="p-2 hover:bg-white/10 rounded-lg transition-colors text-primary">
+<span class="material-symbols-outlined text-sm">magic_button</span>
+</button>
+</div>
+</div>
+<!-- Code-like Script View -->
+<div class="flex-grow p-8 overflow-y-auto custom-scrollbar bg-[#0A0A0B]">
+<div class="max-w-2xl mx-auto space-y-10">
+<!-- Script Block 1 -->
+<article class="relative group">
+<div class="absolute -left-6 top-1 text-primary/30 font-mono text-[10px]">01</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="text-xs font-label-caps text-tertiary"># HOOK</span>
+<div class="h-px flex-grow bg-tertiary/20"></div>
+<span class="text-[10px] text-text-secondary">2.3s DURATION</span>
+</div>
+<h3 class="text-xl font-bold text-white leading-snug">"Most entrepreneurs are failing at scaling because they're missing this ONE 30-second habit..."</h3>
+<div class="flex items-center gap-3 pt-2">
+<span class="text-xs font-label-caps text-primary"># BODY</span>
+<div class="h-px flex-grow bg-primary/20"></div>
+</div>
+<p class="text-text-secondary leading-relaxed font-mono text-sm">
+                                            [Visual: Split screen - Busy desk vs. Clean workspace]<br/>
+                                            "Look, I used to grind 14 hours a day. Then I realized that the elite players in the game don't outwork you, they out-systemize you. Here is the exact morning workflow I used to hit my first $50k month..."
+                                        </p>
+<div class="grid grid-cols-2 gap-4 mt-6">
+<div class="p-3 rounded-lg border border-border-subtle bg-surface-container-low">
+<p class="text-[10px] font-label-caps text-text-secondary mb-1">CAPTION OVERLAY</p>
+<p class="text-xs text-primary italic">"The Secret to 10k/mo" (Yellow Shadow)</p>
+</div>
+<div class="p-3 rounded-lg border border-border-subtle bg-surface-container-low">
+<p class="text-[10px] font-label-caps text-text-secondary mb-1">B-ROLL TAG</p>
+<p class="text-xs text-white">Cinematic_Office_Focus.mp4</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Divider -->
+<div class="flex justify-center py-4">
+<div class="flex gap-1">
+<div class="w-1 h-1 rounded-full bg-border-subtle"></div>
+<div class="w-1 h-1 rounded-full bg-border-subtle"></div>
+<div class="w-1 h-1 rounded-full bg-border-subtle"></div>
+</div>
+</div>
+<!-- Script Block 2 -->
+<article class="relative opacity-60 hover:opacity-100 transition-opacity">
+<div class="absolute -left-6 top-1 text-primary/30 font-mono text-[10px]">02</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="text-xs font-label-caps text-tertiary"># THE ANGLE</span>
+<div class="h-px flex-grow bg-tertiary/20"></div>
+</div>
+<h3 class="text-xl font-bold text-white leading-snug">"Stop hiring agencies until you've done this one thing in your business."</h3>
+<p class="text-text-secondary leading-relaxed font-mono text-sm italic">
+                                            [Visual: Pointing to screen showing complex Zapier workflow]
+                                        </p>
+</div>
+</article>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="p-6 border-t border-border-subtle bg-surface-container-highest/30">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-secondary border-2 border-background flex items-center justify-center text-[10px] font-bold text-black">AR</div>
+<div class="w-8 h-8 rounded-full bg-primary border-2 border-background flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-on-primary">bolt</span>
+</div>
+</div>
+<p class="text-xs text-text-secondary">AI Coach: "Focus on faster cuts in the first 3 seconds."</p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-bold transition-all">
+<span class="material-symbols-outlined text-sm">send</span>
+                                    Export to Scheduler
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-64 border-t border-border-subtle py-8 px-8 bg-surface mt-12">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-text-secondary font-body-md text-sm">© 2024 AI Business OS. Designed for LATAM Growth.</p>
+<div class="flex gap-8">
+<a class="text-text-secondary font-body-md text-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-text-secondary font-body-md text-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-text-secondary font-body-md text-sm hover:text-primary transition-colors" href="#">API Documentation</a>
+</div>
+</div>
+</footer>
+<!-- Micro-interaction JS -->
+<script>
+        document.querySelectorAll('.platform-tiktok, .platform-reels, .platform-shorts').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active classes from all
+                document.querySelectorAll('.platform-tiktok, .platform-reels, .platform-shorts').forEach(b => {
+                    b.classList.remove('border-primary', 'bg-primary/5');
+                    b.classList.add('border-border-subtle', 'bg-background');
+                });
+                // Add active to clicked
+                this.classList.remove('border-border-subtle', 'bg-background');
+                this.classList.add('border-primary', 'bg-primary/5');
+            });
+        });
+    </script>
+</body></html>

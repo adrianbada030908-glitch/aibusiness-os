@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Business OS - Trend Hunter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&family=Syne:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+        .accent-glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .trend-line {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: dash 2s ease-in-out forwards;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f20",
+                        "tertiary-fixed": "#ffdcbd",
+                        "surface-elevated": "#1E293B",
+                        "on-primary": "#00344d",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-primary-container": "#003751",
+                        "on-surface-variant": "#bec8d2",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "accent-gradient": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+                        "primary": "#89ceff",
+                        "surface-container-low": "#1c1b1c",
+                        "background": "#131314",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "tertiary-container": "#de8712",
+                        "surface-variant": "#353436",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "text-secondary": "#94A3B8",
+                        "on-background": "#e5e2e3",
+                        "surface": "#131314",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "surface-tint": "#89ceff",
+                        "inverse-primary": "#006591",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-highest": "#353436",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c9e6ff",
+                        "primary-container": "#0ea5e9",
+                        "primary-fixed-dim": "#89ceff",
+                        "text-primary": "#FFFFFF",
+                        "surface-bright": "#3a393a",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed": "#23005c",
+                        "inverse-on-surface": "#313031",
+                        "outline": "#88929b",
+                        "on-secondary-container": "#c4abff",
+                        "inverse-surface": "#e5e2e3",
+                        "outline-variant": "#3e4850",
+                        "on-tertiary-container": "#4d2b00",
+                        "on-primary-fixed": "#001e2f",
+                        "border-subtle": "rgba(241, 245, 249, 0.1)",
+                        "tertiary": "#ffb86e",
+                        "on-tertiary": "#492900",
+                        "surface-dim": "#131314",
+                        "on-error": "#690005",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed-dim": "#ffb86e",
+                        "on-secondary": "#3c0091"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-lg": "160px",
+                        "gutter": "24px",
+                        "section-gap-sm": "80px",
+                        "container-max": "1280px",
+                        "element-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "display-hero": ["Syne"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Syne"],
+                        "headline-lg": ["Syne"],
+                        "label-caps": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-hero": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-border-subtle bg-surface/60 backdrop-blur-xl flex flex-col py-gutter px-4 z-50">
+<div class="mb-10">
+<h1 class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient tracking-tighter">AI Business OS</h1>
+<p class="font-label-caps text-label-caps text-text-secondary mt-1">Elite Edition</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span>Trend Hunter</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span>Product Creator</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="web">web</span>
+<span>Landing Pages</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Content</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+<span>Ad Copy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span>Email Marketing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
+<span>Traffic Strategy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-subtle space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:bg-primary/10 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-secondary hover:bg-primary/10 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+<button class="w-full py-3 mt-4 bg-accent-gradient text-white font-bold rounded-lg scale-102 active:scale-95 transition-transform">
+                Upgrade Plan
+            </button>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface/60 backdrop-blur-xl border-b border-border-subtle flex justify-between items-center h-20 px-gutter ml-64">
+<div class="flex items-center gap-4">
+<span class="text-text-secondary material-symbols-outlined" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-96 text-on-background" placeholder="Search trends, niches or markets..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-text-secondary hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</button>
+<div class="h-8 w-[1px] bg-border-subtle"></div>
+<button class="bg-accent-gradient px-6 py-2 rounded-full font-bold text-white text-sm hover:opacity-90 active:opacity-80 transition-opacity">
+                Create New
+            </button>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a modern digital entrepreneur, lit with soft neon blue backlighting in a dark, high-tech office environment. The style is clean, corporate but visionary, perfectly matching the nocturnal aesthetic of the AI Business OS dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdO4IU3PKi1BoL_swoai_owQkof0NqMNVX5EfGzhDkDWTxCo7cNXN2SG1VQDkRQK7wsqBq0OfzixDmh1yPTt4PZpNSx9modHqIue7WxTgWewgnb1jcRptozsGnF2WcrS6O4DghiWVNolW0GS_FyQY6lGOGDv-nDw7K_iN6bFDSycSeZkklExmeel9e7uq3LVxUHL6Zotf2fGlo2SnnOfSPlN_CJAxlwr2ErYyW-bIlx0xaLqZYJStWOg"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 px-gutter pb-12 overflow-x-hidden">
+<!-- Hero Section / Filter Header -->
+<section class="mt-12 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-white mb-2">Trend Hunter AI</h2>
+<p class="text-text-secondary font-body-lg max-w-2xl">Scanning 4.2M global data points to identify high-potential niche markets before they go mainstream.</p>
+</div>
+<div class="flex flex-wrap gap-4 glass-card p-3 rounded-xl">
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-label-caps text-text-secondary px-2">CATEGORY</label>
+<select class="bg-surface border-none text-sm rounded-lg focus:ring-1 focus:ring-primary text-on-background pr-8">
+<option>All Sectors</option>
+<option>Health & Wellness</option>
+<option>Finance & Crypto</option>
+<option>Tech & AI</option>
+</select>
+</div>
+<div class="w-[1px] h-10 bg-border-subtle self-center"></div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-label-caps text-text-secondary px-2">REGION</label>
+<select class="bg-surface border-none text-sm rounded-lg focus:ring-1 focus:ring-primary text-on-background pr-8">
+<option>Global</option>
+<option>LATAM</option>
+<option>Spain</option>
+<option>United States</option>
+</select>
+</div>
+<button class="bg-primary/10 text-primary px-4 rounded-lg hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left: Detected Opportunities Grid -->
+<div class="col-span-12 lg:col-span-9 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-white">Detected Opportunities</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary font-label-caps text-[10px]">98 NEW TODAY</span>
+<span class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary font-label-caps text-[10px]">LIVE FEED</span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Opportunity Card 1 -->
+<div class="glass-card rounded-xl p-6 group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold">LOW COMPETITION</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-1">AI-Personalized Biohacking</h4>
+<p class="text-text-secondary text-sm mb-6">Hyper-niche supplements for cognitive focus in LATAM tech hubs.</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Viral Potential</span>
+<span class="text-primary font-bold">87%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-gradient w-[87%] rounded-full shadow-[0_0_8px_rgba(14,165,233,0.5)]"></div>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-border-subtle text-white font-bold hover:bg-white hover:text-black transition-all">Explore Niche</button>
+</div>
+</div>
+<!-- Opportunity Card 2 -->
+<div class="glass-card rounded-xl p-6 group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+<span class="px-2 py-1 rounded bg-yellow-500/10 text-yellow-400 text-[10px] font-bold">MEDIUM COMPETITION</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-1">Fractional Real Estate AI</h4>
+<p class="text-text-secondary text-sm mb-6">Tokenized holiday rentals managed by automated property algorithms.</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Viral Potential</span>
+<span class="text-primary font-bold">92%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-gradient w-[92%] rounded-full shadow-[0_0_8px_rgba(14,165,233,0.5)]"></div>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-border-subtle text-white font-bold hover:bg-white hover:text-black transition-all">Explore Niche</button>
+</div>
+</div>
+<!-- Opportunity Card 3 -->
+<div class="glass-card rounded-xl p-6 group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<span class="px-2 py-1 rounded bg-red-500/10 text-red-400 text-[10px] font-bold">HIGH COMPETITION</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-1">No-Code Automation for Legal</h4>
+<p class="text-text-secondary text-sm mb-6">Specialized LLM workflows for regulatory compliance in Brazil.</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Viral Potential</span>
+<span class="text-primary font-bold">64%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-gradient w-[64%] rounded-full"></div>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-border-subtle text-white font-bold hover:bg-white hover:text-black transition-all">Explore Niche</button>
+</div>
+</div>
+<!-- Opportunity Card 4 (Reference Content from Image_2 style) -->
+<div class="md:col-span-2 glass-card rounded-xl overflow-hidden flex flex-col md:flex-row group hover:border-primary/50 transition-all">
+<div class="md:w-1/2 relative min-h-[200px]">
+<img class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC243oFd2JkMaX2IZEM599Hn337pcU4GpM-Zjro_5Ob0LTdRfGhuTlOhKWjx4oy55ZTiNoTPn4HQDsaqqUKZFjrTgYBWTOIqGEHQ2ERSZEY0u8mxONfTfPhdZRpIFwc0r1ho8PLi8nVGOyDFkEQXyjnbeT9almS0b35P02c2BxL5Jebb2GZwGOU6TFJvijsTwMfvYpSEXpGlodcx7ysrSWeMMKOtrf8Y5AOmwB_nMTgd797m-bQbjJaQBoIpQxzdnTwsrY"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent"></div>
+</div>
+<div class="p-8 flex-1 flex flex-col justify-center">
+<span class="font-label-caps text-[10px] text-primary mb-2">FEATURED ANALYSIS</span>
+<h4 class="text-2xl font-bold text-white mb-4">The Rise of Spanish-Language SaaS Micro-Consultancy</h4>
+<p class="text-text-secondary mb-6">Demand for localized tech implementation is outpacing supply by 400% in emerging LATAM markets.</p>
+<div class="flex gap-4">
+<button class="bg-accent-gradient px-6 py-2 rounded-lg font-bold text-white">Full Report</button>
+<button class="px-6 py-2 rounded-lg border border-border-subtle text-white">Save Insight</button>
+</div>
+</div>
+</div>
+<!-- Opportunity Card 5 -->
+<div class="glass-card rounded-xl p-6 group hover:border-primary/50 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<span class="px-2 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold">LOW COMPETITION</span>
+</div>
+<h4 class="text-xl font-bold text-white mb-1">Emotion-Detection for Retail</h4>
+<p class="text-text-secondary text-sm mb-6">AI models analyzing customer satisfaction through facial heatmaps.</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Viral Potential</span>
+<span class="text-primary font-bold">79%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-gradient w-[79%] rounded-full"></div>
+</div>
+</div>
+<button class="w-full py-3 rounded-lg border border-border-subtle text-white font-bold hover:bg-white hover:text-black transition-all">Explore Niche</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Global Trends Sidebar -->
+<div class="col-span-12 lg:col-span-3">
+<div class="sticky top-24 space-y-6">
+<h3 class="font-headline-md text-headline-md text-white">Global Trends</h3>
+<div class="glass-card rounded-xl p-4 divide-y divide-border-subtle">
+<!-- Trend 1 -->
+<div class="py-4 first:pt-0">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-white text-sm">Synthetic Media</span>
+<span class="text-green-400 text-xs font-bold">+214%</span>
+</div>
+<div class="h-12 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 30">
+<path class="trend-line" d="M0 25 Q 10 15, 20 20 T 40 10 T 60 15 T 80 5 T 100 2" fill="none" stroke="url(#line-grad)" stroke-width="2"></path>
+<defs>
+<lineargradient id="line-grad" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#0EA5E9"></stop>
+<stop offset="100%" stop-color="#8B5CF6"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Trend 2 -->
+<div class="py-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-white text-sm">Quiet Luxury Fashion</span>
+<span class="text-green-400 text-xs font-bold">+86%</span>
+</div>
+<div class="h-12 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 30">
+<path class="trend-line" d="M0 28 L 20 22 L 40 25 L 60 18 L 80 12 L 100 8" fill="none" stroke="#0EA5E9" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Trend 3 -->
+<div class="py-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-white text-sm">Vertical Farming Tech</span>
+<span class="text-green-400 text-xs font-bold">+156%</span>
+</div>
+<div class="h-12 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 30">
+<path class="trend-line" d="M0 29 C 10 29, 20 5, 30 5 S 50 25, 70 25 S 90 2, 100 2" fill="none" stroke="#8B5CF6" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Trend 4 -->
+<div class="py-4 pb-0">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-white text-sm">Off-Grid Living</span>
+<span class="text-green-400 text-xs font-bold">+42%</span>
+</div>
+<div class="h-12 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 30">
+<path class="trend-line" d="M0 25 L 25 20 L 50 18 L 75 15 L 100 12" fill="none" stroke="#0EA5E9" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- AI Signal Widget -->
+<div class="p-6 rounded-xl bg-primary-container text-on-primary-container relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined animate-pulse" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-caps text-[10px]">AI SIGNAL STRENGTH</span>
+</div>
+<div class="text-3xl font-extrabold mb-4">OPTIMAL</div>
+<p class="text-sm opacity-90 leading-snug">Multiple high-velocity trends detected in your saved regions. Action recommended within 48h.</p>
+<button class="mt-4 w-full bg-white text-primary-container font-bold py-2 rounded-lg hover:shadow-lg transition-shadow">Generate Strategy</button>
+</div>
+<!-- Decorative glow -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/20 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-64 py-8 border-t border-border-subtle bg-surface flex justify-between items-center px-gutter text-text-secondary font-body-md">
+<div>
+<p>© 2024 AI Business OS. Designed for LATAM Growth.</p>
+</div>
+<div class="flex gap-8">
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">API Documentation</a>
+</div>
+</footer>
+<!-- FAB for Task-Focus (Conditional logic: only on main dash) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-accent-gradient rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined" data-icon="add" style="font-variation-settings: 'FILL' 0, 'wght' 700;">add</span>
+</button>
+<script>
+        // Simple micro-interaction for the search bar
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('border-primary/50');
+            searchInput.parentElement.classList.add('ring-1');
+            searchInput.parentElement.classList.add('ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('border-primary/50');
+            searchInput.parentElement.classList.remove('ring-1');
+            searchInput.parentElement.classList.remove('ring-primary/20');
+        });
+
+        // Dynamic sparkle effect on cards or trends could be added here
+    </script>
+</body></html>

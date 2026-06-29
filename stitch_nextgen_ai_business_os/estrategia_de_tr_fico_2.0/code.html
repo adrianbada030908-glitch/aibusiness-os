@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Business OS - Traffic Strategy Module</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f20",
+                        "tertiary-fixed": "#ffdcbd",
+                        "surface-elevated": "#1E293B",
+                        "on-primary": "#00344d",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-primary-container": "#003751",
+                        "on-surface-variant": "#bec8d2",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "accent-gradient": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+                        "primary": "#89ceff",
+                        "surface-container-low": "#1c1b1c",
+                        "background": "#131314",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "tertiary-container": "#de8712",
+                        "surface-variant": "#353436",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "text-secondary": "#94A3B8",
+                        "on-background": "#e5e2e3",
+                        "surface": "#131314",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "surface-tint": "#89ceff",
+                        "inverse-primary": "#006591",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-highest": "#353436",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c9e6ff",
+                        "primary-container": "#0ea5e9",
+                        "primary-fixed-dim": "#89ceff",
+                        "text-primary": "#FFFFFF",
+                        "surface-bright": "#3a393a",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed": "#23005c",
+                        "inverse-on-surface": "#313031",
+                        "outline": "#88929b",
+                        "on-secondary-container": "#c4abff",
+                        "inverse-surface": "#e5e2e3",
+                        "outline-variant": "#3e4850",
+                        "on-tertiary-container": "#4d2b00",
+                        "on-primary-fixed": "#001e2f",
+                        "border-subtle": "rgba(241, 245, 249, 0.1)",
+                        "tertiary": "#ffb86e",
+                        "on-tertiary": "#492900",
+                        "surface-dim": "#131314",
+                        "on-error": "#690005",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed-dim": "#ffb86e",
+                        "on-secondary": "#3c0091"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-lg": "160px",
+                        "gutter": "24px",
+                        "section-gap-sm": "80px",
+                        "container-max": "1280px",
+                        "element-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "display-hero-mobile": ["Syne"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Syne"],
+                        "headline-lg": ["Syne"],
+                        "display-hero": ["Syne"],
+                        "label-caps": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-hero-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-hero": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0B;
+            color: #e5e2e3;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.5);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .timeline-line {
+            background: linear-gradient(to bottom, #0EA5E9, #8B5CF6);
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-body-md overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col py-gutter px-4 bg-surface/60 backdrop-blur-xl border-r border-border-subtle z-50">
+<div class="mb-10 px-2">
+<h1 class="font-headline-md text-headline-md bg-clip-text text-transparent bg-[linear-gradient(135deg,#0EA5E9_0%,#8B5CF6_100%)]">AI Business OS</h1>
+<p class="font-label-caps text-label-caps text-text-secondary tracking-widest mt-1 uppercase">Elite Edition</p>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto no-scrollbar">
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span>Trend Hunter</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span>Product Creator</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="web">web</span>
+<span>Landing Pages</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>Content</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+<span>Ad Copy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span>Email Marketing</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-2 border-primary bg-primary/5 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
+<span>Traffic Strategy</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-border-subtle space-y-1">
+<button class="w-full mb-4 bg-accent-gradient py-3 rounded-lg font-bold text-white shadow-lg shadow-primary/20 scale-102 active:scale-95 transition-transform">
+                Upgrade Plan
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-secondary font-body-md hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-surface/60 backdrop-blur-xl border-b border-border-subtle flex justify-between items-center h-20 px-gutter">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-extrabold text-primary">Traffic Strategy</span>
+<span class="bg-primary/10 text-primary font-label-caps text-[10px] px-2 py-0.5 rounded-full border border-primary/20 uppercase">Module 08</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-secondary text-sm" data-icon="search">search</span>
+<input class="bg-background border border-outline-variant rounded-full pl-10 pr-4 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-64" placeholder="Search strategy..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-text-secondary hover:text-primary transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-text-secondary hover:text-primary transition-colors" data-icon="payments">payments</button>
+<div class="h-8 w-px bg-border-subtle mx-2"></div>
+<button class="bg-accent-gradient text-white font-bold px-4 py-2 rounded-lg text-sm active:opacity-80 transition-opacity">
+                    Create New
+                </button>
+<img alt="User Avatar" class="w-10 h-10 rounded-full border border-primary/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuJ-IRiYlgyuPt9SWY1UqBu2XkxElitHxTVecY5iPLPW8tfN4UNTOq2mefF24DvGMzpEL6On-hnpeHzn1WPrVmEK-BMKakbIjD0r8mv-PhNHCsU__1rCS7RKLjWSzEgS-mVyXHDZXRe28NYrfNQAwNmZNEUCkpFe-M0ca4EysLWWk4GCq6j8GU4D9FHX3XNlV8I8DNmZAnQqHGZ3YuX-HzOvOAssAl-kyeO59MZz_PFF6_BrJdIbFLLw"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 mt-20 p-gutter min-h-screen">
+<!-- Hero Section: Strategy Generator -->
+<section class="max-w-container-max mx-auto py-12">
+<div class="glass-card rounded-xl p-12 relative overflow-hidden flex flex-col items-center text-center">
+<!-- Background Decoration -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-[100px] rounded-full"></div>
+<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary-container/20 blur-[100px] rounded-full"></div>
+<div class="z-10 max-w-2xl">
+<h2 class="font-headline-lg text-headline-lg mb-6">Master Your Market Visibility</h2>
+<p class="font-body-lg text-body-lg text-text-secondary mb-10">Our AI analyzes current market saturation, competitor ad spend, and organic voids to architect a multi-channel growth engine tailored to your LATAM niche.</p>
+<button class="group relative px-12 py-5 bg-accent-gradient rounded-full font-bold text-white text-lg transition-all glow-primary glow-hover active:scale-95 flex items-center gap-4 mx-auto overflow-hidden" id="generateBtn" onclick="generateStrategy()">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" data-icon="auto_awesome">auto_awesome</span>
+<span id="btnText">Generate Traffic Strategy</span>
+<!-- Shimmer Effect -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+</button>
+<p class="mt-6 font-label-caps text-label-caps text-text-secondary opacity-60">Estimated processing time: 14 seconds</p>
+</div>
+</div>
+</section>
+<!-- Dynamic Results Section (Initially Hidden) -->
+<div class="hidden space-y-section-gap-sm animate-fade-in" id="strategyResults">
+<!-- Bento Grid Stats -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="glass-card p-6 rounded-xl border-l-4 border-primary">
+<p class="font-label-caps text-label-caps text-text-secondary mb-2">PROJECTED REACH</p>
+<h3 class="text-3xl font-bold font-headline-md">1.2M</h3>
+<p class="text-primary text-xs mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> +240% vs. Baseline
+                    </p>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<p class="font-label-caps text-label-caps text-text-secondary mb-2">EST. ACQUISITION COST</p>
+<h3 class="text-3xl font-bold font-headline-md">$0.42</h3>
+<p class="text-green-400 text-xs mt-2">-15% Industry Avg</p>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<p class="font-label-caps text-label-caps text-text-secondary mb-2">CHANNELS DETECTED</p>
+<h3 class="text-3xl font-bold font-headline-md">06</h3>
+<div class="flex gap-2 mt-2">
+<span class="material-symbols-outlined text-sm text-text-secondary" data-icon="share">share</span>
+<span class="material-symbols-outlined text-sm text-text-secondary" data-icon="ads_click">ads_click</span>
+<span class="material-symbols-outlined text-sm text-text-secondary" data-icon="hub">hub</span>
+</div>
+</div>
+<div class="glass-card p-6 rounded-xl">
+<p class="font-label-caps text-label-caps text-text-secondary mb-2">AI CONFIDENCE</p>
+<h3 class="text-3xl font-bold font-headline-md">98%</h3>
+<div class="w-full bg-background h-1.5 rounded-full mt-4">
+<div class="bg-accent-gradient h-full rounded-full" style="width: 98%"></div>
+</div>
+</div>
+</section>
+<!-- Execution Timeline / Roadmap -->
+<section>
+<div class="flex items-center justify-between mb-10">
+<div>
+<h2 class="font-headline-md text-headline-md">90-Day Tactical Roadmap</h2>
+<p class="text-text-secondary">Sequenced actions for maximum compound effect.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-elevated border border-border-subtle px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span> Export PDF
+                        </button>
+</div>
+</div>
+<div class="relative space-y-12">
+<!-- Vertical Timeline Line -->
+<div class="absolute left-8 top-4 bottom-4 w-0.5 timeline-line opacity-20"></div>
+<!-- Milestone 1: SEO Foundation -->
+<div class="relative flex gap-12 group">
+<div class="z-10 w-16 h-16 rounded-full bg-surface-elevated border border-primary flex items-center justify-center shrink-0 glow-primary transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="search">search</span>
+</div>
+<div class="glass-card flex-1 p-8 rounded-xl transition-all hover:bg-surface-elevated/80">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/10 text-primary font-label-caps text-[10px] px-3 py-1 rounded-full border border-primary/20 uppercase tracking-widest">Phase 01: Weeks 1-2</span>
+<span class="text-text-secondary font-label-caps text-xs">Priority: CRITICAL</span>
+</div>
+<h4 class="text-xl font-bold mb-4 font-headline-md">Organic SEO &amp; Entity Optimization</h4>
+<p class="text-text-secondary mb-6 leading-relaxed">Establish dominance in LATAM long-tail keywords. Automate the creation of 50 localized hub pages using the AI Content engine. Target 'soluciones empresariales inteligentes' as primary seed.</p>
+<div class="flex flex-wrap gap-3">
+<span class="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-outline-variant text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span> Search Console Setup
+                                </span>
+<span class="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-outline-variant text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span> Schema Markup
+                                </span>
+<span class="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-lg border border-outline-variant text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span> Latam Hub Pages
+                                </span>
+</div>
+</div>
+</div>
+<!-- Milestone 2: Pinterest/Visual Viral -->
+<div class="relative flex gap-12 group">
+<div class="z-10 w-16 h-16 rounded-full bg-surface-elevated border border-tertiary flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,184,110,0.2)] transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-tertiary text-2xl" data-icon="grid_view">grid_view</span>
+</div>
+<div class="glass-card flex-1 p-8 rounded-xl transition-all hover:bg-surface-elevated/80">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary/10 text-tertiary font-label-caps text-[10px] px-3 py-1 rounded-full border border-tertiary/20 uppercase tracking-widest">Phase 02: Weeks 3-4</span>
+<span class="text-text-secondary font-label-caps text-xs">Priority: HIGH</span>
+</div>
+<h4 class="text-xl font-bold mb-4 font-headline-md">Pinterest Visual Loop</h4>
+<p class="text-text-secondary mb-6 leading-relaxed">Leverage high-intent visual traffic. Generate 500+ branded pins for the Productivity category. Automate pinning schedules using the Content module's drip feature.</p>
+<div class="flex gap-4">
+<div class="bg-background/40 p-4 rounded-lg flex-1 border border-border-subtle">
+<p class="font-label-caps text-[10px] text-text-secondary mb-1">AI INSIGHT</p>
+<p class="text-sm font-medium">Vertical video pins see 4x higher CTR in Mexico/Colombia.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Milestone 3: Meta Ads -->
+<div class="relative flex gap-12 group">
+<div class="z-10 w-16 h-16 rounded-full bg-surface-elevated border border-secondary flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(208,188,255,0.2)] transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="campaign">campaign</span>
+</div>
+<div class="glass-card flex-1 p-8 rounded-xl transition-all hover:bg-surface-elevated/80">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary/10 text-secondary font-label-caps text-[10px] px-3 py-1 rounded-full border border-secondary/20 uppercase tracking-widest">Phase 03: Month 2</span>
+<span class="text-text-secondary font-label-caps text-xs">Priority: SCALING</span>
+</div>
+<h4 class="text-xl font-bold mb-4 font-headline-md">Paid Meta Acceleration</h4>
+<p class="text-text-secondary mb-6 leading-relaxed">Launch "Elite Business" retargeting campaign. Use the Ad Copy module's 'High-Tension' templates for lead magnets. Focus on Lookalike audiences from Organic SEO traffic.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3 bg-secondary-container/10 border border-secondary/20 rounded-lg text-xs text-secondary-fixed text-center">
+                                    Budget: $50/day (Test)
+                                </div>
+<div class="p-3 bg-secondary-container/10 border border-secondary/20 rounded-lg text-xs text-secondary-fixed text-center">
+                                    Target: B2B Business Owners
+                                </div>
+</div>
+</div>
+</div>
+<!-- Milestone 4: Reddit/Community -->
+<div class="relative flex gap-12 group">
+<div class="z-10 w-16 h-16 rounded-full bg-surface-elevated border border-error flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,180,171,0.2)] transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-error text-2xl" data-icon="forum">forum</span>
+</div>
+<div class="glass-card flex-1 p-8 rounded-xl transition-all hover:bg-surface-elevated/80">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-error/10 text-error font-label-caps text-[10px] px-3 py-1 rounded-full border border-error/20 uppercase tracking-widest">Phase 04: Month 3</span>
+<span class="text-text-secondary font-label-caps text-xs">Priority: RETENTION</span>
+</div>
+<h4 class="text-xl font-bold mb-4 font-headline-md">Reddit &amp; Community Infiltration</h4>
+<p class="text-text-secondary mb-6 leading-relaxed">Strategic positioning in r/mexico_startup and r/latam_tech. Authentic engagement via automated comment tracking. Deploy the 'Expert Persona' bot for value-first interactions.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Context Reference -->
+<section class="py-12">
+<div class="glass-card rounded-xl p-1 overflow-hidden">
+<img alt="Strategy Dashboard Visual" class="w-full h-auto rounded-lg filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAr0xFTyLqquhvtCud11gN0i7_rGuYhivXKjJ4vMVn7ODcXTEpBxPoy9yb_ks74vo_mfYOcmW3XaqqiPuBkqnpRaj6ZO2eYM0H0DMq0g_HNSB385DBtrBtOabIEP9dZMcAkUIQ857XRXimaZ0dD8egO2zPKwaH4CBtrmz_XouG0ltqHqr5NHLdhaU00K6ucY-OwlWfus930Zs6rimf9Sw2JGC2Tv8qCxkwDR81nwC7LUqpkgQI27aKEOyD3xOKdlgGZGy4"/>
+</div>
+<p class="text-center text-text-secondary font-label-caps text-[10px] mt-4 tracking-widest uppercase">System Interface Snapshot • Node Network visualization</p>
+</section>
+</div>
+<!-- Placeholder when hidden -->
+<div class="hidden flex flex-col items-center justify-center py-20 space-y-6" id="loadingState">
+<div class="relative">
+<div class="w-20 h-20 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined text-primary animate-pulse-slow" data-icon="bolt">bolt</span>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold font-headline-md text-white">AI is calculating your engine...</h3>
+<p class="text-text-secondary text-sm">Processing 42.8 million data points for LATAM markets.</p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-64 bg-surface py-8 border-t border-border-subtle flex justify-between items-center px-gutter">
+<div class="flex items-center gap-6">
+<span class="font-body-md text-body-md text-text-secondary">© 2024 AI Business OS. Designed for LATAM Growth.</span>
+</div>
+<div class="flex gap-8">
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md text-body-md" href="#">Terms of Service</a>
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md text-body-md" href="#">API Documentation</a>
+</div>
+</footer>
+<script>
+        function generateStrategy() {
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const loading = document.getElementById('loadingState');
+            const results = document.getElementById('strategyResults');
+            
+            // Interaction State
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            btnText.innerText = 'Calculating Market Data...';
+            
+            // Scroll to center
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+
+            // Fake Loading Steps
+            setTimeout(() => {
+                loading.classList.remove('hidden');
+            }, 500);
+
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                results.classList.remove('hidden');
+                btn.classList.add('hidden');
+                
+                // Animation trigger for results
+                results.classList.add('animate-fade-in');
+            }, 3000);
+        }
+
+        // Custom Animation for fading in
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in {
+                animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body></html>

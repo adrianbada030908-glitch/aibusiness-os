@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Business OS - Product Creator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f20",
+                        "tertiary-fixed": "#ffdcbd",
+                        "surface-elevated": "#1E293B",
+                        "on-primary": "#00344d",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-primary-container": "#003751",
+                        "on-surface-variant": "#bec8d2",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "accent-gradient": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+                        "primary": "#89ceff",
+                        "surface-container-low": "#1c1b1c",
+                        "background": "#131314",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "tertiary-container": "#de8712",
+                        "surface-variant": "#353436",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "text-secondary": "#94A3B8",
+                        "on-background": "#e5e2e3",
+                        "surface": "#131314",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "surface-tint": "#89ceff",
+                        "inverse-primary": "#006591",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-highest": "#353436",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c9e6ff",
+                        "primary-container": "#0ea5e9",
+                        "primary-fixed-dim": "#89ceff",
+                        "text-primary": "#FFFFFF",
+                        "surface-bright": "#3a393a",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed": "#23005c",
+                        "inverse-on-surface": "#313031",
+                        "outline": "#88929b",
+                        "on-secondary-container": "#c4abff",
+                        "inverse-surface": "#e5e2e3",
+                        "outline-variant": "#3e4850",
+                        "on-tertiary-container": "#4d2b00",
+                        "on-primary-fixed": "#001e2f",
+                        "border-subtle": "rgba(241, 245, 249, 0.1)",
+                        "tertiary": "#ffb86e",
+                        "on-tertiary": "#492900",
+                        "surface-dim": "#131314",
+                        "on-error": "#690005",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed-dim": "#ffb86e",
+                        "on-secondary": "#3c0091"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap-lg": "160px",
+                        "gutter": "24px",
+                        "section-gap-sm": "80px",
+                        "container-max": "1280px",
+                        "element-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "display-hero-mobile": ["Syne"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Syne"],
+                        "headline-lg": ["Syne"],
+                        "display-hero": ["Syne"],
+                        "label-caps": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-hero-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display-hero": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+        .accent-glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+        .sidebar-active {
+            color: #89ceff;
+            font-weight: 700;
+            border-right: 2px solid #89ceff;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #353436;
+            border-radius: 10px;
+        }
+        .module-accordion:checked ~ .module-content {
+            max-height: 1000px;
+            opacity: 1;
+            padding: 1rem 0;
+        }
+        .module-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-border-subtle bg-surface/60 backdrop-blur-xl flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<span class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient">AI Business OS</span>
+<p class="font-label-caps text-label-caps text-text-secondary mt-1">Elite Edition</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+                Trend Hunter
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+                Product Creator
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">web</span>
+                Landing Pages
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+                Content
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">campaign</span>
+                Ad Copy
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">mail</span>
+                Email Marketing
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">ads_click</span>
+                Traffic Strategy
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="mt-6 pt-6 border-t border-border-subtle">
+<button class="w-full py-3 px-4 rounded-xl bg-accent-gradient text-white font-bold text-sm accent-glow hover:scale-[1.02] active:scale-95 transition-transform">
+                Upgrade Plan
+            </button>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 h-20 px-8 flex justify-between items-center bg-surface/60 backdrop-blur-xl border-b border-border-subtle">
+<h2 class="font-headline-md text-headline-md text-primary">Product Creator</h2>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-secondary group-focus-within:text-primary transition-colors">search</span>
+<input class="bg-surface-container-lowest border border-border-subtle rounded-full py-2 pl-10 pr-4 text-sm w-64 focus:ring-1 focus:ring-primary focus:border-primary transition-all bg-transparent" placeholder="Search products..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<div class="h-10 w-10 rounded-full border border-primary/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up professional headshot of a modern entrepreneur, clean lighting, cinematic office background, high fidelity, 8k resolution, tech executive aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-jclQgXmiiWQOjepcm-5E_o5B8dhMciziVAoCP6sxMhzz1uoVzKCKR72Rf6Jt9FevzIiBRf1rUbG1RyMGYkhB8GYRZrNfekaaVcQe5BjWC861JpD4e8flXCom8wJ1kW3VhaN0Aw-rzucDjaN3czn2dC3JQtMIXrnst97FW2JjjhVGPZECeO66gX1sw9ZjWIJrLIwV1uKWzm3pBzLWO7naWErKFVHCcnLpy1wuS2VVCEJiLsHOjC3K1Q"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-20 flex min-h-screen">
+<!-- Left Side: History -->
+<section class="w-80 border-r border-border-subtle p-6 flex flex-col gap-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+<div class="flex items-center justify-between">
+<h3 class="font-label-caps text-label-caps text-text-secondary uppercase">My Products</h3>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">12 TOTAL</span>
+</div>
+<div class="space-y-4">
+<!-- Product Card -->
+<div class="glass-panel p-4 rounded-xl cursor-pointer hover:border-primary/50 transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold text-sm group-hover:text-primary transition-colors">SaaS Blueprint 2024</span>
+<span class="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded">READY</span>
+</div>
+<p class="text-xs text-text-secondary line-clamp-2">A comprehensive guide on building and scaling micro-SaaS businesses using AI tools.</p>
+<div class="mt-3 flex items-center gap-2 text-[10px] text-text-secondary">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                        2 days ago
+                    </div>
+</div>
+<div class="glass-panel p-4 rounded-xl cursor-pointer hover:border-primary/50 transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold text-sm group-hover:text-primary transition-colors">Web3 Marketing Mastery</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded">DRAFT</span>
+</div>
+<p class="text-xs text-text-secondary line-clamp-2">Strategy course for marketers entering the decentralized space.</p>
+<div class="mt-3 flex items-center gap-2 text-[10px] text-text-secondary">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                        5 days ago
+                    </div>
+</div>
+<div class="glass-panel p-4 rounded-xl opacity-60 border-dashed">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold text-sm">Crypto Automations</span>
+<span class="bg-tertiary-container/10 text-tertiary text-[10px] font-bold px-2 py-0.5 rounded">PROCESSING</span>
+</div>
+<div class="w-full h-1 bg-surface-container rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-accent-gradient w-[65%] animate-pulse"></div>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-xl cursor-pointer hover:border-primary/50 transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-bold text-sm group-hover:text-primary transition-colors">E-comm SEO Secrets</span>
+<span class="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded">READY</span>
+</div>
+<p class="text-xs text-text-secondary line-clamp-2">Step-by-step framework for dominating organic search in niche retail.</p>
+<div class="mt-3 flex items-center gap-2 text-[10px] text-text-secondary">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                        1 week ago
+                    </div>
+</div>
+</div>
+<!-- Promotion / Reference Box -->
+<div class="mt-auto pt-6">
+<div class="rounded-xl overflow-hidden relative group aspect-[1.77]">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgbtl9tbrPC52RT0rtZuMEx2z4Evl8nfhzZOs82OKNfNBC5cqYERpUPe1pR1PZq5hhHcz0kFAZsEl1qdLVGXjkvTIxt1Hs8mUnbFdVKZpnGGIiPskxsHRxdoJxOlnnFHSzyPiW9cGJ2-HC96Zvzscew1AoBQFWDybZGD9k4TjLY2WHJjZRbN_o99V36gzmkObLanhqlNfkdLUnq1Vw6ueUnDGVzqKj9xjpgSluMZb1qvcR0WD8JjjjHbCUi4D_jgPjeBU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-4">
+<span class="text-[10px] font-bold text-primary mb-1 uppercase tracking-widest">Masterclass</span>
+<p class="text-xs font-bold leading-tight">Elite Course Structure Secrets</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side: Main Interface -->
+<section class="flex-1 p-8 bg-surface-dim/40 overflow-y-auto">
+<div class="max-w-4xl mx-auto space-y-12">
+<!-- Input Area -->
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-xl bg-accent-gradient flex items-center justify-center accent-glow">
+<span class="material-symbols-outlined text-white text-2xl">psychology</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md">AI Product Designer</h1>
+<p class="text-text-secondary font-body-md">Describe your vision and let AI engineer the curriculum.</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl space-y-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-secondary px-1">Product Vision &amp; Core Concept</label>
+<textarea class="w-full min-h-[160px] bg-background border border-border-subtle rounded-xl p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all text-on-background resize-none" placeholder="e.g. A 4-week intensive program for freelancers to learn how to implement AI agents in their workflow to save 20 hours a week..."></textarea>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-secondary px-1">Difficulty Level</label>
+<select class="w-full bg-background border border-border-subtle rounded-xl p-3 focus:ring-1 focus:ring-primary focus:border-primary transition-all text-on-background appearance-none">
+<option>Beginner (Foundational)</option>
+<option selected="">Intermediate (Scaling)</option>
+<option>Advanced (Mastery)</option>
+<option>Expert (Cutting Edge)</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-text-secondary px-1">Product Type</label>
+<select class="w-full bg-background border border-border-subtle rounded-xl p-3 focus:ring-1 focus:ring-primary focus:border-primary transition-all text-on-background appearance-none">
+<option selected="">Video Masterclass</option>
+<option>Written E-Book</option>
+<option>Interactive Workshop</option>
+<option>Membership Program</option>
+</select>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4">
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-subtle text-text-secondary hover:text-primary hover:border-primary transition-all font-bold text-sm">
+<span class="material-symbols-outlined text-sm">attach_file</span>
+                                    Add Materials
+                                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-subtle text-text-secondary hover:text-primary hover:border-primary transition-all font-bold text-sm">
+<span class="material-symbols-outlined text-sm">target</span>
+                                    Refine Persona
+                                </button>
+</div>
+<button class="bg-accent-gradient text-white font-bold px-8 py-3 rounded-xl accent-glow flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform">
+<span class="material-symbols-outlined">auto_awesome</span>
+                                Generate Structure
+                            </button>
+</div>
+</div>
+</div>
+<!-- Generated Output Preview -->
+<div class="space-y-6 pt-8 border-t border-border-subtle">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md">Module Structure</h2>
+<button class="flex items-center gap-2 text-primary font-bold hover:underline transition-all">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+                            Export to PDF
+                        </button>
+</div>
+<!-- Bento Highlights -->
+<div class="grid grid-cols-12 gap-4">
+<div class="col-span-7 glass-panel p-5 rounded-2xl flex gap-4">
+<div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase">Target Audience</span>
+<h4 class="font-bold text-lg mb-1">Modern Digital Freelancers</h4>
+<p class="text-sm text-text-secondary leading-relaxed">Mid-career creative professionals looking to automate repetitive tasks and focus on high-value strategy.</p>
+</div>
+</div>
+<div class="col-span-5 glass-panel p-5 rounded-2xl flex gap-4">
+<div class="h-12 w-12 rounded-full bg-tertiary-container/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary">payments</span>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-tertiary uppercase">Pricing Strategy</span>
+<h4 class="font-bold text-lg mb-1">$497.00 - $1,297.00</h4>
+<p class="text-sm text-text-secondary">Value-based pricing recommended based on current market trends.</p>
+</div>
+</div>
+</div>
+<!-- Accordion Modules -->
+<div class="space-y-3">
+<!-- Module 1 -->
+<div class="glass-panel rounded-2xl overflow-hidden">
+<input checked="" class="module-accordion hidden" id="module-1" type="checkbox"/>
+<label class="flex items-center justify-between p-5 cursor-pointer hover:bg-white/5 transition-colors" for="module-1">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-primary">01</div>
+<div>
+<h4 class="font-bold">Foundation: The AI Mindset</h4>
+<span class="text-xs text-text-secondary">4 Lessons • 120 Minutes</span>
+</div>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</label>
+<div class="module-content px-5 border-t border-border-subtle/50">
+<div class="grid grid-cols-2 gap-8 py-4">
+<div class="space-y-4">
+<h5 class="font-label-caps text-[10px] text-text-secondary uppercase tracking-widest">Lessons</h5>
+<ul class="space-y-3">
+<li class="flex items-center justify-between text-sm group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-lg">play_circle</span>
+<span>Breaking the 'Time-for-Money' Trap</span>
+</div>
+<span class="text-[10px] text-text-secondary">15:00</span>
+</li>
+<li class="flex items-center justify-between text-sm group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-lg">play_circle</span>
+<span>The Landscape of Modern AI Agents</span>
+</div>
+<span class="text-[10px] text-text-secondary">45:00</span>
+</li>
+<li class="flex items-center justify-between text-sm group cursor-pointer">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-lg">description</span>
+<span>Worksheet: Identifying Your Bottlenecks</span>
+</div>
+<span class="material-symbols-outlined text-xs text-text-secondary">download</span>
+</li>
+</ul>
+</div>
+<div class="space-y-4">
+<h5 class="font-label-caps text-[10px] text-text-secondary uppercase tracking-widest">Learning Objectives</h5>
+<div class="space-y-2">
+<div class="flex gap-2 text-sm text-text-secondary">
+<span class="material-symbols-outlined text-green-400 text-lg">check_circle</span>
+                                                Understand the shift from linear to exponential productivity.
+                                            </div>
+<div class="flex gap-2 text-sm text-text-secondary">
+<span class="material-symbols-outlined text-green-400 text-lg">check_circle</span>
+                                                Map out 5 core areas for immediate automation.
+                                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Module 2 -->
+<div class="glass-panel rounded-2xl overflow-hidden">
+<input class="module-accordion hidden" id="module-2" type="checkbox"/>
+<label class="flex items-center justify-between p-5 cursor-pointer hover:bg-white/5 transition-colors" for="module-2">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-primary">02</div>
+<div>
+<h4 class="font-bold">Engineering the Invisible Assistant</h4>
+<span class="text-xs text-text-secondary">6 Lessons • 185 Minutes</span>
+</div>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</label>
+<div class="module-content px-5 border-t border-border-subtle/50">
+<p class="text-sm text-text-secondary py-4">Content currently being refined by AI engine...</p>
+</div>
+</div>
+<!-- Module 3 -->
+<div class="glass-panel rounded-2xl overflow-hidden">
+<input class="module-accordion hidden" id="module-3" type="checkbox"/>
+<label class="flex items-center justify-between p-5 cursor-pointer hover:bg-white/5 transition-colors" for="module-3">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-primary">03</div>
+<div>
+<h4 class="font-bold">Scaling to Elite Level</h4>
+<span class="text-xs text-text-secondary">3 Lessons • 90 Minutes</span>
+</div>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300">expand_more</span>
+</label>
+<div class="module-content px-5 border-t border-border-subtle/50">
+<p class="text-sm text-text-secondary py-4">Content currently being refined by AI engine...</p>
+</div>
+</div>
+</div>
+<!-- Footer Visual Reference -->
+<div class="pt-8">
+<div class="rounded-2xl overflow-hidden relative group h-48">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6mrGb-ScwKOVRJPKeKZvSe_W0pi2Y4_lnvnUwiyjr9Ao4HsB79IVgMshSl1lAaOyQApgjzycSvoftHbcupm0BtlNYJXGzPfXopajwCpU8ZH3cgFb5mnMmhNTzWoq8PBfZng1iWZmcoy_BpVyAHS9MytA-vbvXC0mvqw_8Ypo6SvzqoN2xhNWcrBLmYVjKLRLWYk_fvTgDzKHY4D7sfSYCP8McrT-Y0cENXwVML6iuMkxLSOIpneOnYb720qQO6rxCvlo"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-center p-8">
+<div>
+<h3 class="font-headline-md text-headline-md text-white mb-2">Automate Your Entire Launch</h3>
+<p class="text-on-background/80 max-w-lg mx-auto">Use our integrated Landing Page and Email Marketing tools to sell your new product instantly.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Links -->
+<footer class="mt-20 py-8 border-t border-border-subtle flex justify-between items-center">
+<span class="text-text-secondary text-sm">© 2024 AI Business OS. Designed for LATAM Growth.</span>
+<div class="flex gap-8">
+<a class="text-text-secondary text-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-text-secondary text-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-text-secondary text-sm hover:text-primary transition-colors" href="#">API Documentation</a>
+</div>
+</footer>
+</section>
+</main>
+<script>
+        // Micro-interaction for accordions
+        document.querySelectorAll('.module-accordion').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const icon = e.target.nextElementSibling.querySelector('.material-symbols-outlined');
+                if (e.target.checked) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+        // Initialize first icon state
+        document.querySelectorAll('.module-accordion').forEach(checkbox => {
+            const icon = checkbox.nextElementSibling.querySelector('.material-symbols-outlined');
+            if (checkbox.checked) icon.style.transform = 'rotate(180deg)';
+        });
+    </script>
+</body></html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Email Marketing Sequence | AI Business OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#201f20",
+                    "tertiary-fixed": "#ffdcbd",
+                    "surface-elevated": "#1E293B",
+                    "on-primary": "#00344d",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed": "#2c1600",
+                    "on-primary-container": "#003751",
+                    "on-surface-variant": "#bec8d2",
+                    "on-primary-fixed-variant": "#004c6e",
+                    "accent-gradient": "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+                    "primary": "#89ceff",
+                    "surface-container-low": "#1c1b1c",
+                    "background": "#131314",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "tertiary-container": "#de8712",
+                    "surface-variant": "#353436",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "text-secondary": "#94A3B8",
+                    "on-background": "#e5e2e3",
+                    "surface": "#131314",
+                    "secondary-container": "#571bc1",
+                    "error-container": "#93000a",
+                    "surface-tint": "#89ceff",
+                    "inverse-primary": "#006591",
+                    "secondary-fixed": "#e9ddff",
+                    "surface-container-highest": "#353436",
+                    "on-error-container": "#ffdad6",
+                    "primary-fixed": "#c9e6ff",
+                    "primary-container": "#0ea5e9",
+                    "primary-fixed-dim": "#89ceff",
+                    "text-primary": "#FFFFFF",
+                    "surface-bright": "#3a393a",
+                    "surface-container-high": "#2a2a2b",
+                    "surface-container-lowest": "#0e0e0f",
+                    "on-surface": "#e5e2e3",
+                    "on-secondary-fixed": "#23005c",
+                    "inverse-on-surface": "#313031",
+                    "outline": "#88929b",
+                    "on-secondary-container": "#c4abff",
+                    "inverse-surface": "#e5e2e3",
+                    "outline-variant": "#3e4850",
+                    "on-tertiary-container": "#4d2b00",
+                    "on-primary-fixed": "#001e2f",
+                    "border-subtle": "rgba(241, 245, 249, 0.1)",
+                    "tertiary": "#ffb86e",
+                    "on-tertiary": "#492900",
+                    "surface-dim": "#131314",
+                    "on-error": "#690005",
+                    "secondary": "#d0bcff",
+                    "tertiary-fixed-dim": "#ffb86e",
+                    "on-secondary": "#3c0091"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-gap-lg": "160px",
+                    "gutter": "24px",
+                    "section-gap-sm": "80px",
+                    "container-max": "1280px",
+                    "element-gap": "16px"
+            },
+            "fontFamily": {
+                    "display-hero-mobile": ["Syne"],
+                    "body-lg": ["DM Sans"],
+                    "headline-md": ["Syne"],
+                    "headline-lg": ["Syne"],
+                    "display-hero": ["Syne"],
+                    "label-caps": ["DM Sans"],
+                    "body-md": ["DM Sans"]
+            },
+            "fontSize": {
+                    "display-hero-mobile": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-lg": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-hero": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0A0A0B;
+            color: #e5e2e3;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(241, 245, 249, 0.1);
+        }
+        .accent-gradient {
+            background: linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #131314;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #353436;
+            border-radius: 4px;
+        }
+        .active-nav-border {
+            border-right: 2px solid #89ceff;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- Side Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-border-subtle bg-surface/60 backdrop-blur-xl flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<span class="font-headline-md text-headline-md bg-clip-text text-transparent bg-accent-gradient block">AI Business OS</span>
+<span class="font-label-caps text-label-caps text-text-secondary">Elite Edition</span>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">trending_up</span> Trend Hunter
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">auto_awesome</span> Product Creator
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">web</span> Landing Pages
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">description</span> Content
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">campaign</span> Ad Copy
+            </a>
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold active-nav-border bg-primary/5 rounded-lg group" href="#">
+<span class="material-symbols-outlined">mail</span> Email Marketing
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">ads_click</span> Traffic Strategy
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</nav>
+<div class="mt-auto space-y-2 pt-6 border-t border-border-subtle">
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help</span> Support
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary font-body-md hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span> Logout
+            </a>
+</div>
+</aside>
+<!-- Top AppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 h-20 bg-surface/60 backdrop-blur-xl border-b border-border-subtle flex justify-between items-center px-10">
+<h1 class="font-headline-md text-headline-md text-primary">Email Marketing Sequence</h1>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-text-secondary cursor-pointer hover:text-primary transition-colors">notifications</span>
+<span class="material-symbols-outlined text-text-secondary cursor-pointer hover:text-primary transition-colors">payments</span>
+<img class="w-10 h-10 rounded-full border border-primary/20" data-alt="A professional headshot of a young, stylish LATAM tech entrepreneur with a warm smile, wearing modern glasses and a charcoal blazer. The background is a soft-focus high-end office with blue ambient lighting, maintaining the elite digital business aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyeWwKQSkZ2FXOVROan_yHoLi-YvHaUUyCk8gEt-pYw2KX2MCqLbpOFA3vEdLu5lm3J4C5XAgvnuFcPAtMGvRnVGW1Gs8rFkCAEjTr5H8uRYdMoh1cugmM0rOZkzH90aJTWJVIWX5wwxcfXhAJqKlYwlgV1ossTk_fneGtPSfOjOIdx-XSX50x_gqpSJFcU3jZCJGArxoiJjp1ddKDn9ptoe3V1_a-2TJjG55Rw_L8FI0L9-Xk_Wy7Ow"/>
+</div>
+<button class="px-6 py-2 rounded-lg accent-gradient text-white font-bold text-body-md active:opacity-80 transition-opacity">Create New</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 mt-20 p-10 min-h-screen">
+<!-- Header Image Section (Bento Style) -->
+<div class="grid grid-cols-12 gap-gutter mb-section-gap-sm">
+<div class="col-span-8 h-80 rounded-xl overflow-hidden glass-card relative group">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMGpGOhniIcC0FI_rWBesuwzmFVqfmdbRLwSNsYkNbaWtOn880KIBXtROJ2i-_Xt4NBJBmkEbVJsM_bp_YExbalqDp1Dmjtm0meDP4at_KhD6lnxEq5SUmLGpgEf7Qmq55rKyD2M7KGtIVVpA-1xoZUdxgn42p_M80MeIJp5fpdpk10McGUg1Qfeq2VS-4FeBpeHqEQf6VVreaciGApN5pPurOhSeAabYXg4r7Gbtn6wQHSNpjcQFUVSuhk-YU_ov7y84"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary font-label-caps text-[10px] mb-2 inline-block">SYSTEM STATUS: ACTIVE</span>
+<h2 class="font-headline-lg text-headline-lg text-text-primary">Sequence Architect v2.0</h2>
+</div>
+</div>
+<div class="col-span-4 glass-card p-8 rounded-xl flex flex-col justify-center">
+<h3 class="font-headline-md text-headline-md mb-4">Elite Automation</h3>
+<p class="text-text-secondary font-body-md mb-6">Deploy high-conversion email flows with our proprietary AI logic trained on $10M+ campaigns.</p>
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined">bolt</span>
+<span class="font-label-caps text-label-caps">98% AVG. DELIVERABILITY</span>
+</div>
+</div>
+</div>
+<!-- Configuration Form -->
+<section class="mb-section-gap-sm">
+<div class="glass-card p-10 rounded-xl">
+<div class="flex flex-col md:flex-row gap-gutter items-end">
+<div class="flex-1 space-y-2">
+<label class="font-label-caps text-label-caps text-text-secondary ml-1">Lead Magnet Name</label>
+<input class="w-full bg-background border border-border-subtle rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-text-primary font-body-md" placeholder="e.g. 10-Step AI Roadmap" type="text"/>
+</div>
+<div class="flex-1 space-y-2">
+<label class="font-label-caps text-label-caps text-text-secondary ml-1">Sequence Type</label>
+<select class="w-full bg-background border border-border-subtle rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-text-primary font-body-md appearance-none">
+<option>Welcome + Sales</option>
+<option>Nurturing</option>
+<option>Abandoned Cart</option>
+</select>
+</div>
+<button class="px-8 py-3 rounded-lg accent-gradient text-white font-bold text-body-md hover:scale-[1.02] active:scale-95 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined">auto_fix</span> Generate Architecture
+                    </button>
+</div>
+</div>
+</section>
+<!-- Email Flow Preview -->
+<section class="space-y-gutter">
+<div class="flex justify-between items-center px-2">
+<h3 class="font-headline-md text-headline-md">Sequence Preview</h3>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle bg-white/5 rounded-lg text-text-primary hover:bg-white/10 transition-colors font-body-md">
+<span class="material-symbols-outlined text-sm">content_copy</span> Copy All
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle bg-white/5 rounded-lg text-text-primary hover:bg-white/10 transition-colors font-body-md">
+<span class="material-symbols-outlined text-sm">ios_share</span> Export to ESP
+                    </button>
+</div>
+</div>
+<!-- Flow Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
+<!-- Decorative Connector Line -->
+<div class="hidden lg:block absolute top-1/2 left-0 w-full h-[1px] bg-primary/20 -translate-y-1/2 z-0"></div>
+<!-- Day 1 Card -->
+<div class="glass-card p-6 rounded-xl relative z-10 hover:border-primary/50 transition-colors group">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+<span class="font-bold">01</span>
+</div>
+<div class="font-label-caps text-label-caps text-primary mb-2">DAY 1: IMMEDIATE DELIVERY</div>
+<h4 class="font-body-lg font-bold text-text-primary mb-3">Your [Lead Magnet] is Here!</h4>
+<p class="text-text-secondary text-sm line-clamp-3 mb-6 italic">"Hey [Name], finally! Here's the exclusive roadmap you requested. This is the first step towards..."</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">edit</span>
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">visibility</span>
+</div>
+<span class="text-[10px] font-label-caps text-text-secondary">EST. OPEN: 74%</span>
+</div>
+</div>
+<!-- Day 2 Card -->
+<div class="glass-card p-6 rounded-xl relative z-10 hover:border-primary/50 transition-colors group border-primary/30">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary mb-4">
+<span class="font-bold">02</span>
+</div>
+<div class="font-label-caps text-label-caps text-primary mb-2">DAY 2: THE PROBLEM REVEAL</div>
+<h4 class="font-body-lg font-bold text-text-primary mb-3">The #1 Mistake in Digital Scaling</h4>
+<p class="text-text-secondary text-sm line-clamp-3 mb-6 italic">"Did you check out page 4 of the roadmap? Most entrepreneurs miss the crucial bridge between automation and..."</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">edit</span>
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">visibility</span>
+</div>
+<span class="text-[10px] font-label-caps text-text-secondary">EST. OPEN: 52%</span>
+</div>
+<!-- Indicator Badge -->
+<div class="absolute -top-3 -right-3 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-label-caps">AI REFINED</div>
+</div>
+<!-- Day 3 Card -->
+<div class="glass-card p-6 rounded-xl relative z-10 hover:border-primary/50 transition-colors group">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+<span class="font-bold">03</span>
+</div>
+<div class="font-label-caps text-label-caps text-primary mb-2">DAY 3: THE SOLUTION (SOFT SELL)</div>
+<h4 class="font-body-lg font-bold text-text-primary mb-3">A shortcut to [Result]...</h4>
+<p class="text-text-secondary text-sm line-clamp-3 mb-6 italic">"What if you could bypass the technical grind entirely? Today I'm opening a few spots for..."</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">edit</span>
+<span class="material-symbols-outlined text-text-secondary text-lg cursor-pointer hover:text-primary">visibility</span>
+</div>
+<span class="text-[10px] font-label-caps text-text-secondary">EST. OPEN: 41%</span>
+</div>
+</div>
+</div>
+<!-- Add Step Button -->
+<div class="flex justify-center pt-8">
+<button class="w-12 h-12 rounded-full border border-dashed border-primary/40 flex items-center justify-center text-primary hover:bg-primary/5 transition-all group">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+</button>
+</div>
+</section>
+<!-- Statistics Overlay (Bottom Right) -->
+<div class="fixed bottom-10 right-10 flex flex-col gap-4 z-40 pointer-events-none">
+<div class="glass-card p-4 rounded-xl pointer-events-auto animate-pulse">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div>
+<span class="font-label-caps text-label-caps text-text-primary">AI ENGINE OPTIMIZING</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="ml-64 py-8 px-10 border-t border-border-subtle bg-surface flex justify-between items-center">
+<p class="font-body-md text-text-secondary text-body-md">© 2024 AI Business OS. Designed for LATAM Growth.</p>
+<div class="flex gap-8">
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md" href="#">Terms of Service</a>
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md" href="#">Privacy Policy</a>
+<a class="text-text-secondary hover:text-primary transition-colors font-body-md" href="#">API Documentation</a>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for sequence card hover
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.boxShadow = '0 10px 30px -10px rgba(14, 165, 233, 0.2)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body></html>
